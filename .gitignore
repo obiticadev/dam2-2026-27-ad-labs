@@ -17,7 +17,7 @@
 hs_err_pid*
 replay_pid*
 
-# Datos temporales. Los scripts y datos de ejemplo necesarios si se versionan.
+# Datos temporales. Los scripts y datos de ejemplo necesarios sí se versionan.
 *.db-journal
 *.sqlite-journal
 *.h2.db
