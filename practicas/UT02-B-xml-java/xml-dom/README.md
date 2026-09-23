@@ -7,7 +7,7 @@ mvn package
 mvn exec:java -Dexec.mainClass="es.dam.accesodatos.xml.dom.Ejemplo2"
 ```
 
-- `XmlCtrlDom`: parsea `cd_catalog.xml` y transforma el DOM a un fichero XML.
+- `XmlCtrlDom`: parsea `cd_catalog.xml` y transforma el DOM a un fichero de texto (`catalogo.txt`).
 - `PasosDOM`: muestra la estructura de nodos, atributos y elementos de `clase.xml`.
 - `Ejemplo2`: recorre e imprime todos los alumnos de `clase.xml`.
 - `PasosCrearXML`: construye un DOM mínimo y lo escribe en XML.

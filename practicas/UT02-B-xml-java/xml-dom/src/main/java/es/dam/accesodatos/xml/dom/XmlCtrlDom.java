@@ -16,31 +16,45 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 public class XmlCtrlDom {
-    private static final File FICHERO_ENTRADA = new File("src/main/resources/cd_catalog.xml");
-    private static final File FICHERO_SALIDA = new File("target/demo-data/catalogo.xml");
+    final static File ficheroIN = new File("src/main/resources/cd_catalog.xml");
+    final static File ficheroOUT = new File("target/demo-data/catalogo.txt");
 
     public static void main(String[] args)
             throws SAXException, IOException, ParserConfigurationException, TransformerException {
-        Document documento = instanciarDocument(FICHERO_ENTRADA);
-        escribeDocumentATextXml(documento, FICHERO_SALIDA);
-        System.out.println("DOM transformado a " + FICHERO_SALIDA.getAbsolutePath());
+        Document documento = null;
+        // Parsear: ficheroIN -> documento DOM
+        documento = instanciarDocument(ficheroIN);
+
+        // Transformar: documento DOM -> ficheroOUT
+        escribeDocumentATextXml(documento, ficheroOUT);
+        System.out.println("DOM transformado a " + ficheroOUT.getAbsolutePath());
     }
 
+    // Crea un documento DOM vacío
     public static Document instanciarDocument() throws ParserConfigurationException {
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        return doc;
     }
 
-    public static Document instanciarDocument(File ficheroXml)
+    // Lee un fichero XML y crea un documento DOM en memoria
+    public static Document instanciarDocument(File fXmlFile)
             throws SAXException, IOException, ParserConfigurationException {
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(ficheroXml);
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(fXmlFile);
+        return doc;
     }
 
-    public static void escribeDocumentATextXml(Document doc, File fichero)
+    // Transforma un documento DOM en un fichero XML (o a consola)
+    public static void escribeDocumentATextXml(Document doc, File file)
             throws TransformerException, IOException {
-        Files.createDirectories(Path.of(fichero.toURI()).getParent());
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.transform(new DOMSource(doc), new StreamResult(fichero));
+        if (file.getParentFile() != null) {
+            Files.createDirectories(Path.of(file.toURI()).getParent());
+        }
+        Transformer trans = TransformerFactory.newInstance().newTransformer();
+        trans.setOutputProperty(OutputKeys.INDENT, "yes");
+
+        // StreamResult puede tener distintas salidas: a un fichero o por pantalla (System.out)
+        StreamResult result = new StreamResult(file);
+        DOMSource source = new DOMSource(doc);
+        trans.transform(source, result);
     }
 }
