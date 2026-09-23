@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<libreria>
+    <ListaLibro>
+        <Libro>
+            <autor>XXXXXXX</autor>
+            <nombre>XXXXXXX</nombre>
+            <editorial>XXXXXXX</editorial>
+            <isbn>XXXXXXX</isbn>
+        </Libro>
+    </ListaLibro>
+    <lugar>XXXXXXX</lugar>
+    <nombre>XXXXXX</nombre>
+</libreria>

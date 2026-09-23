@@ -1,0 +1,3 @@
+Primera línea del fichero de origen.
+Segunda línea: aquí hay texto y caracteres acentuados.
+Última línea.

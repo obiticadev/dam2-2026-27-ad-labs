@@ -1,0 +1,1 @@
+Este fichero demuestra que Files.copy de un directorio no copia sus contenidos.

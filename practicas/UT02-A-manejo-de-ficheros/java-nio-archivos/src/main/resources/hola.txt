@@ -1,0 +1,2 @@
+Hola desde el ejemplo de Java NIO.
+Segunda línea con acentos: programación, fichero y canción.
