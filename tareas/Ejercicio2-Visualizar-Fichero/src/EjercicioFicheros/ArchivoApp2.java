@@ -2,10 +2,9 @@
 package EjercicioFicheros;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class ArchivoApp2 {
 
@@ -18,19 +17,19 @@ public class ArchivoApp2 {
 
     private static void mostrarCodigoFuente() {
         try {
-            Path ficheroFuente = Paths.get(RUTA_FUENTE_POR_DEFECTO);
+            File ficheroFuente = new File(RUTA_FUENTE_POR_DEFECTO);
 
-            if (!Files.exists(ficheroFuente)) {
+            if (!ficheroFuente.exists()) {
                 System.out.println("Error: el fichero no existe: " + RUTA_FUENTE_POR_DEFECTO);
                 return;
             }
 
-            if (Files.isDirectory(ficheroFuente)) {
+            if (ficheroFuente.isDirectory()) {
                 System.out.println("Error: la ruta indicada es un directorio: " + RUTA_FUENTE_POR_DEFECTO);
                 return;
             }
 
-            if (!Files.isRegularFile(ficheroFuente) || !Files.isReadable(ficheroFuente)) {
+            if (!ficheroFuente.isFile() || !ficheroFuente.canRead()) {
                 System.out.println("Error: el fichero no es válido o no se puede leer: " + RUTA_FUENTE_POR_DEFECTO);
                 return;
             }
@@ -38,7 +37,7 @@ public class ArchivoApp2 {
             // Guarda el contenido para mostrarlo al finalizar.
             StringBuffer codigoFuente = new StringBuffer();
 
-            try (BufferedReader lector = Files.newBufferedReader(ficheroFuente, StandardCharsets.UTF_8)) {
+            try (BufferedReader lector = new BufferedReader(new FileReader(ficheroFuente, StandardCharsets.UTF_8))) {
                 int caracterLeido;
                 while ((caracterLeido = lector.read()) != -1) {
                     codigoFuente.append((char) caracterLeido);
