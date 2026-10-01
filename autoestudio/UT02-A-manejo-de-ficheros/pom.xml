@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>es.dam.accesodatos.autoestudio</groupId>
+        <artifactId>autoestudio-acceso-datos</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>ut02-a-manejo-de-ficheros</artifactId>
+    <packaging>pom</packaging>
+    <name>UT02-A · Manejo de ficheros</name>
+
+    <modules>
+        <module>01-rutas-file</module>
+        <module>02-inspeccion-file</module>
+        <module>03-operaciones-file</module>
+        <module>04-listado-directorio</module>
+        <module>05-filtrado-filename-filter</module>
+        <module>06-catalogador-archivos</module>
+    </modules>
+</project>

@@ -6,6 +6,7 @@ Ejercicios de clase y prácticas pequeñas de Acceso a Datos.
 
 - `tareas/`: ejercicios cotidianos organizados por unidad.
 - `practicas/`: entregas evaluables que no necesiten repositorio propio.
+- `autoestudio/`: mini proyectos con teoría, enunciados y tests organizados por unidad.
 
 Cada actividad debe ser autocontenida y conservar código, configuración, datos de
 ejemplo y README necesarios para reconstruirla en otro equipo.
