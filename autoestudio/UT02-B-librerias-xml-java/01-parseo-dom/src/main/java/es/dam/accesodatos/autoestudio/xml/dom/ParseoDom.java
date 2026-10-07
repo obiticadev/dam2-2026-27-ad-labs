@@ -15,8 +15,10 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Ejercicios de consulta y creación de árboles XML con DOM.
@@ -29,6 +31,8 @@ import org.xml.sax.SAXException;
  * Teoría: {@code teoria/parseo-dom.md}.
  */
 public final class ParseoDom {
+
+    private static final String FEATURE_DISALLOW_DOCTYPE = "http://apache.org/xml/features/disallow-doctype-decl";
 
     private ParseoDom() {
     }
@@ -52,8 +56,15 @@ public final class ParseoDom {
         if (xml == null || xml.isBlank() || etiqueta == null || etiqueta.isBlank()) {
             throw new IllegalArgumentException("Parámetros no válidos");
         }
-        Document doc = parsearSeguro(xml);
-        return doc.getElementsByTagName(etiqueta).getLength();
+        // Document doc = parsearSeguro(xml);
+        try {
+            return DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(new InputSource(new StringReader(xml))).getElementsByTagName(etiqueta).getLength();
+        } catch (SAXException | IOException | ParserConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /**
@@ -73,7 +84,21 @@ public final class ParseoDom {
         // TODO: Selecciona el primer elemento coincidente en orden documental.
         // TODO: Recupera el atributo solicitado y respeta el resultado vacío si falta.
         // TODO: Devuelve el valor de ese atributo como String.
-        return "";
+
+        try {
+            NodeList lista = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(new InputSource(new StringReader(xml)))
+                    .getElementsByTagName(etiqueta);
+            if (lista.getLength() == 0) {
+                return "";
+            }
+            Element primerElement = (Element) lista.item(0);
+            return primerElement.getAttribute(atributo);
+        } catch (SAXException | IOException | ParserConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return atributo;
     }
 
     /**
@@ -167,11 +192,31 @@ public final class ParseoDom {
             throw new IllegalArgumentException("Parámetros no válidos");
         }
         try {
-            DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature(FEATURE_DISALLOW_DOCTYPE, true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            builder.setErrorHandler(new ErrorHandler() {
+
+                @Override
+                public void error(SAXParseException exception) throws SAXException {
+                    throw exception;
+                }
+
+                @Override
+                public void fatalError(SAXParseException exception) throws SAXException {
+                    throw exception;
+                }
+
+                @Override
+                public void warning(SAXParseException exception) throws SAXException {
+                }
+
+            });
+
+            return builder.parse(new InputSource(new StringReader(xml)));
         } catch (SAXException | IOException | ParserConfigurationException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error al parsear XML", e);
         }
-        return null;
     }
 
     /**
