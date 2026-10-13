@@ -1,17 +1,23 @@
 package es.dam.accesodatos.autoestudio.xml.dom;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+
+import javax.swing.event.DocumentEvent;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -118,7 +124,21 @@ public final class ParseoDom {
         // TODO: Busca elementos coincidentes y selecciona el primero.
         // TODO: Obtén el contenido textual del elemento, incluidos sus descendientes.
         // TODO: Devuelve cadena vacía cuando no haya coincidencias.
-        return "";
+        if (xml == null || xml.isBlank() || etiqueta == null || etiqueta.isBlank()) {
+            throw new IllegalArgumentException("Parametros no válidos");
+        }
+
+        try {
+            NodeList nodeList = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(new InputSource(new StringReader(xml))).getElementsByTagName(etiqueta);
+            if (nodeList.getLength() == 0) {
+                return "";
+            }
+            return nodeList.item(0).getTextContent();
+        } catch (DOMException | SAXException | IOException | ParserConfigurationException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException("Error al parsear XML", e);
+        }
     }
 
     /**
@@ -136,7 +156,18 @@ public final class ParseoDom {
         // TODO: Parsea el documento con el helper DOM seguro.
         // TODO: Obtén el elemento raíz del Document.
         // TODO: Compara su nombre exacto con el solicitado.
-        return false;
+        if (xml == null || xml.isBlank() || raizEsperada == null || raizEsperada.isBlank()) {
+            throw new IllegalArgumentException("Argumentos erróneos");
+        }
+
+        try {
+            Element element = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(new InputSource(new StringReader(xml))).getDocumentElement();
+            return element.getTagName().equals(raizEsperada);
+        } catch (SAXException | IOException | ParserConfigurationException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException("Problemas con el parser", e);
+        }
     }
 
     /**
@@ -153,7 +184,18 @@ public final class ParseoDom {
         // TODO: Parsea el texto XML con el helper seguro.
         // TODO: Selecciona todos los elementos mediante la consulta comodín de DOM.
         // TODO: Devuelve el número total, incluyendo el elemento raíz.
-        return 0;
+        if (xml == null || xml.isBlank()) {
+            throw new IllegalArgumentException("El xml no puede ser nulo o estar en blanco");
+        }
+
+        try {
+            NodeList nodeList = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(new InputSource(new StringReader(xml))).getElementsByTagName("*");
+            return nodeList.getLength();
+        } catch (SAXException | IOException | ParserConfigurationException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException("Error de parse", e);
+        }
     }
 
     /**
@@ -174,7 +216,31 @@ public final class ParseoDom {
         // TODO: Crea un Transformer y configura una salida XML legible.
         // TODO: Transforma DOMSource a StreamResult respaldado por StringWriter.
         // TODO: Devuelve la cadena XML producida por el Transformer.
-        return "";
+        if (raiz == null || raiz.isBlank() || hijo == null || hijo.isBlank() || texto == null || texto.isBlank()) {
+            throw new IllegalArgumentException("Alguno de los argumentos es nulo o está en blanco");
+        }
+        try {
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            Element rootElement = doc.createElement(raiz);
+            doc.appendChild(rootElement);
+
+            Element child = doc.createElement(hijo);
+            child.appendChild(doc.createTextNode(texto));
+            rootElement.appendChild(child);
+
+            TransformerFactory transformerFactory = TransformerFactory.newDefaultInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+
+            transformer.transform(source, result);
+            return writer.toString();
+
+        } catch (ParserConfigurationException | TransformerException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException("No se puede crear o transformar el documento", e);
+        }
     }
 
     private static Document parsearSeguro(String xml) {
