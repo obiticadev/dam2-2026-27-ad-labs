@@ -25,9 +25,35 @@ public class LeerDepartamentosEmpleadosDOM {
         documento.getDocumentElement().normalize();
 
         // TODO 1: obtener las listas de elementos DEP_ROW y EMP_ROW.
+        NodeList listaDepartamentos = documento.getElementsByTagName("DEP_ROW");
+        NodeList listaEmpleados = documento.getElementsByTagName("EMP_ROW");
+
         // TODO 2: recorrer los departamentos y mostrar DEPT_NO, DNOMBRE y LOC.
         // TODO 3: asociar cada empleado por DEPT_NO y mostrar los campos pedidos.
 
-        System.out.println("Apartado a pendiente: completa los TODO de DOM.");
+        for (int i = 0; i < listaDepartamentos.getLength(); i++) {
+            StringBuilder sb = new StringBuilder();
+            Element dep = (Element) listaDepartamentos.item(i);
+            String nombre = dep.getElementsByTagName("DNOMBRE").item(0).getTextContent();
+            String num = dep.getElementsByTagName("DEPT_NO").item(0).getTextContent();
+            String loc = dep.getElementsByTagName("LOC").item(0).getTextContent();
+            sb.append(String.format("%nDEPARTAMENTO %s: %s (%s)", num, nombre, loc));
+            System.out.println(sb.toString());
+
+            for (int j = 0; j < listaEmpleados.getLength(); j++) {
+                Element emp = (Element) listaEmpleados.item(j);
+                String depEmp = emp.getElementsByTagName("DEPT_NO").item(0).getTextContent();
+                if (num.equals(depEmp)) {
+                    String apellido = emp.getElementsByTagName("APELLIDO").item(0).getTextContent();
+                    String oficio = emp.getElementsByTagName("OFICIO").item(0).getTextContent();
+                    String salario = emp.getElementsByTagName("SALARIO").item(0).getTextContent();
+                    String comision = emp.getElementsByTagName("COMISION").item(0).getTextContent();
+                    System.out.println(
+                            String.format(" - %-10s | Oficio: %-10s | Salario: %-10s | Comisión: %5s €", apellido,
+                                    oficio, salario, comision));
+                }
+            }
+        }
+
     }
 }
