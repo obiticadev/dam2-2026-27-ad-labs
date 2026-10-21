@@ -2,6 +2,7 @@ package es.dam.accesodatos.autoestudio.xml.sax;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,6 +38,7 @@ public final class ParseoSax {
      *                                  blanco
      * @throws RuntimeException         si el XML está mal formado o falla el parser
      */
+
     public static List<String> textosDe(String xml, String etiqueta) {
         // TODO: Valida los argumentos del documento y de la etiqueta.
         // TODO: Prepara SAXParserFactory, SAXParser y una lista de resultados.
@@ -49,6 +51,7 @@ public final class ParseoSax {
         // propague el fallo.
         // TODO: Devuelve una lista inmutable solo cuando el parseo termine
         // correctamente.
+        List<String> resultados = new ArrayList<>();
         if (xml == null || xml.isBlank() || etiqueta == null || etiqueta.isBlank()) {
             throw new IllegalArgumentException("El XML o la etiqueta son nulos o están en blanco");
         }
@@ -60,17 +63,26 @@ public final class ParseoSax {
             @Override
             public void startElement(String uri, String localName, String qName, Attributes attributes)
                     throws SAXException {
+                if (qName.equals(etiqueta)) {
+                    capturado = true;
+                    textoActual.setLength(0);
+                }
 
             }
 
             @Override
             public void endElement(String uri, String localName, String qName) throws SAXException {
-
+                if (qName.equals(etiqueta) && capturado) {
+                    resultados.add(textoActual.toString());
+                    capturado = false;
+                }
             }
 
             @Override
             public void characters(char[] ch, int start, int length) throws SAXException {
-
+                if (capturado) {
+                    textoActual.append(ch, start, length);
+                }
             }
 
         };
@@ -80,10 +92,10 @@ public final class ParseoSax {
             saxParser.parse(new InputSource(new StringReader(xml)), manejador);
         } catch (ParserConfigurationException | SAXException | IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException("Error al procesar el XML con SAX", e);
         }
 
-        return null;
+        return List.copyOf(resultados);
     }
 
     /**
@@ -104,6 +116,34 @@ public final class ParseoSax {
         // TODO: Añade cadena vacía cuando una coincidencia carezca del atributo.
         // TODO: Propaga errores de parseo como RuntimeException y devuelve lista
         // inmutable.
+        if (xml == null || xml.isBlank() || etiqueta == null || etiqueta.isBlank() || atributo == null
+                || atributo.isBlank()) {
+            throw new IllegalArgumentException("El XML o la etiqueta son nulos o están en blanco");
+        }
+
+        DefaultHandler manejador = new DefaultHandler() {
+
+            @Override
+            public void characters(char[] ch, int start, int length) throws SAXException {
+                // TODO Auto-generated method stub
+                super.characters(ch, start, length);
+            }
+
+            @Override
+            public void endElement(String uri, String localName, String qName) throws SAXException {
+                // TODO Auto-generated method stub
+                super.endElement(uri, localName, qName);
+            }
+
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes attributes)
+                    throws SAXException {
+                // TODO Auto-generated method stub
+                super.startElement(uri, localName, qName, attributes);
+            }
+
+        };
+
         return null;
     }
 
