@@ -15,8 +15,9 @@ teoría breve y específica, un ejercicio Java autocontenido y sus tests.
 | 04 | [`04-listado-directorio`](./04-listado-directorio/README.md) | `list()` y `listFiles()` |
 | 05 | [`05-filtrado-filename-filter`](./05-filtrado-filename-filter/README.md) | Filtrado con `FilenameFilter` |
 | 06 · Boss final | [`06-catalogador-archivos`](./06-catalogador-archivos/README.md) | Reto integrador de la unidad |
+| 07 | [`07-flujos-bytes`](./07-flujos-bytes/README.md) | Copia por bloques y anexado con `FileInputStream`/`FileOutputStream` |
 
-**Alcance:** `java.io.File`, sus operaciones y `FilenameFilter`. NIO se excluye.
+**Alcance:** `java.io.File`, sus operaciones, `FilenameFilter` y flujos de bytes. NIO se excluye.
 
 Para compilar esta unidad desde aquí:
 

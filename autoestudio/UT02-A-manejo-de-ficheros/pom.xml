@@ -21,5 +21,6 @@
         <module>04-listado-directorio</module>
         <module>05-filtrado-filename-filter</module>
         <module>06-catalogador-archivos</module>
+        <module>07-flujos-bytes</module>
     </modules>
 </project>

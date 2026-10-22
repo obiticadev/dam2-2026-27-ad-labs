@@ -1,0 +1,101 @@
+# Teoría · Flujos de bytes
+
+Apartado 2.7 de UT02-A. Ampliación en Obsidian: *AD — Flujos de bytes*.
+
+## Clases del bloque
+
+`InputStream` y `OutputStream` son las clases abstractas de los flujos de bytes.
+Para ficheros se usan sus subclases:
+
+| Clase | Constructor | Uso |
+|---|---|---|
+| `FileInputStream` | `(File)` / `(String)` | Lee bytes de un fichero |
+| `FileOutputStream` | `(File)` / `(String)` | Crea o **sobrescribe** el fichero |
+| `FileOutputStream` | `(File, true)` / `(String, true)` | **Anexa** al final del fichero |
+
+## Métodos que hay que dominar
+
+| Método | Devuelve / hace |
+|---|---|
+| `int read()` | Un byte (0–255) o `-1` al final del fichero |
+| `int read(byte[] b)` | Cantidad **realmente** leída (1..`b.length`) o `-1` |
+| `void write(byte[] b)` | Escribe **todo** el array: `b.length` bytes |
+| `void write(byte[] b, int off, int len)` | Escribe `len` bytes desde el índice `off` del array |
+| `void close()` | Cierra el flujo y libera el recurso |
+
+- `off` es un **índice del array**, no una posición del fichero.
+- `len` es la **cantidad** de bytes que se escriben.
+- `-1` indica fin del flujo (EOF). Un `0` no lo es.
+- El búfer **no se vacía** entre lecturas: conserva restos de la vuelta anterior.
+- `available()` es solo una estimación; no sirve para detectar el final.
+
+## Copia por bloques
+
+```mermaid
+flowchart TD
+    A[Abrir origen y destino] --> R{"leidos = read(buffer)"}
+    R -->|"-1"| F[Fin: cerrar flujos]
+    R -->|"1..capacidad"| W["write(buffer, 0, leidos)"]
+    W --> T[total += leidos]
+    T --> R
+```
+
+## Predice antes de programar
+
+Origen `[1, 2, 3, 4, 5, 6]` y búfer de 4 posiciones. Rellena la tabla:
+
+| Vuelta | `read` devuelve | Contenido del búfer | Bytes a escribir |
+|---|---|---|---|
+| 1 | ? | ? | ? |
+| 2 | ? | ? | ? |
+| 3 | ? | — | — |
+
+<details>
+<summary>Comprobar la predicción</summary>
+
+| Vuelta | `read` devuelve | Contenido del búfer | Bytes a escribir |
+|---|---|---|---|
+| 1 | 4 | `[1, 2, 3, 4]` | 4 |
+| 2 | 2 | `[5, 6, 3, 4]` | 2 |
+| 3 | -1 | — | — (fin) |
+
+En la vuelta 2, las posiciones 2 y 3 todavía guardan `3, 4` de la vuelta
+anterior. Con `write(buffer)` el destino tendría 8 bytes:
+`[1, 2, 3, 4, 5, 6, 3, 4]`.
+</details>
+
+## Cerrar los flujos
+
+Los flujos implementan `AutoCloseable`. Declararlos en `try (...)` garantiza que
+se cierren aunque se lance una `IOException`:
+
+```java
+try (FileInputStream in = new FileInputStream(origen);
+     FileOutputStream out = new FileOutputStream(destino)) {
+    // ...
+}
+```
+
+El ejemplo del temario cierra con `close()` dentro del `try`. Si se produce una
+excepción antes, los flujos se quedan abiertos.
+
+## Trampas del ejercicio
+
+- **Destino igual al origen.** `new FileOutputStream(destino)` vacía el fichero
+  **al abrirlo**. Si es el mismo que el origen, se pierden los datos antes de
+  leerlos. Compara las rutas con `getCanonicalFile()`, porque `a/./x.bin` y
+  `a/x.bin` son el mismo fichero.
+- **Validar antes de abrir.** Abrir un `FileOutputStream`, incluso en modo
+  append, ya crea el fichero. Comprueba `off` y `len` antes de abrir el flujo.
+
+## Comprueba tu comprensión
+
+- ¿Qué devuelve `read(buffer)` la primera vez sobre un archivo vacío?
+- ¿Qué argumentos de `write` escriben solo `30` y `40` de `{10, 20, 30, 40}`?
+- ¿Por qué el bucle del temario usa `> 0` y el ejercicio `!= -1`? ¿Cambia algo
+  con `FileInputStream`?
+
+## Alcance
+
+Solo `java.io`: `FileInputStream` y `FileOutputStream`. No se usan
+`Files.copy`, `readAllBytes` sobre el origen ni NIO.

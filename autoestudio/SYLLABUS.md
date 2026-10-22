@@ -33,7 +33,8 @@ autoestudio/
 │   ├── 03-operaciones-file/
 │   ├── 04-listado-directorio/
 │   ├── 05-filtrado-filename-filter/
-│   └── 06-catalogador-archivos/
+│   ├── 06-catalogador-archivos/
+│   └── 07-flujos-bytes/
 └── UT02-B-librerias-xml-java/
     ├── README.md
     ├── pom.xml
@@ -53,6 +54,7 @@ autoestudio/
 | UT02-A | 04 | `04-listado-directorio` | `ListadoDirectorio.java` | `ListadoDirectorioTest.java` | `list()` y `listFiles()` |
 | UT02-A | 05 | `05-filtrado-filename-filter` | `FiltradoFilenameFilter.java` | `FiltradoFilenameFilterTest.java` | `FilenameFilter` |
 | UT02-A | 06 · Boss | `06-catalogador-archivos` | `CatalogadorArchivos.java` | `CatalogadorArchivosTest.java` | Integración de UT02-A |
+| UT02-A | 07 | `07-flujos-bytes` | `FlujosBytes.java` | `FlujosBytesTest.java` | `FileInputStream`/`FileOutputStream` (apartado 2.7) |
 | UT02-B | 01 | `01-parseo-dom` | `ParseoDom.java` | `ParseoDomTest.java` | Adaptación de `b16_xml/Ej145` y complemento para crear/transformar DOM |
 | UT02-B | 02 | `02-parseo-sax` | `ParseoSax.java` | `ParseoSaxTest.java` | Adaptación de `b16_xml/Ej145` |
 | UT02-B | 03 | `03-parseo-stax` | `ParseoStax.java` | `ParseoStaxTest.java` | Creado para cubrir cursor e iteradores no incluidos en `b16_xml` |
@@ -68,6 +70,7 @@ diagramas Mermaid. Los tests quedan pendientes hasta implementar los retos.
 - [ ] UT02-A · Bloque II: operaciones y listados (esqueletos preparados; faltan TODO y tests)
 - [ ] UT02-A · Bloque III: `FilenameFilter` (esqueletos preparados; faltan TODO y tests)
 - [ ] UT02-A · Boss final: catalogador (esqueleto preparado; faltan TODO y tests)
+- [ ] UT02-A · 07 Flujos de bytes: `copiar` y `anexar` (esqueleto, TODO y tests preparados)
 - [ ] UT02-B · Bloque I: DOM y SAX (esqueletos preparados; pendiente implementar TODO y pasar tests)
 - [ ] UT02-B · 03 StAX (cursor, iterador y sus writers; esqueletos preparados, faltan TODO y tests)
 - [ ] UT02-B · 04 JAXB (ejercicio y diez retos portados; faltan TODO y tests)
