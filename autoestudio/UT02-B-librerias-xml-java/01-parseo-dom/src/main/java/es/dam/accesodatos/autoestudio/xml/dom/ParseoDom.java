@@ -56,7 +56,7 @@ public final class ParseoDom {
      */
     public static int contarElementos(String xml, String etiqueta) {
         // TODO: Valida el contenido XML y el nombre de etiqueta según el contrato.
-        // TODO: Obtén un Document seguro mediante el helper DOM de esta clase.
+         // TODO: Parsea el XML mediante DocumentBuilderFactory y DocumentBuilder.
         // TODO: Consulta todos los elementos con el nombre indicado.
         // TODO: Devuelve la cantidad de coincidencias del NodeList.
         if (xml == null || xml.isBlank() || etiqueta == null || etiqueta.isBlank()) {
@@ -86,7 +86,7 @@ public final class ParseoDom {
      */
     public static String obtenerAtributo(String xml, String etiqueta, String atributo) {
         // TODO: Valida los tres argumentos sin aceptar cadenas en blanco.
-        // TODO: Parsea el XML con la configuración DOM segura del ejercicio.
+         // TODO: Parsea el XML mediante DocumentBuilderFactory y DocumentBuilder.
         // TODO: Selecciona el primer elemento coincidente en orden documental.
         // TODO: Recupera el atributo solicitado y respeta el resultado vacío si falta.
         // TODO: Devuelve el valor de ese atributo como String.
@@ -120,7 +120,7 @@ public final class ParseoDom {
      */
     public static String textoPrimero(String xml, String etiqueta) {
         // TODO: Valida el documento y la etiqueta según el contrato.
-        // TODO: Convierte el XML en un árbol DOM con el helper seguro.
+         // TODO: Convierte el XML en un árbol DOM con DocumentBuilder.
         // TODO: Busca elementos coincidentes y selecciona el primero.
         // TODO: Obtén el contenido textual del elemento, incluidos sus descendientes.
         // TODO: Devuelve cadena vacía cuando no haya coincidencias.
@@ -153,7 +153,7 @@ public final class ParseoDom {
      */
     public static boolean raizCoincide(String xml, String raizEsperada) {
         // TODO: Valida el XML y el nombre de raíz esperado.
-        // TODO: Parsea el documento con el helper DOM seguro.
+         // TODO: Parsea el documento con DocumentBuilder.
         // TODO: Obtén el elemento raíz del Document.
         // TODO: Compara su nombre exacto con el solicitado.
         if (xml == null || xml.isBlank() || raizEsperada == null || raizEsperada.isBlank()) {
@@ -181,7 +181,7 @@ public final class ParseoDom {
      */
     public static int contarNodosElemento(String xml) {
         // TODO: Valida el documento XML recibido.
-        // TODO: Parsea el texto XML con el helper seguro.
+         // TODO: Parsea el texto XML con DocumentBuilder.
         // TODO: Selecciona todos los elementos mediante la consulta comodín de DOM.
         // TODO: Devuelve el número total, incluyendo el elemento raíz.
         if (xml == null || xml.isBlank()) {
@@ -243,6 +243,11 @@ public final class ParseoDom {
         }
     }
 
+    /**
+     * Ampliación opcional de seguridad ya trabajada. No se exige usar este helper
+     * ni rechazar DOCTYPE en la ruta de examen. Solo se usan entradas locales conocidas.
+     * Se conserva la implementación personal, sin convertirla en un requisito docente.
+     */
     private static Document parsearSeguro(String xml) {
         // TODO: Rechaza XML nulo o en blanco con IllegalArgumentException.
         // TODO: Configura DocumentBuilderFactory para rechazar DOCTYPE y entidades

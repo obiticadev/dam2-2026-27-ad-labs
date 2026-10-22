@@ -22,5 +22,9 @@
         <module>05-filtrado-filename-filter</module>
         <module>06-catalogador-archivos</module>
         <module>07-flujos-bytes</module>
+        <module>08-flujos-caracteres</module>
+        <module>09-acceso-secuencial</module>
+        <module>10-serializacion-objetos</module>
+        <module>11-acceso-aleatorio</module>
     </modules>
 </project>

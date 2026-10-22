@@ -62,9 +62,7 @@ class ParseoDomTest {
     }
 
     @Test
-    void rechazaXmlMalFormadoYDeclaracionesDoctype() {
+    void informaXmlMalFormadoComoFallo() {
         assertThrows(RuntimeException.class, () -> ParseoDom.contarElementos("<libros>", "libro"));
-        assertThrows(RuntimeException.class,
-                () -> ParseoDom.contarElementos("<!DOCTYPE libros><libros/>", "libro"));
     }
 }

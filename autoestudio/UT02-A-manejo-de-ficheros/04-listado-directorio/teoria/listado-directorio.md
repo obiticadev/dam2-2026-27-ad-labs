@@ -39,11 +39,8 @@ flowchart LR
     C -->|Sí| B[Array de entradas inmediatas]
 ```
 
-Para que los tests y la salida de consola sean estables, los contratos de este
-proyecto piden ordenar los resultados por nombre, sin depender del orden que
-entregue el sistema.
-
-El orden alfabético es una decisión del ejercicio, no una garantía de `File`.
+No se exige ordenar los resultados. Los tests ordenan una copia para comprobar
+el contenido sin imponer una garantía que `File` no ofrece.
 Tampoco se filtran ficheros por extensión aquí: el filtro se estudia en el mini
 proyecto `05-filtrado-filename-filter`.
 
@@ -53,7 +50,7 @@ proyecto `05-filtrado-filename-filter`.
 - `entradas` practica `listFiles()` y produce objetos que se pueden inspeccionar.
 - `estaVacio` enseña por qué un error (`null`) no debe confundirse con cero
   elementos.
-- Los tests prueban orden, directorios vacíos, entradas inmediatas y argumentos
+- Los tests prueban contenido, directorios vacíos, entradas inmediatas y argumentos
   que no representan directorios.
 
 ## Comprueba tu comprensión

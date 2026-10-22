@@ -1,48 +1,53 @@
-# 04 · Enlace de datos con JAXB
+# 04 · JAXB: objetos, anotaciones y colecciones
 
-## Objetivo
+**Sesión 31/10 · 2 horas.** Fuente: UT02-B §5–5.4. Se mantiene JAXB 2
+`javax.xml.bind`, con dependencias Maven; no mezcles con `jakarta`.
+[Teoría y pistas](teoria/enlace-jaxb.md).
 
-Adaptar completo el ejercicio `b16_xml/Ej143JaxbBinding`: anotar un POJO,
-serializarlo a XML (`marshal`), reconstruirlo (`unmarshal`) y conservar sus
-retos de fragmento, codificación, mapeo y clon por round-trip. Se usa JAXB 2
-(`javax.xml.bind`) para coincidir con el temario y el laboratorio DAM2.
+## Orden de trabajo
 
-## Material de este mini proyecto
+En `src/main/java/es/dam/accesodatos/autoestudio/xml/jaxb/`:
 
-- [Teoría específica de JAXB](./teoria/enlace-jaxb.md)
-- Ejercicio y TODO: [EnlaceJaxb.java](./src/main/java/es/dam/accesodatos/autoestudio/xml/jaxb/EnlaceJaxb.java)
-- Modelo anotado: [Libro.java](./src/main/java/es/dam/accesodatos/autoestudio/xml/jaxb/Libro.java)
-- Tests derivados de la Masterclass: [EnlaceJaxbTest.java](./src/test/java/es/dam/accesodatos/autoestudio/xml/jaxb/EnlaceJaxbTest.java)
+1. Completa `EnlaceJaxb.aXml` y `desdeXml` con el `Libro` ya anotado.
+2. **Practica las anotaciones tú** en `BibliotecaLibros` y `FichaLibro`, como
+   las clases Libreria/Libro del tema. No necesitas cambiar el modelo anterior.
+3. Completa `TallerJaxb.guardar` y `leer`: archivo → objetos → modificar → otro archivo.
 
-La clase y sus tests portan `aXml`, `desdeXml` y los diez retos extra de
-`b16_xml/Ej143JaxbBinding`. El test de compactación usa el resultado coherente
-con su contrato y elimina la aserción contradictoria del test original.
+Forma XML que debe producir el nuevo modelo:
 
-## Mapa de tests
+```xml
+<libreria>
+    <ListaLibro>
+        <Libro codigo="L1"><titulo>Sol &amp; Luna</titulo><anio>2008</anio></Libro>
+        <Libro codigo="L2"><titulo>XML</titulo><anio>2020</anio></Libro>
+    </ListaLibro>
+    <nombre>Biblioteca</nombre>
+    <lugar>Barrio</lugar>
+</libreria>
+```
 
-| Test | Funcionalidad que comprueba |
-|---|---|
-| `serializaConRaizAtributoYElementos` | Anotaciones y salida XML |
-| `roundTripPreservaTodosLosDatosDelModelo` | Objeto → XML → objeto |
-| `rechazaEntradasInvalidasYXmlMalFormado` | Argumentos y XML mal formado |
-| `validaFormatoDeIsbn` | Reto extra de validación |
-| `compactaTextoXmlSinDejarEspaciosEnLosExtremos` | Reto extra de tratamiento de texto |
-| `extraeAnioUsandoElUnmarshalJaxb` | Reto extra que reutiliza unmarshal |
-| `serializaFragmentoSinDeclaracionXml` | Propiedad `JAXB_FRAGMENT` |
-| `convierteElModeloEnUnMapaConTiposConservados` | Reto extra de mapeo |
-| `creaUnLibroPorDefecto` | Reto extra de construcción |
-| `detectaLaRaizLibroConUnaHeuristicaTextual` | Reto extra de detección léxica |
-| `declaraCodificacionIso8859` | Propiedad `JAXB_ENCODING` |
-| `comparaPublicacionConCorteEstricto` | Reto extra de regla de dominio |
-| `clonaMedianteRoundTripSinCompartirInstancia` | Round-trip con instancia distinta |
+El orden de los campos de cada Libro debe ser titulo/anio. No se exige un orden
+de los campos de la librería, ni espacios o declaración exactos. Cambiar un libro
+recuperado no cambia el archivo original hasta guardar expresamente.
 
-## Ejecutar
+## Tests básicos y extras
 
-Desde la raíz `autoestudio/`:
+- `EnlaceJaxbTest`: operaciones base, preservación de datos y errores de entrada.
+- `TallerJaxbTest`: anotaciones, contenedor, elementos, atributo, orden, archivos
+  y modificación. Completa primero las anotaciones: son prerrequisito del binding.
+- Los otros diez retos antiguos se conservan como **ampliaciones opcionales**.
+  No se pide compactar XML, quitar cabecera, convertir a Map ni validar ISBN.
 
 ```bash
 mvn -pl UT02-B-librerias-xml-java/04-enlace-jaxb test
 ```
 
-JAXB 2 está incluido en este proyecto como dependencia. En el IDE, ejecuta
-`EnlaceJaxb.main`; con TODO pendientes mostrará un mensaje indicando qué falta.
+Solo si quieres incluir extras:
+
+```bash
+mvn -pl UT02-B-librerias-xml-java/04-enlace-jaxb -Pampliaciones test
+```
+
+Comandos desde `autoestudio/`. Variante: añadir un tercer libro con caracteres
+especiales, guardar y recuperar. Explica `Wrapper` frente a `Element`, y por qué
+el atributo codigo no se incluye en `propOrder`.

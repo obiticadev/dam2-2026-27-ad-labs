@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Boss final de UT02-A: preparación de una carpeta y catálogo filtrado de ficheros.
+ * Ampliación opcional de File: preparación de carpeta y catálogo filtrado.
  *
  * <p>Teoría: {@code teoria/catalogador-archivos.md}. Reutiliza los mini proyectos
  * de rutas, inspección, operaciones, listado y filtrado.
@@ -52,7 +52,8 @@ public final class CatalogadorArchivos {
     public static List<EntradaCatalogo> catalogar(File directorio, String extension) throws IOException {
         // TODO: Valida que el argumento represente un directorio existente.
         // TODO: Obtén las entradas inmediatas mediante el proyecto de listados.
-        // TODO: Filtra ficheros regulares con el proyecto FilenameFilter.
+        // TODO: Usa FilenameFilter y comprueba además isFile() para excluir directorios.
+        // TODO: Ordena por nombre aquí: el listado básico ya no exige orden.
         // TODO: Para cada coincidencia reúne nombre, ruta, tamaño y última modificación.
         // TODO: Devuelve una lista inmutable conservando el orden estable por nombre.
         return null;

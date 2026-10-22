@@ -50,8 +50,39 @@ para contar elementos se incrementa un contador al recibir cada apertura.
 Si la entrada está mal formada, el ejercicio debe propagar el error del parser.
 No conviertas un documento inválido en una lista vacía: una lista vacía significa
 que el XML sí se leyó correctamente, pero no había elementos coincidentes.
-Configura el manejador de errores para que la traza no ensucie la salida de
-consola; la excepción y el test deben explicar el fallo.
+No se exige configurar un manejador adicional solo para silenciar la consola.
+Conserva la causa de la excepción; no la sustituyas por un resultado válido.
+
+## Taller y pista progresiva
+
+`ManejadorAlumnos` practica un handler separado, como el `UserHandler` docente.
+`startDocument` reinicia el estado y `endDocument` señala el final (puedes heredar
+su versión vacía si no necesitas una acción). `startElement` recoge el id e
+inicia el nombre; `endElement` guarda el nombre acumulado. El estado ignora
+caracteres de notas y de indentación exterior. No se exigen elementos nombre anidados.
+
+```text
+startElement nombre → limpiar acumulador / capturar=true
+characters "Ana "   → acumulador="Ana "
+characters "María"  → acumulador="Ana María"
+endElement nombre   → añadir nombre / capturar=false
+```
+
+<details><summary>Pista de implementación</summary>
+
+Necesitas `boolean capturando` y `StringBuilder`. Usa `append(ch, start, length)`,
+no `new String(ch)` completo ni reemplazo del acumulador en cada llamada.
+Limpia el builder al abrir el siguiente nombre, no en cada `characters`.
+
+</details>
+
+### Entrada UTF-8
+
+Puedes usar `SAXParser.parse(File, handler)` y dejar que el parser lea la
+declaración XML. El ejemplo docente también muestra `FileInputStream` →
+`InputStreamReader(..., "UTF-8")` → `InputSource` con `setEncoding("UTF-8")`.
+Si ya suministras caracteres mediante Reader, la decodificación ya la ha hecho
+ese Reader. Usa una declaración y una codificación de bytes coherentes.
 
 ## Qué comprueban los tests
 

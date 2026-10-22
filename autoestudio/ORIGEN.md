@@ -1,42 +1,52 @@
-# Correspondencia con materiales de referencia
+# Procedencia y criterios de adaptación
 
-## Temario oficial de Acceso a Datos
+## Autoridad de las fuentes
 
-Los proyectos de la unidad UT02-A se corresponden principalmente con
-`01-acceso-datos/temario/UT02-A-manejo-de-ficheros.md`:
+1. Markdown docente UT02-A/B conservado en [Fuentes de Obsidian](<../../DAM2/Fuentes/AD/temario/>).
+2. Alcance confirmado por el usuario: **NIO excluido**, 21/10/2026. Prevalece sobre
+   la nota de examen antigua y la mención a NIO del calendario.
+3. Ejemplos de clase del repositorio `practicas/UT02-A-manejo-de-ficheros` y
+   `practicas/UT02-B-xml-java`; las explicaciones y ejercicios de Obsidian se
+   reconocen como material añadido cuando así están marcados.
+4. Masterclass: origen histórico de algunos esqueletos, no autoridad del examen.
 
-| Proyecto | Apartado de referencia |
+No se han procesado los PDF equivalentes ni cambiado los materiales fuente,
+la bóveda, las prácticas entregadas o el calendario.
+
+## Correspondencias
+
+| Proyecto | Apartado docente / referencia |
 |---|---|
-| `01-rutas-file` | 2.4 · Clase `File` |
-| `02-inspeccion-file` | 2.4 · Métodos de `File` |
-| `03-operaciones-file` | 2.5 · Creación y eliminación de ficheros y directorios |
-| `04-listado-directorio` | 2.4 · Listado de directorios |
-| `05-filtrado-filename-filter` | 2.6 · Interfaz `FilenameFilter` |
-| `06-catalogador-archivos` | Integración de los apartados anteriores |
+| A `01`–`05` | §2.4–2.6, `File` y `FilenameFilter`; ejemplo Filtrar con `endsWith` |
+| A `06` | Integración opcional heredada; no cubre toda UT02-A |
+| A `07` | §2.7 y ejemplo CopiaFicheros; práctica añadida de rangos y tests |
+| A `08` | §2.10 y ejemplos de caracteres/buffers |
+| A `09` | §2.11; búsqueda/eliminación por reescritura es práctica añadida del repaso |
+| A `10` | §2.8–2.9; campo `transient` tomado de la aclaración de repaso de Obsidian |
+| A `11` | §2.12; registros `int + double` son práctica añadida del repaso |
+| B DOM | §2–2.5; consultas heredadas de `Ej145DomSaxParsing`, taller añadido de alumnos |
+| B SAX | §3–3.2; base heredada de `Ej145DomSaxParsing`, manejador añadido para fragmentación determinista |
+| B StAX | §4–4.3, ListaLibrosStAX y EventReader; writers conservados como ampliación guiada |
+| B JAXB | §5–5.4; base `Ej143JaxbBinding` adaptada a javax; nuevo taller de anotaciones y colecciones |
 
-## Material de laboratorio relacionado
+## Qué deja de ser obligatorio
 
-- `dam2-2026-27-ad-labs/tareas/Ejercicio1-Clase-File`: inspección, listado,
-  creación y filtro por extensión.
-- `dam2-2026-27-ad-labs/practicas/UT02-A-manejo-de-ficheros/java-io-flujos`:
-  `FileOperationsDemo` y `FilenameFilterDemo`.
+- Rechazo de `DOCTYPE` y ErrorHandler especial para silenciar diagnósticos. El
+  helper de seguridad ya implementado se conserva como trabajo personal opcional.
+- Ordenar los listados básicos, normalizar extensiones según locale, distinguir
+  mayúsculas de forma distinta a `endsWith` o exigir listas inmutables.
+- Los diez retos extra de JAXB y el catalogador no bloquean la suite básica.
+- No se exige una cadena XML exacta por indentación o declaración. Las nuevas
+  pruebas reabren el XML y comprueban su estructura y datos.
 
-## UT02-B · XML
+Los contratos básicos conservan controles razonables de entrada y errores de
+E/S. No se oculta un error como si fuera una lista vacía o un resultado válido.
+`normalize()`, `INDENT` y `JAXB_FORMATTED_OUTPUT` permanecen porque sí aparecen en
+los ejemplos docentes. No eliminan el `DOCTYPE` ni son compactación de texto.
 
-| Proyecto | Temario/laboratorio | Masterclass |
-|---|---|---|
-| `01-parseo-dom` | UT02-B, DOM; `practicas/UT02-B-xml-java/xml-dom` para creación y `Transformer` | Adaptación de `b16_xml/Ej145DomSaxParsing.contarConDom` y retos DOM |
-| `02-parseo-sax` | UT02-B, SAX; `practicas/UT02-B-xml-java/xml-sax-stax` | Adaptación de `b16_xml/Ej145DomSaxParsing.textosConSax` |
-| `03-parseo-stax` | UT02-B y `practicas/UT02-B-xml-java/xml-sax-stax` (`ListaLibrosStAX`, `EventReader`) | No hay ejercicio StAX en `b16_xml`; se amplían los dos estilos de lectura con sus writers usando la skill de Masterclass |
-| `04-enlace-jaxb` | UT02-B; `practicas/UT02-B-xml-java/xml-jaxb` usa JAXB 2 / `javax.xml.bind` | Port completo de `b16_xml/Ej143JaxbBinding` y sus diez retos, sustituyendo Jakarta por JAXB 2 del temario |
+## Conservación de trabajo
 
-`b16_xml/Ej144JacksonXml`, `Ej146XmlEndpoint`, CSV y repositorios de ficheros no
-se incluyen: no son conceptos de las unidades señaladas.
-
-## Masterclass de autoaprendizaje
-
-La cobertura de ficheros se adapta de `08_IOFicherosMasterclass`; la cobertura
-XML reutiliza ejercicios y teoría de `11_APIRESTMasterclass/b16_xml`. Cuando esa
-Masterclass omite un punto del temario (StAX y escritura DOM), se completa con el
-material DAM2 y la skill `MASTERCLASS_CREATOR_SKILL.md`. NIO, `Path` y `Files` se
-excluyen de este alcance.
+Las implementaciones personales de `ParseoDom` y `ParseoSax` no se reemplazan.
+Sus TODO y errores pendientes se resuelven con los tests básicos. Los nuevos
+talleres son esqueletos compilables, no soluciones ya hechas. Los extras se
+conservan identificados y se ejecutan expresamente con `-Pampliaciones`.

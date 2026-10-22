@@ -5,7 +5,12 @@
 Practicar las dos formas de consumir eventos StAX: el cursor `XMLStreamReader` y
 el iterador `XMLEventReader`. También se plantean las APIs de escritura
 `XMLStreamWriter` y `XMLEventWriter`, para completar el manejo de lectura y
-escritura XML de la unidad.
+escritura XML de la unidad, pero como ampliación guiada separada de los tests básicos.
+
+**Sesión 27/10.** Prioriza lectura con cursor, después iterador y atributos.
+Los escritores se incluyen solo con `-Pampliaciones`. No se exige lista inmutable.
+Los ejemplos docentes desarrollan la lectura; conserva la distinción conceptual
+de que StAX sí permite escribir, aunque no dediques esta hora a ambos writers.
 
 ## Material de este mini proyecto
 
@@ -18,6 +23,9 @@ Los ejercicios de lectura parten de los ejemplos DAM2 `ListaLibrosStAX` y
 `EventReader`, conservando la diferencia entre cursor y objetos `XMLEvent`.
 Como los ejemplos fuente se limitan a lectura, la escritura con ambas APIs se
 añade siguiendo el temario y la skill de creación de Masterclass.
+
+Consulta las pistas al final de [la teoría](teoria/parseo-stax.md). Variante:
+recoge los nombres y los ids del XML común del taller DOM y compara con SAX.
 
 ## Mapa de tests
 

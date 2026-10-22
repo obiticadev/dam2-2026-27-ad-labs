@@ -1,9 +1,13 @@
 # 07 · Flujos de bytes
 
+**Sesión 22/10 · 1 hora.** Fuente: UT02-A §2.7.
+
 ## Objetivo
 
 Copiar un fichero por bloques con `FileInputStream` y `FileOutputStream` sin
 escribir bytes sobrantes, y anexar una porción de un array con `off` y `len`.
+No uses `Files.copy` ni cargues el archivo entero en memoria: el objetivo es
+entender la lectura por bloques.
 
 ## Material de este mini proyecto
 
@@ -28,6 +32,8 @@ escribir bytes sobrantes, y anexar una porción de un array con `off` y `len`.
 | `anexarCreaElDestinoSiNoExiste` | Append también crea el fichero |
 | `anexarRechazaRangosFueraDelArraySinTocarElDestino` | Validar `off`/`len` antes de abrir el flujo |
 | `anexarRechazaArgumentosNulos` | Validación de referencias nulas |
+| `copiaBytesCeroY255ConDistintasCapacidades` | Bytes binarios y búfer de 1, 3 y 4 posiciones |
+| `copiarPropagaErrorDeAperturaDelDestino` | Los errores de E/S se propagan como `IOException` |
 
 Prioridad: primero los tests de `copiar`, después los de `anexar`.
 
@@ -50,3 +56,16 @@ mvn -pl UT02-A-manejo-de-ficheros/07-flujos-bytes -Dtest=FlujosBytesTest#copiaSe
 En el IDE, ejecuta `FlujosBytes.main`. Escribe sus ficheros de prueba en
 `target/demo-data/07-flujos-bytes`, una carpeta que Git ignora. Consulta la
 [guía general](../../README_GUIA_TERMINAL.md) para leer el detalle de un fallo.
+
+## Tests y criterio de dominio
+
+Los tests preparan archivos temporales; no necesitas crear datos manualmente.
+
+- Última lectura parcial, byte cero y byte 255.
+- Archivo vacío y tamaño múltiplo del búfer.
+- Rango `off/len`, anexado y rango de longitud cero.
+- Capacidad inválida y error de apertura del destino. Un origen inexistente se
+  rechaza con `IllegalArgumentException`, de acuerdo con el contrato de esta versión.
+
+Variante: cambia el búfer a 1 y a 3. Deben conservarse los mismos bytes.
+Explica por qué `read()` y `read(byte[])` devuelven cosas distintas.

@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>06-catalogador-archivos</artifactId>
-    <name>UT02-A · 06 Boss final: catalogador de archivos</name>
+    <name>UT02-A · 06 Ampliación: catalogador de archivos</name>
 
     <dependencies>
         <dependency>
@@ -45,4 +45,16 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Todos sus tests son opcionales y se excluyen en la ruta básica. -->
+                    <failIfNoTests>false</failIfNoTests>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

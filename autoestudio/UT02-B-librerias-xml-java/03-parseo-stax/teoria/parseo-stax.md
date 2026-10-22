@@ -50,11 +50,12 @@ inicio. El texto puede dividirse en varios eventos de caracteres, por lo que un
 lector genérico debe acumularlo hasta el cierre de la etiqueta.
 
 `XMLStreamReader.getElementText()` y `XMLEventReader.getElementText()` son
-atajos útiles para elementos simples: consumen el texto y avanzan hasta el
-evento de fin correspondiente. Tras usarlos, el bucle no debe procesar otra vez
-ese mismo final como si todavía fuese el evento actual.
+atajos útiles para elementos simples: consumen el texto hasta el cierre. En
+cursor el evento actual queda en `END_ELEMENT`; en iterador ese cierre ya se
+ha consumido. El siguiente avance obtiene lo que viene después, no el primer
+fragmento de texto. Consulta los atributos ANTES de llamar a getElementText.
 
-## Escribir con StAX
+## Escribir con StAX (concepto docente y práctica opcional)
 
 StAX también proporciona dos formas de salida:
 
@@ -65,6 +66,10 @@ Ambas requieren mantener el orden correcto de inicio/cierre del documento y de
 los elementos. El writer escapa el contenido textual como XML; los nombres de
 elemento deben cumplir la sintaxis XML. Readers y writers deben cerrarse al
 terminar, incluso si el procesamiento falla.
+
+Los tests de writers llevan tag `ampliacion`. No se exige implementarlos para
+completar los lectores; `mvn -Pampliaciones test` los incluye. Son ejercicios
+añadidos: el tema desarrolla ejemplos de lectura, no ambos programas de escritura.
 
 ## Qué comprueban los tests
 
@@ -82,4 +87,36 @@ terminar, incluso si el procesamiento falla.
 
 - ¿Quién controla el avance en SAX y quién lo controla en StAX?
 - ¿Qué diferencia de representación hay entre cursor y lector de eventos?
-- ¿Qué evento deja de ser actual tras usar `getElementText()`?
+- ¿Dónde queda el cursor y qué ha consumido el iterador tras `getElementText()`?
+
+## Traza y pistas progresivas
+
+```text
+<title lang="es">Sol &amp; Luna</title><year>2020</year>
+next() → START_ELEMENT title → consultar lang
+getElementText() → "Sol & Luna"; cursor en END_ELEMENT title
+next() → START_ELEMENT year (si no hay espacios entre etiquetas)
+```
+
+<details><summary>Pista 1 · Cursor</summary>
+
+Crea XMLInputFactory y XMLStreamReader sobre StringReader. Mientras hasNext,
+usa next; si es START_ELEMENT y el nombre local coincide, recoge el texto.
+No añadas un segundo next dentro del caso después de getElementText.
+
+</details>
+<details><summary>Pista 2 · Eventos</summary>
+
+Usa XMLEventReader.nextEvent(). Un evento de inicio permite asStartElement;
+su nombre tiene getLocalPart y sus atributos pueden consultarse con QName.
+El ejemplo docente recorre también getAttributes() como Iterator de Attribute.
+
+</details>
+<details><summary>Pista de escritura opcional</summary>
+
+Cursor: writeStartDocument, writeStartElement (raíz/hijo), writeCharacters,
+writeEndElement (hijo/raíz), writeEndDocument. Eventos: fabrica los eventos
+equivalentes con XMLEventFactory y añádelos al XMLEventWriter en ese orden.
+El escape de texto lo realiza la API; cierra readers/writers con finally.
+
+</details>

@@ -2,7 +2,7 @@
 
 ## Integrar las operaciones de `File`
 
-El Boss final conecta los conceptos de la unidad: representa una ruta hija,
+Esta ampliación opcional conecta solo la parte File de la unidad: representa una ruta hija,
 prepara un directorio, enumera sus entradas, filtra ficheros por extensión y
 extrae metadatos para formar un catálogo inmutable.
 
@@ -23,6 +23,8 @@ flowchart LR
   hijo bajo un padre que ya exista.
 - Si el nombre solicitado ya corresponde a un fichero, no debe reemplazarse.
 - Un catálogo incluye solo ficheros regulares aceptados por el filtro.
+- El filtro básico compara el sufijo exactamente; aquí se añade `isFile()` y la
+  ordenación, que los proyectos básicos de listado/filtrado no exigen.
 - La salida conserva un orden estable y no permite que quien la recibe altere
   la lista devuelta.
 - Un fallo al listar el directorio se propaga como `IOException`; no se presenta

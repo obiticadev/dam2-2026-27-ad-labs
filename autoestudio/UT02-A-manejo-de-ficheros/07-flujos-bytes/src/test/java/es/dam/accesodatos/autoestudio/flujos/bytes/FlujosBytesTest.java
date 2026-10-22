@@ -162,6 +162,28 @@ class FlujosBytesTest {
         assertThrows(IllegalArgumentException.class, () -> FlujosBytes.anexar(destino, null, 0, 0));
     }
 
+    @Test
+    void copiaBytesCeroY255ConDistintasCapacidades() throws IOException {
+        byte[] contenido = { 0, 1, 2, 3, 4, (byte) 255 };
+        File origen = crearFichero("binario.bin", contenido);
+
+        for (int capacidad : new int[] { 1, 3, 4 }) {
+            File destino = crearFichero("binario-copia-" + capacidad + ".bin", new byte[20]);
+
+            assertEquals(6L, FlujosBytes.copiar(origen, destino, capacidad));
+            assertArrayEquals(contenido, leer(destino),
+                    "La copia debe conservar 0 y 255 y sobrescribir el destino con cualquier búfer.");
+        }
+    }
+
+    @Test
+    void copiarPropagaErrorDeAperturaDelDestino() throws IOException {
+        File origen = crearFichero("origen.bin", new byte[] { 1, 2 });
+
+        assertThrows(IOException.class, () -> FlujosBytes.copiar(origen, directorioTemporal, 4),
+                "Un directorio no puede abrirse como fichero de salida; no ocultes la IOException.");
+    }
+
     private File crearFichero(String nombre, byte[] contenido) throws IOException {
         File fichero = new File(directorioTemporal, nombre);
         try (FileOutputStream salida = new FileOutputStream(fichero)) {

@@ -47,10 +47,8 @@ public final class ParseoSax {
         // correspondiente.
         // TODO: Guarda cada texto en orden de aparición y limpia el estado del
         // manejador.
-        // TODO: Parsea con InputSource/StringReader y usa un manejador de errores que
-        // propague el fallo.
-        // TODO: Devuelve una lista inmutable solo cuando el parseo termine
-        // correctamente.
+        // TODO: Parsea con InputSource/StringReader y propaga el fallo de sintaxis.
+        // TODO: Devuelve la lista solo cuando el parseo termine correctamente.
         List<String> resultados = new ArrayList<>();
         if (xml == null || xml.isBlank() || etiqueta == null || etiqueta.isBlank()) {
             throw new IllegalArgumentException("El XML o la etiqueta son nulos o están en blanco");
@@ -114,8 +112,7 @@ public final class ParseoSax {
         // TODO: En startElement detecta las coincidencias y consulta el atributo
         // pedido.
         // TODO: Añade cadena vacía cuando una coincidencia carezca del atributo.
-        // TODO: Propaga errores de parseo como RuntimeException y devuelve lista
-        // inmutable.
+        // TODO: Propaga errores de parseo como RuntimeException y devuelve la lista.
         if (xml == null || xml.isBlank() || etiqueta == null || etiqueta.isBlank() || atributo == null
                 || atributo.isBlank()) {
             throw new IllegalArgumentException("El XML o la etiqueta son nulos o están en blanco");
@@ -162,8 +159,7 @@ public final class ParseoSax {
         // TODO: Configura SAXParserFactory, SAXParser y un contador mutable para el
         // handler.
         // TODO: Incrementa el contador en startElement cuando coincida el nombre.
-        // TODO: Parsea secuencialmente y configura el handler para propagar errores sin
-        // volcarlos a consola.
+        // TODO: Parsea secuencialmente y propaga el fallo si el XML está mal formado.
         // TODO: Devuelve el total contado solo si el parseo finaliza correctamente.
         return 0;
     }

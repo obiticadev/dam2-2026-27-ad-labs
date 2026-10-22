@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 @DisplayName("Lectura y escritura XML con StAX")
 class ParseoStaxTest {
@@ -47,6 +48,7 @@ class ParseoStaxTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void cursorEscribeXMLQuePuedeVolverALeer() {
         String generado = ParseoStax.crearDocumentoConCursor("catalog", "item", "Sol & Luna");
 
@@ -55,6 +57,7 @@ class ParseoStaxTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void eventWriterEscribeXMLQuePuedeVolverALeer() {
         String generado = ParseoStax.crearDocumentoConIterador("catalog", "item", "A < B");
 
@@ -72,6 +75,7 @@ class ParseoStaxTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void escritoresRechazanNombresOVariablesInvalidas() {
         assertThrows(IllegalArgumentException.class,
                 () -> ParseoStax.crearDocumentoConCursor(" ", "item", "value"));
