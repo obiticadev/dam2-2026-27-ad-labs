@@ -49,8 +49,9 @@ public final class FlujosBytes {
         }
         try (FileInputStream fis = new FileInputStream(origen);
                 FileOutputStream fos = new FileOutputStream(destino)) {
-            byte[]  
-        } 
+            long largo;
+            byte[] captura = new byte[capacidad];
+        }
         return -1L;
     }
 
