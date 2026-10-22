@@ -3,8 +3,8 @@
 ## Objetivo
 
 Obtener nombres y objetos `File` de las entradas de un directorio, distinguir un
-listado vacío de un error y producir resultados ordenados para que sean
-reproducibles.
+listado vacío de un error. No se exige ordenar: los tests ordenan sus propias
+copias para comparar sin añadir trabajo ajeno al objetivo.
 
 ## Material de este mini proyecto
 
@@ -16,8 +16,8 @@ reproducibles.
 
 | Test | Qué aclara |
 |---|---|
-| `listaNombresInmediatosEnOrdenNatural` | `list()` y el orden estable del proyecto |
-| `listaObjetosFileEnOrdenPorNombre` | `listFiles()` y objetos `File` |
+| `listaNombresInmediatosSinExigirOrden` | `list()` sin garantizar orden |
+| `listaObjetosFileSinExigirOrden` | `listFiles()` y objetos `File` |
 | `devuelveArraysVaciosParaUnDirectorioVacio` | Vacío no es lo mismo que error |
 | `soloListaLasEntradasInmediatas` | El listado no es recursivo |
 | `detectaCuandoUnDirectorioContieneEntradas` | Resultado del predicado de directorio vacío |

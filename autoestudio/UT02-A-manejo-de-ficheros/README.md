@@ -1,28 +1,26 @@
-# UT02-A · Manejo de ficheros
+# UT02-A · Manejo de ficheros (sin NIO)
 
-Mini proyectos de la parte `java.io` de la unidad. Cada proyecto tiene una
-teoría breve y específica, un ejercicio Java autocontenido y sus tests.
+La exclusión de NIO está confirmada por el usuario. Aprende con `java.io`, no
+con atajos de `Files`. [Sesiones y cobertura completa](../PLAN_ESTUDIO.md).
 
-## Proyectos previstos
+## Repaso de la base
 
-| Estado | Proyecto | Concepto |
-|---|---|---|
-| Orden | Proyecto | Concepto |
-|---|---|---|
-| 01 | [`01-rutas-file`](./01-rutas-file/README.md) | Construcción y partes de las rutas `File` |
-| 02 | [`02-inspeccion-file`](./02-inspeccion-file/README.md) | Existencia, tipo, permisos y metadatos |
-| 03 | [`03-operaciones-file`](./03-operaciones-file/README.md) | Crear, renombrar y borrar |
-| 04 | [`04-listado-directorio`](./04-listado-directorio/README.md) | `list()` y `listFiles()` |
-| 05 | [`05-filtrado-filename-filter`](./05-filtrado-filename-filter/README.md) | Filtrado con `FilenameFilter` |
-| 06 · Boss final | [`06-catalogador-archivos`](./06-catalogador-archivos/README.md) | Reto integrador de la unidad |
+1. [Rutas `File`](01-rutas-file/README.md).
+2. [Inspección](02-inspeccion-file/README.md).
+3. [Operaciones](03-operaciones-file/README.md).
+4. [Listado](04-listado-directorio/README.md): no se exige ordenar.
+5. [Filtrado](05-filtrado-filename-filter/README.md): sufijo con `endsWith` como en clase.
 
-**Alcance:** `java.io.File`, sus operaciones y `FilenameFilter`. NIO se excluye.
+## Núcleo práctico
 
-Para compilar esta unidad desde aquí:
+7. [Flujos de bytes](07-flujos-bytes/README.md).
+8. [Flujos de caracteres](08-flujos-caracteres/README.md).
+9. [Acceso secuencial](09-acceso-secuencial/README.md).
+10. [Serialización de objetos](10-serializacion-objetos/README.md).
+11. [Acceso aleatorio](11-acceso-aleatorio/README.md).
 
-```bash
-mvn compile
-```
+Se mantiene el número 06 del [catalogador](06-catalogador-archivos/README.md)
+para no romper rutas. Es ampliación opcional, no el final de toda la unidad.
 
-Los tests se ejecutan desde la raíz `autoestudio`; consulta su
-[guía de terminal](../README_GUIA_TERMINAL.md).
+Los nuevos bloques usan archivos aislados en tests y no dependen de haber resuelto
+los wrappers de `File`. Un TODO pendiente no debe bloquear el estudio de bytes.

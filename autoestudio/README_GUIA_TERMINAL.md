@@ -5,6 +5,10 @@
 - JDK 17 o superior.
 - Maven 3.8 o superior.
 
+En esta máquina `mvn` no estaba en el PATH durante la adaptación; se verificó
+con una copia temporal, sin instalar nada. Consulta [VERIFICACION.md](VERIFICACION.md).
+Si trabajas desde el IDE, usa su integración Maven o una instalación disponible.
+
 ## Ruta de estudio recomendada
 
 Para cada mini proyecto:
@@ -19,6 +23,10 @@ Para cada mini proyecto:
 Los métodos con `TODO` están deliberadamente incompletos. **Al inicio es normal
 que fallen sus tests**: el primer resultado rojo te indica qué comportamiento
 debes resolver.
+
+La ruta por fechas está en [PLAN_ESTUDIO.md](PLAN_ESTUDIO.md). Los tests nuevos
+preparan sus propios archivos; no tienes que crear ni borrar entradas manualmente.
+No copies una solución sobre tu intento: usa primero las pistas desplegables.
 
 ## Compilar
 
@@ -47,6 +55,7 @@ mvn -pl UT02-B-librerias-xml-java/01-parseo-dom test
 mvn -pl UT02-B-librerias-xml-java/02-parseo-sax test
 mvn -pl UT02-B-librerias-xml-java/03-parseo-stax test
 mvn -pl UT02-B-librerias-xml-java/04-enlace-jaxb test
+mvn -pl UT02-A-manejo-de-ficheros/07-flujos-bytes test
 ```
 
 Un test concreto (ejemplo):
@@ -59,10 +68,27 @@ El Boss final tiene dependencias en los demás mini proyectos; usa `-am` para
 incluirlos en el reactor Maven:
 
 ```bash
-mvn -pl UT02-A-manejo-de-ficheros/06-catalogador-archivos -am test
+mvn -pl UT02-A-manejo-de-ficheros/06-catalogador-archivos -am -Pampliaciones test
 ```
 
 ## Cómo leer el resultado
+
+La suite básica excluye el tag `ampliacion`: catalogador, diez extras JAXB y
+writers StAX. Para incluirlos expresamente, usa `mvn -Pampliaciones test`.
+No uses ese perfil como criterio de preparación del examen. Si ejecutas desde
+el IDE todos los tests, configura la exclusión del tag `ampliacion` o selecciona
+los básicos: el IDE no tiene por qué heredar los filtros de Maven.
+
+Ejemplo del taller DOM, sin ejecutar las consultas anteriores:
+
+```bash
+mvn -pl UT02-B-librerias-xml-java/01-parseo-dom -Dtest=TallerDomTest test
+```
+
+`mvn -fn test` recorre todos los módulos aunque haya fallos y permite revisar el
+estado completo de los TODO. No significa que el ejercicio esté aprobado;
+`-fn` puede devolver código de salida 0 aunque el informe indique BUILD FAILURE.
+Para decidir si los tests pasan usa `mvn test` sin `-fn` y revisa el informe.
 
 - **`BUILD SUCCESS`**: todos los tests incluidos en esa ejecución pasaron.
 - **`Failures`**: el método devolvió un resultado distinto al contrato; compara
@@ -85,6 +111,6 @@ esqueleto; **los tests son los que especifican el resultado requerido**.
 
 ## Seguimiento
 
-Actualiza las casillas de [SYLLABUS.md](./SYLLABUS.md) al completar los
-ejercicios. Marca una unidad como completa cuando hayas implementado sus TODO y
-pasado sus tests.
+Puedes comunicarme qué ejercicios has completado para actualizar las casillas
+de [SYLLABUS.md](./SYLLABUS.md). No necesitas mantenerlas a mano. Considera
+dominado un bloque cuando puedas explicar y resolver también una variante.

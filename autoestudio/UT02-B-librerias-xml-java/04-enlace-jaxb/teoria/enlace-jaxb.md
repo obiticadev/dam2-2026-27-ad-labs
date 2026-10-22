@@ -58,7 +58,61 @@ sequenceDiagram
     U-->>A: Libro reconstruido
 ```
 
-## Propiedades y límites de los retos extra
+## Taller de anotaciones y colecciones (ruta de examen)
+
+UT02-B §5.1–5.4 usa JavaBeans con anotaciones en setters. El `Libro` anterior
+con FIELD se conserva como ejemplo; para practicar el enfoque docente completa
+`BibliotecaLibros` y `FichaLibro`, sin mezclar ambos estilos en la misma clase.
+
+| Modelo | Qué debes anotar |
+|---|---|
+| BibliotecaLibros | `@XmlRootElement(name="libreria")` |
+| Lista de fichas | `@XmlElementWrapper(name="ListaLibro")` y `@XmlElement(name="Libro")` |
+| FichaLibro | `@XmlType(propOrder={"titulo","anio"})` |
+| codigo | `@XmlAttribute` |
+| titulo, anio, nombre, lugar | `@XmlElement` |
+
+`Wrapper` nombra el contenedor y `Element` cada elemento; no se sustituyen.
+El constructor sin argumentos permite instanciar los modelos. `propOrder`
+contiene nombres de propiedades Java de los elementos, no del atributo codigo.
+
+```text
+List<FichaLibro> → <ListaLibro> → <Libro codigo="L1"> ... </Libro> → ...
+objeto raíz → JAXBContext → Marshaller → archivo
+archivo → Unmarshaller → objeto raíz con colección → setters → guardar otro archivo
+```
+
+<details><summary>Pista 1 · Anotaciones</summary>
+
+Usa imports de `javax.xml.bind.annotation`. Sitúa RootElement y XmlType en las
+clases y las anotaciones de propiedades en sus setters, como en el tema. No
+añadas FIELD si estás usando getters/setters anotados.
+
+</details>
+<details><summary>Pista 2 · Operaciones</summary>
+
+Crea `JAXBContext.newInstance(BibliotecaLibros.class)`. Obtén Marshaller,
+configura `JAXB_FORMATTED_OUTPUT=true` y llama a `marshal(biblioteca, destino)`.
+Para leer, `createUnmarshaller().unmarshal(origen)` devuelve Object: haz casting.
+
+</details>
+<details><summary>Comprobación</summary>
+
+Si no aparece ListaLibro, revisa Wrapper; si se llama libros en lugar de Libro,
+revisa Element. Si cambias el año del objeto recuperado y guardas otro archivo,
+el original sigue con 2008; la salida nueva contiene el año modificado.
+
+</details>
+
+### Reconocer el ciclo de enlace completo
+
+El tema menciona escribir clases a mano o generarlas con `xjc` desde XSD,
+compilar, unmarshal, posible validación de esquema, modificación y marshal.
+Aquí se escriben las clases a mano. No se pide generar un esquema ni programar
+validación XSD; deserializar no significa validar automáticamente todas las
+reglas de negocio.
+
+## Propiedades y límites de los retos extra (opcionales)
 
 - `JAXB_FORMATTED_OUTPUT` hace más legible el XML.
 - `JAXB_FRAGMENT` omite la declaración XML en la salida.
@@ -80,8 +134,9 @@ concepto.
 
 ## Qué comprueban los tests
 
-La suite procede de `Ej143JaxbBindingTest` e incluye las dos operaciones base y
-los diez retos extra. Se corrigió una aserción contradictoria del test original
+La suite procede de `Ej143JaxbBindingTest`. Solo las operaciones base y el nuevo
+taller forman parte de `mvn test`; los diez retos extra llevan tag `ampliacion`.
+Se corrigió una aserción contradictoria del test original
 de compactación: la especificación que coincide con la transformación de espacios
 es `<libro> </libro>`.
 

@@ -50,11 +50,12 @@ sequenceDiagram
     T-->>A: XML serializado
 ```
 
-El parser de este proyecto debe rechazar declaraciones `DOCTYPE`; no debe
-resolver entidades externas. El XML mal formado o una configuración de parser
-inválida se comunica como fallo y no como un documento vacío.
-El manejador de errores debe propagar el problema como excepción sin imprimir
-volcados de parser que oculten el mensaje de JUnit.
+La práctica básica usa documentos locales conocidos como los del tema. No se
+exige rechazar `DOCTYPE` ni configurar un `ErrorHandler` especial. El helper de
+seguridad ya escrito se conserva como ampliación, no como requisito. El XML mal
+formado se comunica como fallo, no como un documento vacío. En tus métodos de
+cadena puedes envolver la causa en RuntimeException; el taller con File permite
+propagar las excepciones comprobadas, como los ejemplos docentes.
 
 ## Crear XML sin concatenar etiquetas
 
@@ -73,7 +74,10 @@ escapar manualmente `&`, `<` y `>` al construir el XML.
 | `raizCoincide` | Coincidencia y discrepancia de raíz |
 | `contarNodosElemento` | Conteo que incluye la raíz |
 | `crearDocumento` | Árbol transformado y contenido escapado |
-| Parser seguro | XML mal formado y `DOCTYPE` rechazado sin salida de diagnóstico extra |
+| Errores de parseo | XML mal formado comunicado como fallo |
+
+Continúa con [el taller de archivos y navegación](taller-dom.md). Allí se
+explican `normalize()`, los nodos de indentación y el ciclo modificar/guardar.
 
 ## Comprueba tu comprensión
 

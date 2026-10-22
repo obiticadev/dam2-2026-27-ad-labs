@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.io.TempDir;
 
 @DisplayName("Boss final: catalogador de archivos")
+@Tag("ampliacion")
 class CatalogadorArchivosTest {
 
     @TempDir
@@ -63,7 +65,7 @@ class CatalogadorArchivosTest {
         File carpeta = new File(directorioTemporal, "datos");
         assertTrue(carpeta.mkdir());
         File zeta = crearFichero(carpeta, "zeta.txt", new byte[] { 1, 2, 3, 4 });
-        File alfa = crearFichero(carpeta, "alfa.TXT", new byte[] { 5, 6 });
+        File alfa = crearFichero(carpeta, "alfa.txt", new byte[] { 5, 6 });
         crearFichero(carpeta, "ignorado.csv", new byte[] { 7 });
         File carpetaConSufijo = new File(carpeta, "subdirectorio.txt");
         assertTrue(carpetaConSufijo.mkdir());
@@ -72,7 +74,7 @@ class CatalogadorArchivosTest {
 
         assertNotNull(catalogo, "catalogar() debe devolver una lista, incluso antes de comprobar sus entradas.");
         assertEquals(2, catalogo.size());
-        assertEquals("alfa.TXT", catalogo.get(0).nombre());
+        assertEquals("alfa.txt", catalogo.get(0).nombre());
         assertEquals(alfa.getPath(), catalogo.get(0).ruta());
         assertEquals(2L, catalogo.get(0).tamanioEnBytes());
         assertTrue(catalogo.get(0).ultimaModificacion() > 0L);

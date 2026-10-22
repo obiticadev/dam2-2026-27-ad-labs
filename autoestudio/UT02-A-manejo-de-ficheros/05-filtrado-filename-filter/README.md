@@ -1,37 +1,21 @@
-# 05 · Filtrado con `FilenameFilter`
+# 05 · FilenameFilter como en el tema
 
-## Objetivo
+Fuente: UT02-A §2.6, ejemplo `Filtrar`. [Teoría y pistas](teoria/filename-filter.md).
 
-Implementar el contrato de `FilenameFilter` y usarlo para seleccionar ficheros
-por extensión desde un directorio. El filtro no debe incluir directorios aunque
-su nombre termine en la extensión buscada.
+Completa el constructor, `accept` y `listarPorExtension` de
+[FiltradoFilenameFilter.java](src/main/java/es/dam/accesodatos/autoestudio/file/filtrado/FiltradoFilenameFilter.java).
 
-## Material de este mini proyecto
+El criterio básico es **nombre terminado en el sufijo**, sensible a mayúsculas:
+`.txt` acepta `notas.txt`, no `NOTAS.TXT`. También acepta un directorio llamado
+`respaldo.txt`: `FilenameFilter` filtra nombres, no tipos. No debes normalizar
+extensiones ni comprobar el disco dentro de `accept`.
 
-- [Teoría de `FilenameFilter`](./teoria/filename-filter.md)
-- Enunciado, contratos y TODO: [FiltradoFilenameFilter.java](./src/main/java/es/dam/accesodatos/autoestudio/file/filtrado/FiltradoFilenameFilter.java)
-- Tests de aceptación: [FiltradoFilenameFilterTest.java](./src/test/java/es/dam/accesodatos/autoestudio/file/filtrado/FiltradoFilenameFilterTest.java)
-
-## Mapa de tests
-
-| Test | Qué aclara |
-|---|---|
-| `aceptaFicherosConExtensionIgnorandoMayusculas` | Extensión insensible a mayúsculas y exclusión de carpetas/ausentes |
-| `rechazaArgumentosNulosYRutasQueNoSeanDirectorio` | `accept` rechaza candidatos no válidos |
-| `listaSoloFicherosCoincidentesEnOrdenNatural` | Integración con `listFiles(filter)` |
-| `devuelveArrayVacioSiNoHayCoincidencias` | El resultado vacío es válido |
-| `rechazaExtensionYDirectorioInvalidos` | Contrato de constructor y listado |
-
-Correspondencia: UT02-A, apartado 2.6 del temario oficial.
-
-## Ejecutar
-
-Desde la raíz `autoestudio/`:
+El listado valida el directorio y distingue `null` de array vacío. No se exige
+orden. Los tests preparan los datos y comprueban esas tres decisiones.
 
 ```bash
 mvn -pl UT02-A-manejo-de-ficheros/05-filtrado-filename-filter test
 ```
 
-En el IDE, ejecuta `FiltradoFilenameFilter.main`. Consulta la
-[guía general](../../README_GUIA_TERMINAL.md) para ejecutar un test concreto y
-leer el detalle del fallo.
+Desde `autoestudio/`. Variante razonada: si se pidieran solo ficheros, ¿dónde
+añadirías `isFile()`? Ese requisito pertenece al catalogador opcional, no al filtro básico.

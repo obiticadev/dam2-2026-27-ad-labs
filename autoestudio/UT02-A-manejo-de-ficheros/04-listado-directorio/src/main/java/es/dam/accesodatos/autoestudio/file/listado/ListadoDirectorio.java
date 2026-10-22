@@ -8,8 +8,8 @@ import java.util.Arrays;
  * Ejercicios de listado inmediato con {@link File#list()} y
  * {@link File#listFiles()}.
  *
- * <p>Teoría: {@code teoria/listado-directorio.md}. Los resultados se ordenan por
- * nombre para que su presentación y comprobación sean reproducibles.
+ * <p>Teoría: {@code teoria/listado-directorio.md}. El orden del sistema no está
+ * garantizado; ordenar no es requisito del ejercicio.
  */
 public final class ListadoDirectorio {
 
@@ -17,10 +17,10 @@ public final class ListadoDirectorio {
     }
 
     /**
-     * Obtiene ordenados los nombres de las entradas inmediatas de un directorio.
+     * Obtiene los nombres de las entradas inmediatas de un directorio.
      *
      * @param directorio directorio existente que se desea listar
-     * @return nombres ordenados de forma natural; array vacío si no contiene entradas
+     * @return nombres sin orden exigido; array vacío si no contiene entradas
      * @throws IllegalArgumentException si la ruta no representa un directorio existente
      * @throws IOException si el sistema no puede obtener el listado
      */
@@ -28,16 +28,15 @@ public final class ListadoDirectorio {
         // TODO: Comprueba que la referencia representa un directorio existente.
         // TODO: Obtén el listado de nombres mediante la operación correspondiente de File.
         // TODO: Distingue un array nulo de un array vacío y comunica el fallo como IOException.
-        // TODO: Ordena los nombres alfabéticamente con el orden natural de String.
         // TODO: Devuelve todos los nombres inmediatos, sin recorrer subdirectorios.
         return null;
     }
 
     /**
-     * Obtiene ordenadas las entradas inmediatas como objetos {@code File}.
+     * Obtiene las entradas inmediatas como objetos {@code File}.
      *
      * @param directorio directorio existente que se desea listar
-     * @return objetos {@code File} ordenados por nombre; array vacío si no hay entradas
+     * @return objetos {@code File} sin orden exigido; array vacío si no hay entradas
      * @throws IllegalArgumentException si la ruta no representa un directorio existente
      * @throws IOException si el sistema no puede obtener el listado
      */
@@ -45,7 +44,6 @@ public final class ListadoDirectorio {
         // TODO: Comprueba que la referencia representa un directorio existente.
         // TODO: Obtén los objetos File de las entradas inmediatas.
         // TODO: Distingue un array nulo de un array vacío y comunica el fallo como IOException.
-        // TODO: Ordena los objetos por el nombre de cada entrada.
         // TODO: Devuelve las rutas sin recorrer sus posibles directorios hijos.
         return null;
     }

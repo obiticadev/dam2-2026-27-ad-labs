@@ -12,8 +12,9 @@ import javax.xml.bind.Unmarshaller;
 /**
  * Ejercicio JAXB adaptado de `b16_xml/Ej143JaxbBinding`.
  *
- * <p>Se conserva el enlace POJO ↔ XML y sus diez retos adicionales usando el
- * paquete `javax.xml.bind` del temario UT02-B.
+ * <p>Ruta de examen: aXml y desdeXml, más TallerJaxb y sus modelos de colección.
+ * Los otros diez métodos se conservan como ampliaciones opcionales; no bloquean
+ * los tests básicos. Se usa javax.xml.bind del temario UT02-B.
  *
  * <p>Teoría: {@code teoria/enlace-jaxb.md}.
  */

@@ -1,10 +1,3 @@
-/*
- * Actividad: leer un fichero XML con DOM.
- * Lee datos/DepartamentosEmpleados.xml y, para cada departamento, muestra su
- * número, nombre y localidad. A continuación, lista apellido, oficio, salario
- * y comisión de los empleados que pertenecen a ese departamento.
- * Completa los TODO siguiendo el ejercicio.
- */
 package ejercicioxml;
 
 import java.io.File;
@@ -14,23 +7,25 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+// Lee departamentos y muestra sus empleados a partir de un fichero XML con DOM
 public class LeerDepartamentosEmpleadosDOM {
 
     private static final File FICHERO_XML = new File("datos/DepartamentosEmpleados.xml");
 
     public static void main(String[] args) throws Exception {
+        // 1. Inicializar el parser DOM
         DocumentBuilderFactory fabrica = DocumentBuilderFactory.newInstance();
         DocumentBuilder constructor = fabrica.newDocumentBuilder();
+
+        // 2. Cargar el archivo XML en memoria y normalizar los nodos de texto
         Document documento = constructor.parse(FICHERO_XML);
         documento.getDocumentElement().normalize();
 
-        // TODO 1: obtener las listas de elementos DEP_ROW y EMP_ROW.
+        // 3. Obtener las listas de departamentos (<DEP_ROW>) y empleados (<EMP_ROW>)
         NodeList listaDepartamentos = documento.getElementsByTagName("DEP_ROW");
         NodeList listaEmpleados = documento.getElementsByTagName("EMP_ROW");
 
-        // TODO 2: recorrer los departamentos y mostrar DEPT_NO, DNOMBRE y LOC.
-        // TODO 3: asociar cada empleado por DEPT_NO y mostrar los campos pedidos.
-
+        // 4. Recorrer los departamentos y mostrar su número, nombre y localidad
         for (int i = 0; i < listaDepartamentos.getLength(); i++) {
             StringBuilder sb = new StringBuilder();
             Element dep = (Element) listaDepartamentos.item(i);
@@ -40,9 +35,12 @@ public class LeerDepartamentosEmpleadosDOM {
             sb.append(String.format("%nDEPARTAMENTO %s: %s (%s)", num, nombre, loc));
             System.out.println(sb.toString());
 
+            // 5. Recorrer los empleados y leer el número de su departamento
             for (int j = 0; j < listaEmpleados.getLength(); j++) {
                 Element emp = (Element) listaEmpleados.item(j);
                 String depEmp = emp.getElementsByTagName("DEPT_NO").item(0).getTextContent();
+
+                // 6. Mostrar los datos del empleado solo si pertenece al departamento actual
                 if (num.equals(depEmp)) {
                     String apellido = emp.getElementsByTagName("APELLIDO").item(0).getTextContent();
                     String oficio = emp.getElementsByTagName("OFICIO").item(0).getTextContent();

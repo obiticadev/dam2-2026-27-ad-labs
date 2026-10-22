@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,22 +22,24 @@ class ListadoDirectorioTest {
     File directorioTemporal;
 
     @Test
-    void listaNombresInmediatosEnOrdenNatural() throws IOException {
+    void listaNombresInmediatosSinExigirOrden() throws IOException {
         crearEntrada("c.txt");
         crearEntrada("a.txt");
         crearEntrada("b.txt");
 
         assertArrayEquals(new String[] { "a.txt", "b.txt", "c.txt" },
-                ListadoDirectorio.nombres(directorioTemporal));
+                ordenar(ListadoDirectorio.nombres(directorioTemporal)));
     }
 
     @Test
-    void listaObjetosFileEnOrdenPorNombre() throws IOException {
+    void listaObjetosFileSinExigirOrden() throws IOException {
         File c = crearEntrada("c.txt");
         File a = crearEntrada("a.txt");
         File b = crearEntrada("b.txt");
 
-        assertArrayEquals(new File[] { a, b, c }, ListadoDirectorio.entradas(directorioTemporal));
+        File[] resultado = ListadoDirectorio.entradas(directorioTemporal);
+        Arrays.sort(resultado, Comparator.comparing(File::getName));
+        assertArrayEquals(new File[] { a, b, c }, resultado);
     }
 
     @Test
@@ -54,7 +58,7 @@ class ListadoDirectorioTest {
         assertTrue(nieto.createNewFile());
 
         assertArrayEquals(new String[] { "subdirectorio", "visible.txt" },
-                ListadoDirectorio.nombres(directorioTemporal));
+                ordenar(ListadoDirectorio.nombres(directorioTemporal)));
         assertEquals(2, ListadoDirectorio.entradas(directorioTemporal).length);
     }
 
@@ -82,5 +86,12 @@ class ListadoDirectorioTest {
         File entrada = new File(directorioTemporal, nombre);
         assertTrue(entrada.createNewFile());
         return entrada;
+    }
+
+    private String[] ordenar(String[] nombres) {
+        // Ordena el test, no el alumno: File no garantiza ningún orden.
+        String[] copia = nombres.clone();
+        Arrays.sort(copia);
+        return copia;
     }
 }

@@ -36,7 +36,7 @@ public final class ParseoStax {
      *
      * @param xml documento XML válido
      * @param etiqueta nombre local del elemento que se desea leer
-     * @return textos en orden documental, como lista inmutable
+     * @return textos en orden documental; no se exige inmutabilidad
      * @throws IllegalArgumentException si el documento o la etiqueta son nulos o están en blanco
      * @throws RuntimeException si el XML está mal formado o falla StAX
      */
@@ -46,7 +46,7 @@ public final class ParseoStax {
         // TODO: Avanza el cursor y localiza eventos START_ELEMENT con el nombre solicitado.
         // TODO: Extrae el texto simple de cada coincidencia respetando el avance de getElementText.
         // TODO: Cierra el reader y propaga XMLStreamException como RuntimeException.
-        // TODO: Devuelve una copia inmutable de los valores recogidos.
+        // TODO: Devuelve los valores recogidos; no se exige copia inmutable.
         return null;
     }
 
@@ -65,7 +65,7 @@ public final class ParseoStax {
         // TODO: Crea el reader StAX y recórrelo hacia delante.
         // TODO: En cada START_ELEMENT coincidente consulta el atributo sin namespace pedido.
         // TODO: Conserva cadena vacía cuando la etiqueta no lleve ese atributo.
-        // TODO: Cierra el reader, transforma XMLStreamException y devuelve lista inmutable.
+        // TODO: Cierra el reader, transforma XMLStreamException y devuelve la lista.
         return null;
     }
 
@@ -74,7 +74,7 @@ public final class ParseoStax {
      *
      * @param xml documento XML válido
      * @param etiqueta nombre local del elemento que se desea leer
-     * @return textos en orden documental, como lista inmutable
+     * @return textos en orden documental; no se exige inmutabilidad
      * @throws IllegalArgumentException si el documento o la etiqueta son nulos o están en blanco
      * @throws RuntimeException si el XML está mal formado o falla StAX
      */
@@ -84,7 +84,7 @@ public final class ParseoStax {
         // TODO: Consume XMLEvent en orden y reconoce los StartElement coincidentes.
         // TODO: Recupera el texto asociado y no procesa dos veces el fin consumido.
         // TODO: Cierra el event reader y propaga los errores como RuntimeException.
-        // TODO: Devuelve la lista resultante sin permitir modificaciones posteriores.
+        // TODO: Devuelve la lista resultante en orden documental.
         return null;
     }
 
@@ -103,7 +103,7 @@ public final class ParseoStax {
         // TODO: Crea un XMLEventReader y consume eventos hasta el final del documento.
         // TODO: Inspecciona StartElement y sus Attribute para cada etiqueta coincidente.
         // TODO: Conserva valores en orden y representa atributo ausente como cadena vacía.
-        // TODO: Cierra el reader, convierte XMLStreamException y devuelve lista inmutable.
+        // TODO: Cierra el reader, convierte XMLStreamException y devuelve la lista.
         return null;
     }
 
@@ -126,7 +126,7 @@ public final class ParseoStax {
     }
 
     /**
-     * Genera un XML sencillo mediante la API de cursor de escritura.
+     * Ampliación opcional: genera un XML mediante la API de cursor de escritura.
      *
      * @param raiz nombre del elemento raíz
      * @param hijo nombre del elemento hijo
@@ -145,7 +145,7 @@ public final class ParseoStax {
     }
 
     /**
-     * Genera el mismo XML sencillo mediante eventos StAX y {@code XMLEventWriter}.
+     * Ampliación opcional: genera XML mediante eventos StAX y {@code XMLEventWriter}.
      *
      * @param raiz nombre del elemento raíz
      * @param hijo nombre del elemento hijo

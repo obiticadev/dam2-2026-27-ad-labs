@@ -1,4 +1,7 @@
-# 06 · Boss final · Catalogador de archivos
+# 06 · Ampliación opcional · Catalogador de archivos
+
+No bloquea los tests básicos ni sustituye los ejercicios de flujos, objetos y
+acceso aleatorio. Ordenación e inmutabilidad son decisiones de esta ampliación.
 
 ## Objetivo
 
@@ -28,7 +31,7 @@ entradas, el listado y `FilenameFilter`.
 Desde la raíz `autoestudio/`:
 
 ```bash
-mvn -pl UT02-A-manejo-de-ficheros/06-catalogador-archivos -am test
+mvn -pl UT02-A-manejo-de-ficheros/06-catalogador-archivos -am -Pampliaciones test
 ```
 
 El proyecto depende de los mini proyectos anteriores de UT02-A. En el IDE,

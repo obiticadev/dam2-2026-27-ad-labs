@@ -6,6 +6,15 @@ Adaptar `b16_xml/Ej145DomSaxParsing.textosConSax` para recorrer XML con eventos,
 acumular textos y mantener el orden del documento. Se añaden retos de lectura
 de atributos y conteo de etiquetas por eventos.
 
+**Sesión 26/10.** Tu `ParseoSax` se conserva. Completa también
+[ManejadorAlumnos.java](src/main/java/es/dam/accesodatos/autoestudio/xml/sax/ManejadorAlumnos.java).
+`ManejadorAlumnosTest` fuerza fragmentos y comprueba `start/length`, atributos,
+texto de nombre, entidades y reinicio entre dos documentos. Así el aprendizaje
+no depende de cómo fragmente casualmente el parser de este equipo.
+
+Resultado con el XML común del taller DOM: ids `1,2`, nombres `Ana,José`.
+No se exige una lista inmutable ni un manejador especial para silenciar errores.
+
 ## Material de este mini proyecto
 
 - [Teoría específica de SAX](./teoria/parseo-sax.md)

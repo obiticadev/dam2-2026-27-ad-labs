@@ -1,79 +1,35 @@
-# Teoría · `FilenameFilter`
+# FilenameFilter · Un criterio sobre nombres
 
-## El filtro como criterio de aceptación
+En UT02-A §2.6 la clase `Filtrar` implementa `FilenameFilter` y su método
+`accept(File dir, String name)` devuelve `name.endsWith(extension)`.
 
-`FilenameFilter` es una interfaz funcional de `java.io`. Su método `accept`
-recibe el directorio padre y el nombre de una entrada; devuelve `true` si el
-nombre debe formar parte del resultado.
-
-```mermaid
-sequenceDiagram
-    participant D as File del directorio
-    participant F as FilenameFilter
-    participant L as listFiles(filter)
-    L->>F: accept(directorio, nombre)
-    F->>D: consulta la entrada hija si hace falta
-    F-->>L: true o false
-    L-->>D: array de entradas aceptadas
+```text
+File.list(filtro) → por cada nombre llama accept(directorio, nombre)
+                → incluye los que devuelven true
 ```
 
-## Nombre y tipo son comprobaciones diferentes
+`list(filtro)` devuelve nombres; `listFiles(filtro)` devuelve objetos `File`.
+Ninguno hace un recorrido recursivo. `null` significa que el listado no se pudo
+obtener; array vacío significa que se pudo obtener y no hubo coincidencias.
 
-Un filtro por sufijo de nombre puede aceptar accidentalmente un directorio
-llamado, por ejemplo, `copias.txt`. Si el contrato pide solo ficheros, además
-del nombre hay que comprobar el tipo de la entrada. `accept` recibe el
-directorio padre y el nombre, por lo que juntos identifican la entrada.
+El ejemplo docente compara el sufijo exactamente, no cambia mayúsculas ni usa
+`Locale.ROOT`. Tampoco excluye directorios. La versión anterior del autoestudio
+añadía esas exigencias; ahora el contrato básico vuelve al enfoque del tema.
 
-```mermaid
-flowchart TD
-    E[Entrada candidata] --> S{¿Nombre acaba en extensión?}
-    S -->|No| R[Rechazar]
-    S -->|Sí| T{¿La entrada es fichero?}
-    T -->|No| R
-    T -->|Sí| A[Aceptar]
-```
+`FilenameFilter` recibe padre y nombre por separado. `FileFilter` recibe un
+`File` completo; es otra interfaz, no necesaria para resolver este ejercicio.
 
-## Uso con `File`
+<details><summary>Pista</summary>
 
-`File.list(filter)` y `File.listFiles(filter)` delegan el criterio en el método
-`accept`. El primero devuelve nombres y el segundo devuelve objetos `File`.
-Como con los listados sin filtro, un array vacío significa que no hubo
-coincidencias; `null` significa que no se obtuvo un listado válido.
+Guarda el sufijo en el constructor. En `accept`, comprueba el nombre con
+`endsWith`. Para listar, entrega una instancia del filtro a `directorio.listFiles`.
+La existencia del directorio se valida en el método de listado, no en el criterio.
 
-El contrato de este mini proyecto usa extensiones que empiezan por punto,
-compara sin distinguir mayúsculas y minúsculas, excluye directorios y ordena el
-resultado para que sea reproducible.
+</details>
+<details><summary>Comprueba y explica</summary>
 
-La extensión normalizada debe ser independiente del idioma configurado en el
-sistema. Para conversiones de mayúsculas/minúsculas usadas en identificadores,
-Java recomienda `Locale.ROOT`; así una comparación como `.TXT` frente a `.txt`
-no cambia por el idioma de la máquina.
+Un nombre que acaba en `.txt` no prueba que sea un fichero. Si el enunciado pide
+solo ficheros, añade `new File(dir, name).isFile()` explícitamente como otro
+criterio. Aquí no se exige; el catalogador opcional sí lo pide.
 
-## `FilenameFilter` frente a `FileFilter`
-
-`FilenameFilter.accept` recibe por separado el directorio y el nombre. `FileFilter`
-recibe un objeto `File` completo. Este ejercicio usa `FilenameFilter` porque es
-la interfaz que aparece en UT02-A.
-
-El filtro decide sobre cada entrada inmediata. No entra en subdirectorios ni
-crea, mueve o borra archivos.
-
-## Cómo se conecta con el ejercicio
-
-- El constructor fija el criterio y rechaza extensiones que no cumplan el
-  formato acordado.
-- `accept` comprueba una entrada individual, por lo que permite tests precisos
-  de ficheros, directorios y nombres que no existen.
-- `listarPorExtension` integra el filtro con `File.listFiles(filter)`, detecta
-  fallos de listado y ordena la salida como contrato del mini proyecto.
-
-## Comprueba tu comprensión
-
-- ¿Qué representan por separado los argumentos de `FilenameFilter.accept`?
-- ¿Por qué un nombre terminado en `.txt` no demuestra que sea un fichero?
-- ¿Qué resultado debe distinguir “no hay coincidencias” de “no se pudo listar”?
-
-## Apartado del temario
-
-Esta teoría se limita a `FilenameFilter` y su integración con `File.listFiles()`.
-No incluye `FileFilter`, filtros NIO ni expresiones regulares.
+</details>

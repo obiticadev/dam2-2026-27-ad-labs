@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 @DisplayName("Binding objeto-XML con JAXB 2")
 class EnlaceJaxbTest {
@@ -48,6 +49,7 @@ class EnlaceJaxbTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void validaFormatoDeIsbn() {
         assertTrue(EnlaceJaxb.validarFormatoIsbn("978-84"));
         assertFalse(EnlaceJaxb.validarFormatoIsbn("invalid-isbn"));
@@ -55,6 +57,7 @@ class EnlaceJaxbTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void compactaTextoXmlSinDejarEspaciosEnLosExtremos() {
         String compacto = EnlaceJaxb.compactarXml("  <libro>   </libro> ");
 
@@ -63,6 +66,7 @@ class EnlaceJaxbTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void extraeAnioUsandoElUnmarshalJaxb() {
         String xml = EnlaceJaxb.aXml(libroDeEjemplo());
 
@@ -72,6 +76,7 @@ class EnlaceJaxbTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void serializaFragmentoSinDeclaracionXml() {
         String fragmento = EnlaceJaxb.serializarFragmento(libroDeEjemplo());
 
@@ -81,6 +86,7 @@ class EnlaceJaxbTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void convierteElModeloEnUnMapaConTiposConservados() {
         Map<String, Object> datos = EnlaceJaxb.libroAMap(libroDeEjemplo());
 
@@ -92,6 +98,7 @@ class EnlaceJaxbTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void creaUnLibroPorDefecto() {
         Libro libro = EnlaceJaxb.crearLibroPorDefecto();
 
@@ -102,6 +109,7 @@ class EnlaceJaxbTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void detectaLaRaizLibroConUnaHeuristicaTextual() {
         assertTrue(EnlaceJaxb.esXmlDeLibro("<libro isbn=\"123\">contenido</libro>"));
         assertFalse(EnlaceJaxb.esXmlDeLibro("<revista></revista>"));
@@ -109,6 +117,7 @@ class EnlaceJaxbTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void declaraLaCodificacionIso8859() {
         String xml = EnlaceJaxb.serializarIso8859(libroDeEjemplo());
 
@@ -116,6 +125,7 @@ class EnlaceJaxbTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void comparaPublicacionConCorteEstricto() {
         Libro libro = libroDeEjemplo();
 
@@ -126,6 +136,7 @@ class EnlaceJaxbTest {
     }
 
     @Test
+    @Tag("ampliacion")
     void clonaMedianteRoundTripSinCompartirInstancia() {
         Libro original = libroDeEjemplo();
 

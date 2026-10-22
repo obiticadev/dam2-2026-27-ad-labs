@@ -19,6 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
         <junit.version>5.11.4</junit.version>
+        <gruposExcluidos>ampliacion</gruposExcluidos>
     </properties>
 
     <dependencyManagement>
@@ -50,9 +51,19 @@
                     <version>3.2.5</version>
                     <configuration>
                         <failIfNoTests>true</failIfNoTests>
+                        <excludedGroups>${gruposExcluidos}</excludedGroups>
                     </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>ampliaciones</id>
+            <properties>
+                <gruposExcluidos>ninguno</gruposExcluidos>
+            </properties>
+        </profile>
+    </profiles>
 </project>
