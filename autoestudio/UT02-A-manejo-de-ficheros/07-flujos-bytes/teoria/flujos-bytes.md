@@ -95,6 +95,39 @@ excepción antes, los flujos se quedan abiertos.
 - ¿Por qué el bucle del temario usa `> 0` y el ejercicio `!= -1`? ¿Cambia algo
   con `FileInputStream`?
 
+## El mismo patrón en los ejercicios nuevos
+
+No memorices cinco soluciones diferentes. Reconoce qué cambia en el mismo esquema:
+
+| Ejercicio | Entrada | Qué hacer con los datos | Salida |
+|---|---|---|---|
+| `guardar` | No hay flujo de entrada: ya tienes un array | Escribir el array completo una vez | Sobrescribir |
+| `contarBytes` | Leer por bloques | Sumar la cantidad leída | No hay flujo de salida |
+| `contarApariciones` | Leer por bloques | Recorrer la parte válida y contar coincidencias | No hay flujo de salida |
+| `anexarArchivo` | Leer por bloques | Escribir la parte válida y sumar lo añadido | Anexar |
+| `copiarSustituyendo` | Leer por bloques | Sustituir coincidencias en la parte válida y escribirla | Sobrescribir |
+
+### Dos bucles con trabajos distintos
+
+En los ejercicios 5 y 7 necesitas un bucle de lectura y, dentro, un recorrido
+del bloque. El primero avanza por el fichero; el segundo por los bytes que
+acabas de leer. El recorrido interior termina en `leidos`, no en la capacidad.
+
+No necesitas un array nuevo por cada vuelta ni limpiar el que tienes.
+En la copia con sustitución, cambiar el búfer no cambia el fichero de origen:
+lo abriste para leer, y los bytes transformados se escriben en otro fichero.
+
+### Predice antes de implementar
+
+1. Guardas `[1, 2, 3]` sobre un fichero con `[9, 9, 9, 9, 9]`. ¿Quedan restos?
+2. Lees un fichero de 6 bytes con capacidad 4. ¿Qué sumas en cada vuelta?
+3. Buscas `7` en `[7, 2, 7, 4, 5]` con capacidad 4. ¿Por qué no recorrer todo el búfer?
+4. Añades `[1, 2, 3]` a `[9]`. ¿Qué contiene el destino? ¿Qué total devuelve el método?
+5. Copias `[7, 2, 7, 4, 5]` cambiando `7` por `9`. ¿Qué contiene cada fichero al terminar?
+
+Al probarlos, incluye un fichero vacío y una última lectura parcial.
+Un byte de valor `0` es un dato normal: no indica fin del fichero.
+
 ## Alcance
 
 Solo `java.io`: `FileInputStream` y `FileOutputStream`. No se usan
