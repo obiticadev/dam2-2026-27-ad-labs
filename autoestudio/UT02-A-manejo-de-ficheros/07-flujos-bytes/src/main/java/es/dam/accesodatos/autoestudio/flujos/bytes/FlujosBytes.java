@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Ejercicios de copia y anexado con {@link FileInputStream} y
+ * Ejercicios de lectura, escritura, copia y anexado con {@link FileInputStream}
+ * y
  * {@link FileOutputStream}.
  *
  * <p>
@@ -32,27 +33,28 @@ public final class FlujosBytes {
      * @throws IOException              si falla la lectura o la escritura
      */
     public static long copiar(File origen, File destino, int capacidad) throws IOException {
-        // TODO: Rechaza un origen nulo o que no sea un fichero regular existente.
-        // TODO: Rechaza un destino nulo, una capacidad <= 0 y un destino que sea el
-        // mismo
-        // fichero que el origen (compara sus rutas canónicas).
-        // TODO: Abre ambos flujos en un try-with-resources; FileOutputStream sin append
-        // sobrescribe.
-        // TODO: Reserva un búfer de 'capacidad' bytes y lee mientras read(...) no
-        // devuelva -1.
-        // TODO: Escribe solo los bytes válidos de cada lectura: write(buffer, 0,
-        // leidos).
-        // TODO: Acumula y devuelve el total escrito.
+        // 1. Validar antes de abrir: abrir el destino para escribir lo vacía.
         if (origen == null || !origen.isFile() || destino == null || capacidad <= 0
-                || origen.getCanonicalFile() == destino.getCanonicalFile()) {
+                || origen.getCanonicalFile().equals(destino.getCanonicalFile())) {
             throw new IllegalArgumentException("Error de parámetros, introduce un parámetro correcto");
         }
+
+        // 2. Abrir los flujos; el try los cierra incluso si ocurre una IOException.
         try (FileInputStream fis = new FileInputStream(origen);
                 FileOutputStream fos = new FileOutputStream(destino)) {
-            long largo;
+            long total = 0;
             byte[] captura = new byte[capacidad];
+            int leidos;
+
+            // 3. Leer un bloque, comprobar EOF y procesar solo su parte válida.
+            while ((leidos = fis.read(captura)) != -1) {
+                fos.write(captura, 0, leidos);
+                total += leidos;
+            }
+
+            // 4. Devolver lo escrito (0 si el origen estaba vacío).
+            return total;
         }
-        return -1L;
     }
 
     /**
@@ -78,10 +80,123 @@ public final class FlujosBytes {
         // TODO: Abre el flujo en modo append (segundo argumento true) con
         // try-with-resources.
         // TODO: Escribe exactamente len bytes empezando en el índice off del array.
+        if (destino == null || datos == null) {
+            throw new IllegalArgumentException("Error, parámetros nulos");
+        }
+        if (off >= 0 && len >= 0 && off <= datos.length - len) {
+            try (FileOutputStream fos = new FileOutputStream(destino, true)) {
+                fos.write(datos, off, len);
+            }
+        } else {
+            throw new IndexOutOfBoundsException("Parámetros de índice con descuadre");
+        }
+    }
+
+    /**
+     * Ejercicio 3: guarda un array completo, sustituyendo el contenido anterior.
+     * No necesita bucle: los datos ya están en memoria.
+     *
+     * @param destino fichero que se crea o se sobrescribe
+     * @param datos   bytes que se escriben; puede ser un array vacío
+     * @throws IllegalArgumentException si destino o datos son nulos; validar antes
+     *                                  de abrir
+     * @throws IOException              si falla la escritura
+     */
+    public static void guardar(File destino, byte[] datos) throws IOException {
+        // TODO: Valida las referencias antes de abrir el fichero.
+        // TODO: Abre una salida sin append con try-with-resources.
+        // TODO: Escribe el array completo. Un array vacío debe dejar el fichero vacío.
+        if (destino == null || datos == null) {
+            throw new IllegalArgumentException("Error, destino o datos son nulos");
+        }
+        try (FileOutputStream fos = new FileOutputStream(destino, false)) {
+            fos.write(datos);
+        }
+    }
+
+    /**
+     * Ejercicio 4: cuenta bytes leyendo por bloques, sin escribir otro fichero.
+     * No uses File.length(): el objetivo es practicar el bucle de lectura.
+     *
+     * @param origen    fichero regular existente
+     * @param capacidad tamaño del búfer; mayor que cero
+     * @return total de bytes leídos; cero para un fichero vacío
+     * @throws IllegalArgumentException si origen es nulo, no es un fichero o
+     *                                  capacidad no es positiva
+     * @throws IOException              si falla la lectura
+     */
+    public static long contarBytes(File origen, int capacidad) throws IOException {
+        // TODO: Valida y abre solo un flujo de entrada con try-with-resources.
+        // TODO: Lee por bloques hasta -1 y acumula la cantidad realmente leída.
+        return -1L;
+    }
+
+    /**
+     * Ejercicio 5: cuenta apariciones de un byte dentro de los bloques leídos.
+     * Ejemplo: [7, 2, 7, 4, 5], buscado 7, capacidad 4 -> 2 apariciones.
+     *
+     * @param origen    fichero regular existente
+     * @param buscado   byte que se quiere contar
+     * @param capacidad tamaño del búfer; mayor que cero
+     * @return número de coincidencias; cero para un fichero vacío
+     * @throws IllegalArgumentException si origen es nulo, no es un fichero o
+     *                                  capacidad no es positiva
+     * @throws IOException              si falla la lectura
+     */
+    public static long contarApariciones(File origen, byte buscado, int capacidad) throws IOException {
+        // TODO: Reutiliza el esquema de lectura de contarBytes.
+        // TODO: En cada bloque recorre solo los índices 0 hasta leidos - 1.
+        // TODO: Incrementa el contador cuando el byte coincida con buscado.
+        return -1L;
+    }
+
+    /**
+     * Ejercicio 6: añade el contenido de un fichero al final de otro por bloques.
+     * Es una combinación de copiar y anexar; no carga todo el origen en memoria.
+     *
+     * @param origen    fichero regular existente
+     * @param destino   fichero que se crea o al que se añaden los bytes
+     * @param capacidad tamaño del búfer; mayor que cero
+     * @return número de bytes añadidos, sin contar los que ya tenía el destino
+     * @throws IllegalArgumentException si los argumentos no son válidos según
+     *                                  copiar,
+     *                                  incluido origen y destino con la misma ruta
+     *                                  canónica
+     * @throws IOException              si falla la lectura o la escritura
+     */
+    public static long anexarArchivo(File origen, File destino, int capacidad) throws IOException {
+        // TODO: Valida como en copiar, antes de abrir los flujos.
+        // TODO: Abre entrada y salida, esta vez con append.
+        // TODO: Lee, escribe solo la parte válida y acumula los bytes añadidos.
+        return -1L;
+    }
+
+    /**
+     * Ejercicio 7: copia por bloques sustituyendo un byte por otro en el destino.
+     * El origen no se modifica. Ejemplo: [1, 2, 1], cambiar 1 por 9 -> [9, 2, 9].
+     *
+     * @param origen    fichero regular existente
+     * @param destino   fichero que se crea o se sobrescribe, distinto del origen
+     * @param buscado   byte que se sustituye
+     * @param reemplazo byte que se escribe en su lugar
+     * @param capacidad tamaño del búfer; mayor que cero
+     * @return número total de bytes escritos, no el número de sustituciones
+     * @throws IllegalArgumentException si los argumentos no son válidos según
+     *                                  copiar
+     * @throws IOException              si falla la lectura o la escritura
+     */
+    public static long copiarSustituyendo(File origen, File destino, byte buscado,
+            byte reemplazo, int capacidad) throws IOException {
+        // TODO: Parte del esquema de copiar, con las mismas validaciones.
+        // TODO: Antes de escribir cada bloque, recorre su parte válida y sustituye las
+        // coincidencias.
+        // TODO: Escribe solo los bytes leídos y acumula el total.
+        return -1L;
     }
 
     /**
      * Playground con datos regenerables bajo {@code target/demo-data}.
+     * Los ejercicios pendientes muestran resultados distintos de los esperados.
      *
      * @param args argumentos de línea de comandos, no utilizados
      * @throws IOException si falla la preparación o la copia del ejemplo
@@ -105,6 +220,40 @@ public final class FlujosBytes {
         }
         anexar(anexo, new byte[] { 10, 20, 30, 40 }, 1, 2);
         System.out.println("anexo.bin = " + Arrays.toString(leer(anexo)) + " (esperado [9, 20, 30])");
+
+        System.out.println("\n--- Ejercicios nuevos: completa los TODO en orden ---");
+        File guardado = new File(base, "guardado.bin");
+        // Preparación independiente de guardar: permite ver si realmente sobrescribe.
+        try (FileOutputStream salida = new FileOutputStream(guardado)) {
+            salida.write(new byte[] { 99, 99, 99, 99 });
+        }
+        guardar(guardado, new byte[] { 10, 20, 30 });
+        System.out.println("3. guardar: " + Arrays.toString(leer(guardado)) + " (esperado [10, 20, 30])");
+
+        System.out.println("4. contarBytes: " + contarBytes(origen, 4) + " (esperado 6)");
+
+        File repetidos = new File(base, "repetidos.bin");
+        try (FileOutputStream salida = new FileOutputStream(repetidos)) {
+            salida.write(new byte[] { 7, 2, 7, 4, 5 });
+        }
+        System.out.println("5. contarApariciones: " + contarApariciones(repetidos, (byte) 7, 4)
+                + " (esperado 2)");
+
+        File unido = new File(base, "unido.bin");
+        try (FileOutputStream salida = new FileOutputStream(unido)) {
+            salida.write(9);
+        }
+        long añadidos = anexarArchivo(origen, unido, 4);
+        System.out.println("6. anexarArchivo: " + añadidos + " bytes (esperado 6), "
+                + Arrays.toString(leer(unido)) + " (esperado [9, 1, 2, 3, 4, 5, 6])");
+
+        File sustituido = new File(base, "sustituido.bin");
+        try (FileOutputStream salida = new FileOutputStream(sustituido)) {
+            salida.write(99);
+        }
+        long escritos = copiarSustituyendo(repetidos, sustituido, (byte) 7, (byte) 9, 4);
+        System.out.println("7. copiarSustituyendo: " + escritos + " bytes (esperado 5), "
+                + Arrays.toString(leer(sustituido)) + " (esperado [9, 2, 9, 4, 5])");
     }
 
     private static byte[] leer(File fichero) throws IOException {
