@@ -128,7 +128,19 @@ public final class FlujosBytes {
     public static long contarBytes(File origen, int capacidad) throws IOException {
         // TODO: Valida y abre solo un flujo de entrada con try-with-resources.
         // TODO: Lee por bloques hasta -1 y acumula la cantidad realmente leída.
-        return -1L;
+        if (origen == null || !origen.isFile() || capacidad <= 0) {
+            throw new IllegalArgumentException(
+                    "Error, origen, fichero o capacidad incompatibles con los parámetros esperados");
+        }
+        long total = 0;
+        try (FileInputStream fis = new FileInputStream(origen)) {
+            byte[] buffer = new byte[capacidad];
+            int leido;
+            while ((leido = fis.read(buffer)) != -1) {
+                total += leido;
+            }
+        }
+        return total;
     }
 
     /**
