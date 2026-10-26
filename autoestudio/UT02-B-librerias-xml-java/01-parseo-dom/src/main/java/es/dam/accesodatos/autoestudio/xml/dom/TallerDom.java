@@ -2,13 +2,22 @@ package es.dam.accesodatos.autoestudio.xml.dom;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -48,7 +57,13 @@ public final class TallerDom {
         // getTextContent.
         // TODO: Devuelve los nombres. Cada alumno de esta entrada tiene exactamente un
         // nombre.
-        return null;
+        List<String> listaNombres = new ArrayList<>();
+        NodeList nombres = doc.getElementsByTagName("nombre");
+        for (int i = 0; i < nombres.getLength(); i++) {
+            Node node = nombres.item(i);
+            listaNombres.add(node.getTextContent());
+        }
+        return listaNombres;
     }
 
     /**
@@ -57,7 +72,15 @@ public final class TallerDom {
      */
     public static int contarHijosElemento(Element padre) {
         // TODO: Recorre getChildNodes() y comprueba getNodeType() == Node.ELEMENT_NODE.
-        return 0;
+        int contador = 0;
+        NodeList nodos = padre.getChildNodes();
+        for (int i = 0; i < nodos.getLength(); i++) {
+            Node hijo = nodos.item(i);
+            if (hijo.getNodeType() == Node.ELEMENT_NODE) {
+                contador++;
+            }
+        }
+        return contador;
     }
 
     /**
@@ -67,6 +90,15 @@ public final class TallerDom {
     public static boolean actualizarNota(Document doc, String id, double nota) {
         // TODO: Localiza alumno por getAttribute("id"), no por índice.
         // TODO: Cambia el campo nota mediante setTextContent(Double.toString(nota)).
+        NodeList nodeList = doc.getElementsByTagName("alumno");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Element element = (Element) nodeList.item(i);
+            if (element.getAttribute("id").equals(id)) {
+                Node nodoNota = element.getElementsByTagName("nota").item(0);
+                nodoNota.setTextContent(Double.toString(nota));
+                return true;
+            }
+        }
         return false;
     }
 
@@ -78,12 +110,35 @@ public final class TallerDom {
         // TODO: Crea alumno, atributo id y campos nombre y nota con el Document.
         // TODO: Crea el texto y enlaza los nodos con appendChild.
         // TODO: Inserta el alumno bajo la raíz; crear un nodo no lo inserta.
+
+        Element alumno = doc.createElement("alumno");
+        alumno.setAttribute("id", id);
+
+        Element elementNombre = doc.createElement("nombre");
+        elementNombre.setTextContent(nombre);
+
+        Element elementNota = doc.createElement("nota");
+        elementNota.setTextContent(Double.toString(nota));
+
+        alumno.appendChild(elementNombre);
+        alumno.appendChild(elementNota);
+
+        doc.getDocumentElement().appendChild(alumno);
+
     }
 
     /** Elimina el alumno por id exacto y devuelve true; false si no existe. */
     public static boolean eliminarAlumno(Document doc, String id) {
         // TODO: Localiza el elemento y usa su padre para removeChild; termina tras
         // eliminarlo.
+        NodeList nodeList = doc.getElementsByTagName("alumno");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Element alumno = (Element) nodeList.item(i);
+            if (alumno.getAttribute("id").equals(id)) {
+                alumno.getParentNode().removeChild(alumno);
+                return true;
+            }
+        }
         return false;
     }
 
@@ -94,6 +149,14 @@ public final class TallerDom {
     public static void guardar(Document doc, File destino) throws TransformerException {
         // TODO: Crea Transformer y activa OutputKeys.INDENT="yes", como en el tema.
         // TODO: Transforma DOMSource(doc) a StreamResult(destino).
+        TransformerFactory transformerFactory = TransformerFactory.newDefaultInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+        DOMSource domSource = new DOMSource(doc);
+        StreamResult result = new StreamResult(destino);
+
+        transformer.transform(domSource, result);
     }
 
     /** Consulta inicial sin modificar el archivo de entrada. */
