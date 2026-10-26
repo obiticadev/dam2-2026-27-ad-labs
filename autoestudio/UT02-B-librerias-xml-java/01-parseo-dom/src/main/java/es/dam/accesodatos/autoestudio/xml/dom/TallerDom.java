@@ -33,8 +33,9 @@ public final class TallerDom {
             throws ParserConfigurationException, SAXException, IOException {
         // TODO: Crea factoría, builder y Document usando parse(archivo).
         // TODO: Normaliza la raíz como en Ejemplo2 del tema y devuelve el documento.
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(archivo).normalize();
-        return null;
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(archivo);
+        doc.getDocumentElement().normalize();
+        return doc;
     }
 
     /**
