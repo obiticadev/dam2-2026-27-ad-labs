@@ -159,7 +159,22 @@ public final class FlujosBytes {
         // TODO: Reutiliza el esquema de lectura de contarBytes.
         // TODO: En cada bloque recorre solo los índices 0 hasta leidos - 1.
         // TODO: Incrementa el contador cuando el byte coincida con buscado.
-        return -1L;
+        if (origen == null || !origen.isFile() || capacidad <= 0) {
+            throw new IllegalArgumentException("Error, origen, fichero o capacidad tiene parámetros no válidos");
+        }
+        long total = 0;
+        try (FileInputStream fis = new FileInputStream(origen)) {
+            byte[] cache = new byte[capacidad];
+            int leido;
+            while ((leido = fis.read(cache)) != -1) {
+                for (int i = 0; i < leido; i++) {
+                    if (cache[i] == buscado) {
+                        total++;
+                    }
+                }
+            }
+        }
+        return total;
     }
 
     /**
@@ -180,7 +195,21 @@ public final class FlujosBytes {
         // TODO: Valida como en copiar, antes de abrir los flujos.
         // TODO: Abre entrada y salida, esta vez con append.
         // TODO: Lee, escribe solo la parte válida y acumula los bytes añadidos.
-        return -1L;
+        if (origen == null || !origen.isFile() || destino == null
+                || origen.getCanonicalPath().equals(destino.getCanonicalPath()) || capacidad <= 0) {
+            throw new IllegalArgumentException("Error, un parámetro de entrada no es correcto");
+        }
+        long total = 0;
+        try (FileInputStream fis = new FileInputStream(origen);
+                FileOutputStream fos = new FileOutputStream(destino, true)) {
+            byte[] cache = new byte[capacidad];
+            int leido;
+            while ((leido = fis.read(cache)) != -1) {
+                fos.write(cache, 0, leido);
+                total += leido;
+            }
+        }
+        return total;
     }
 
     /**
@@ -203,7 +232,26 @@ public final class FlujosBytes {
         // TODO: Antes de escribir cada bloque, recorre su parte válida y sustituye las
         // coincidencias.
         // TODO: Escribe solo los bytes leídos y acumula el total.
-        return -1L;
+        if (origen == null || !origen.isFile() || destino == null
+                || origen.getCanonicalPath().equals(destino.getCanonicalPath()) || capacidad <= 0) {
+            throw new IllegalArgumentException("Error, un parámetro de entrada no es correcto");
+        }
+        long total = 0;
+        try (FileInputStream fis = new FileInputStream(origen);
+                FileOutputStream fos = new FileOutputStream(destino, false)) {
+            byte[] cache = new byte[capacidad];
+            int leido;
+            while ((leido = fis.read(cache)) != -1) {
+                for (int i = 0; i < leido; i++) {
+                    if (cache[i] == buscado) {
+                        cache[i] = reemplazo;
+                    }
+                }
+                fos.write(cache, 0, leido);
+                total += leido;
+            }
+        }
+        return total;
     }
 
     /**
