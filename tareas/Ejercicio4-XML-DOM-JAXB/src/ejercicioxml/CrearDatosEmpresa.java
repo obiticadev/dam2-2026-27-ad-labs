@@ -33,7 +33,8 @@ public class CrearDatosEmpresa {
         NodeList filasDepartamentos = documento.getElementsByTagName("DEP_ROW");
         NodeList filasEmpleados = documento.getElementsByTagName("EMP_ROW");
 
-        // 3. Crear cada departamento y añadir sus empleados, igual que en el apartado a.
+        // 3. Crear cada departamento y añadir sus empleados, igual que en el apartado
+        // a.
         for (int i = 0; i < filasDepartamentos.getLength(); i++) {
             Element fila = (Element) filasDepartamentos.item(i);
             Departamento departamento = new Departamento();
@@ -61,7 +62,7 @@ public class CrearDatosEmpresa {
         // 4. Convertir los objetos a XML con JAXB y guardar el resultado.
         JAXBContext contexto = JAXBContext.newInstance(Empresa.class);
         Marshaller marshaller = contexto.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.marshal(empresa, FICHERO_SALIDA);
         System.out.println("Fichero creado: " + FICHERO_SALIDA);
     }
@@ -108,7 +109,7 @@ public class CrearDatosEmpresa {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(propOrder = {
-        "apellido", "oficio", "dir", "fechaAlta", "salario", "comision"
+            "apellido", "oficio", "dir", "fechaAlta", "salario", "comision"
     })
     public static class Empleado {
         @XmlAttribute(name = "numero")
