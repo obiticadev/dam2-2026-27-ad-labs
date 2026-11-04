@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -150,9 +152,14 @@ public final class ParseoSax {
      * @param xml      documento XML válido
      * @param etiqueta nombre de elemento que se desea contar
      * @return número de eventos de inicio con ese nombre
-     * @throws IllegalArgumentException si el XML o la etiqueta son nulos o están en
-     *                                  blanco
-     * @throws RuntimeException         si el XML está mal formado o falla el parser
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws IllegalArgumentException     si el XML o la etiqueta son nulos o
+     *                                      están en
+     *                                      blanco
+     * @throws RuntimeException             si el XML está mal formado o falla el
+     *                                      parser
      */
     public static int contarElementos(String xml, String etiqueta) {
         // TODO: Valida el documento y el nombre de etiqueta.
@@ -161,7 +168,29 @@ public final class ParseoSax {
         // TODO: Incrementa el contador en startElement cuando coincida el nombre.
         // TODO: Parsea secuencialmente y propaga el fallo si el XML está mal formado.
         // TODO: Devuelve el total contado solo si el parseo finaliza correctamente.
-        return 0;
+        if (xml == null || xml.isBlank() || etiqueta == null || etiqueta.isBlank()) {
+            throw new IllegalArgumentException("Son nulos o están en blanco");
+        }
+        int[] contador = { 0 };
+        DefaultHandler manejador = new DefaultHandler() {
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes attributes)
+                    throws SAXException {
+                if (qName.equals(etiqueta)) {
+                    contador[0]++;
+                }
+            }
+        };
+        try {
+            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+            SAXParser saxParser;
+            saxParser = saxParserFactory.newSAXParser();
+            saxParser.parse(new InputSource(new StringReader(xml)), manejador);
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return contador[0];
     }
 
     /**

@@ -20,11 +20,13 @@ import javax.xml.stream.events.XMLEvent;
 /**
  * Ejercicios de lectura y escritura StAX con cursor e iterador de eventos.
  *
- * <p>Procedencia: los lectores de cursor e iterador siguen los ejemplos DAM2
+ * <p>
+ * Procedencia: los lectores de cursor e iterador siguen los ejemplos DAM2
  * `ListaLibrosStAX` y `EventReader`. Los ejercicios de escritura completan las
  * APIs `XMLStreamWriter` y `XMLEventWriter` descritas en UT02-B.
  *
- * <p>Teoría: {@code teoria/parseo-stax.md}.
+ * <p>
+ * Teoría: {@code teoria/parseo-stax.md}.
  */
 public final class ParseoStax {
 
@@ -34,36 +36,60 @@ public final class ParseoStax {
     /**
      * Extrae el texto de los elementos indicados usando un cursor StAX.
      *
-     * @param xml documento XML válido
+     * @param xml      documento XML válido
      * @param etiqueta nombre local del elemento que se desea leer
      * @return textos en orden documental; no se exige inmutabilidad
-     * @throws IllegalArgumentException si el documento o la etiqueta son nulos o están en blanco
-     * @throws RuntimeException si el XML está mal formado o falla StAX
+     * @throws IllegalArgumentException si el documento o la etiqueta son nulos o
+     *                                  están en blanco
+     * @throws RuntimeException         si el XML está mal formado o falla StAX
      */
     public static List<String> titulosConCursor(String xml, String etiqueta) {
         // TODO: Valida el XML y el nombre local de etiqueta.
         // TODO: Crea XMLInputFactory y XMLStreamReader sobre StringReader.
-        // TODO: Avanza el cursor y localiza eventos START_ELEMENT con el nombre solicitado.
-        // TODO: Extrae el texto simple de cada coincidencia respetando el avance de getElementText.
+        // TODO: Avanza el cursor y localiza eventos START_ELEMENT con el nombre
+        // solicitado.
+        // TODO: Extrae el texto simple de cada coincidencia respetando el avance de
+        // getElementText.
         // TODO: Cierra el reader y propaga XMLStreamException como RuntimeException.
         // TODO: Devuelve los valores recogidos; no se exige copia inmutable.
+        if (xml == null | xml.isBlank() || etiqueta == null || etiqueta.isBlank()) {
+            throw new IllegalArgumentException("El documento o la etiqueta son nulos o están en blanco");
+        }
+
+        try (XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance()
+                .createXMLStreamReader(new StringReader(xml))) {
+
+            String id = null;
+            while (xmlStreamReader.hasNext()) {
+                int evento = xmlStreamReader.next();
+                if (evento == XMLStreamConstants.START_ELEMENT) {
+                    if (xmlStreamReader.getLocalName().equals(etiqueta)) {
+                        id = xmlStreamReader.getAttributeValue(null, "id");
+                    }
+                }
+            }
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     /**
      * Extrae un atributo de cada elemento mediante consultas al cursor actual.
      *
-     * @param xml documento XML válido
+     * @param xml      documento XML válido
      * @param etiqueta nombre local del elemento que se inspecciona
      * @param atributo nombre local del atributo que se consulta
-     * @return valores en orden documental; cadena vacía si una coincidencia carece del atributo
+     * @return valores en orden documental; cadena vacía si una coincidencia carece
+     *         del atributo
      * @throws IllegalArgumentException si algún argumento es nulo o está en blanco
-     * @throws RuntimeException si el XML está mal formado o falla StAX
+     * @throws RuntimeException         si el XML está mal formado o falla StAX
      */
     public static List<String> atributosConCursor(String xml, String etiqueta, String atributo) {
         // TODO: Valida el documento, la etiqueta y el atributo.
         // TODO: Crea el reader StAX y recórrelo hacia delante.
-        // TODO: En cada START_ELEMENT coincidente consulta el atributo sin namespace pedido.
+        // TODO: En cada START_ELEMENT coincidente consulta el atributo sin namespace
+        // pedido.
         // TODO: Conserva cadena vacía cuando la etiqueta no lleve ese atributo.
         // TODO: Cierra el reader, transforma XMLStreamException y devuelve la lista.
         return null;
@@ -72,11 +98,12 @@ public final class ParseoStax {
     /**
      * Extrae el texto de los elementos usando el iterador {@code XMLEventReader}.
      *
-     * @param xml documento XML válido
+     * @param xml      documento XML válido
      * @param etiqueta nombre local del elemento que se desea leer
      * @return textos en orden documental; no se exige inmutabilidad
-     * @throws IllegalArgumentException si el documento o la etiqueta son nulos o están en blanco
-     * @throws RuntimeException si el XML está mal formado o falla StAX
+     * @throws IllegalArgumentException si el documento o la etiqueta son nulos o
+     *                                  están en blanco
+     * @throws RuntimeException         si el XML está mal formado o falla StAX
      */
     public static List<String> titulosConIterador(String xml, String etiqueta) {
         // TODO: Valida el documento y el nombre de etiqueta.
@@ -91,18 +118,20 @@ public final class ParseoStax {
     /**
      * Extrae atributos de elementos coincidentes usando objetos StAX de eventos.
      *
-     * @param xml documento XML válido
+     * @param xml      documento XML válido
      * @param etiqueta nombre local del elemento que se inspecciona
      * @param atributo nombre local del atributo que se consulta
      * @return valores de atributos en orden documental, con cadena vacía si falta
      * @throws IllegalArgumentException si algún argumento es nulo o está en blanco
-     * @throws RuntimeException si el XML está mal formado o falla StAX
+     * @throws RuntimeException         si el XML está mal formado o falla StAX
      */
     public static List<String> atributosConIterador(String xml, String etiqueta, String atributo) {
         // TODO: Valida los tres argumentos.
         // TODO: Crea un XMLEventReader y consume eventos hasta el final del documento.
-        // TODO: Inspecciona StartElement y sus Attribute para cada etiqueta coincidente.
-        // TODO: Conserva valores en orden y representa atributo ausente como cadena vacía.
+        // TODO: Inspecciona StartElement y sus Attribute para cada etiqueta
+        // coincidente.
+        // TODO: Conserva valores en orden y representa atributo ausente como cadena
+        // vacía.
         // TODO: Cierra el reader, convierte XMLStreamException y devuelve la lista.
         return null;
     }
@@ -110,11 +139,12 @@ public final class ParseoStax {
     /**
      * Cuenta elementos por nombre mediante eventos de inicio StAX.
      *
-     * @param xml documento XML válido
+     * @param xml      documento XML válido
      * @param etiqueta nombre local que se desea contar
      * @return número de eventos START_ELEMENT coincidentes
-     * @throws IllegalArgumentException si el XML o la etiqueta son nulos o están en blanco
-     * @throws RuntimeException si el XML está mal formado o falla StAX
+     * @throws IllegalArgumentException si el XML o la etiqueta son nulos o están en
+     *                                  blanco
+     * @throws RuntimeException         si el XML está mal formado o falla StAX
      */
     public static int contarElementosConIterador(String xml, String etiqueta) {
         // TODO: Valida el documento y el nombre del elemento.
@@ -128,12 +158,13 @@ public final class ParseoStax {
     /**
      * Ampliación opcional: genera un XML mediante la API de cursor de escritura.
      *
-     * @param raiz nombre del elemento raíz
-     * @param hijo nombre del elemento hijo
+     * @param raiz  nombre del elemento raíz
+     * @param hijo  nombre del elemento hijo
      * @param texto contenido textual del hijo
      * @return XML serializado con declaración y texto escapado
      * @throws IllegalArgumentException si los nombres o el texto son inválidos
-     * @throws RuntimeException si StAX no puede crear o escribir el documento
+     * @throws RuntimeException         si StAX no puede crear o escribir el
+     *                                  documento
      */
     public static String crearDocumentoConCursor(String raiz, String hijo, String texto) {
         // TODO: Valida raíz, hijo y texto según el contrato.
@@ -145,14 +176,16 @@ public final class ParseoStax {
     }
 
     /**
-     * Ampliación opcional: genera XML mediante eventos StAX y {@code XMLEventWriter}.
+     * Ampliación opcional: genera XML mediante eventos StAX y
+     * {@code XMLEventWriter}.
      *
-     * @param raiz nombre del elemento raíz
-     * @param hijo nombre del elemento hijo
+     * @param raiz  nombre del elemento raíz
+     * @param hijo  nombre del elemento hijo
      * @param texto contenido textual del hijo
      * @return XML serializado con declaración y texto escapado
      * @throws IllegalArgumentException si los nombres o el texto son inválidos
-     * @throws RuntimeException si StAX no puede crear o escribir el documento
+     * @throws RuntimeException         si StAX no puede crear o escribir el
+     *                                  documento
      */
     public static String crearDocumentoConIterador(String raiz, String hijo, String texto) {
         // TODO: Valida raíz, hijo y texto según el contrato.
