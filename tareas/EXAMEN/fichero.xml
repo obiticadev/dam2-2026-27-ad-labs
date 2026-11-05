@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<productos>
+    <producto codigo="8">
+        <nombre>Ratón óptico</nombre>
+        <precio>12.50</precio>
+        <unidades>4</unidades>
+    </producto>
+    <producto codigo="2">
+        <nombre>Teclado USB</nombre>
+        <precio>18.00</precio>
+        <unidades>0</unidades>
+    </producto>
+    <producto codigo="11">
+        <nombre>Monitor 24</nombre>
+        <precio>129.90</precio>
+        <unidades>3</unidades>
+    </producto>
+    <producto codigo="1">
+        <nombre>Cable HDMI</nombre>
+        <precio>7.25</precio>
+        <unidades>8</unidades>
+    </producto>
+</productos>
