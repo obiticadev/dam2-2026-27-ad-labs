@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Ejecutar",
+            "request": "launch",
+            "mainClass": "JDBCMySQL",
+            "preLaunchTask": "Compilar con Maven",
+            "classPaths": [
+                "${workspaceFolder}/target/classes",
+                "${workspaceFolder}/lib/sqlite-jdbc-3.51.0.0.jar"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED"
+        }
+    ]
+}
