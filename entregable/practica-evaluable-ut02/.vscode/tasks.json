@@ -2,10 +2,16 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Compilar con Maven",
+            "label": "Compilar Java",
             "type": "process",
-            "command": "mvn",
-            "args": ["-q", "compile"],
+            "command": "javac",
+            "args": [
+                "--release", "17",
+                "-encoding", "UTF-8",
+                "-d", "target/classes",
+                "src/main/java/Conexion.java",
+                "src/main/java/JDBCMySQL.java"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },

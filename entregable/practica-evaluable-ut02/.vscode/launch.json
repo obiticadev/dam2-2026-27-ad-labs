@@ -6,7 +6,7 @@
             "name": "Ejecutar",
             "request": "launch",
             "mainClass": "JDBCMySQL",
-            "preLaunchTask": "Compilar con Maven",
+            "preLaunchTask": "Compilar Java",
             "classPaths": [
                 "${workspaceFolder}/target/classes",
                 "${workspaceFolder}/lib/sqlite-jdbc-3.51.0.0.jar"

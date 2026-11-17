@@ -8,10 +8,10 @@ base de datos. No hace falta servidor, usuario, contraseña ni máquina virtual.
 - `src/main/java/JDBCMySQL.java`: el menú, la consulta, la restauración y las subidas.
 - `src/main/java/Conexion.java`: abre la conexión con SQLite.
 - `pom.xml`: proyecto Maven, compatible con Java 17 o superior.
-- `lib/`: controlador JDBC de SQLite, copiado por Maven al compilar.
+- `lib/`: controlador JDBC de SQLite incluido; Maven puede copiarlo con `mvn package`.
 - `sql/emp_dept_salgrade_MYSQL.sql`: script original del profesor, sin modificar.
 - `sql/emp_dept_salgrade_SQLITE.sql`: adaptación con las mismas tablas y datos.
-- `empdept.db`: base de datos local, se crea con la opción 2 y no se sube a Git.
+- `empdept.db`: base de datos local, se inicializa al arrancar y no se sube a Git.
 - `target/`: clases y JAR generados al compilar.
 
 ## Compilar y ejecutar
@@ -19,8 +19,10 @@ base de datos. No hace falta servidor, usuario, contraseña ni máquina virtual.
 ### Desde VS Code
 
 Abre la carpeta de la práctica y pulsa **Run** en `JDBCMySQL.java`.
-La tarea incluida compila con Maven antes de ejecutar, aunque se haya borrado
-`target/`. La primera vez, elige 2 para crear las tablas y cargar los datos.
+La tarea incluida compila con `javac` (JDK 17 o superior) antes de ejecutar,
+aunque se haya borrado `target/`. No necesita Maven: utiliza el controlador
+incluido en `lib/`. Si no existe la tabla `emp`, al arrancar se crean las tablas
+y se cargan los datos originales automáticamente.
 La configuración incluida permite cargar SQLite sin los avisos de acceso nativo.
 En la terminal aparece este menú:
 
@@ -45,7 +47,7 @@ otra prueba independiente. Restaurar borra las subidas anteriores.
 Ejecutar los comandos **desde la carpeta de esta práctica**:
 
 ```bash
-mvn package
+javac --release 17 -encoding UTF-8 -d target/classes src/main/java/Conexion.java src/main/java/JDBCMySQL.java
 
 # Abrir el mismo menú que aparece al pulsar Run
 java --enable-native-access=ALL-UNNAMED -cp 'target/classes:lib/*' JDBCMySQL
@@ -55,11 +57,9 @@ El programa se maneja solo con el menú; no utiliza argumentos de consola.
 La opción 3 aplica una nueva subida cada vez: **restaurar con 2 antes de cada
 prueba independiente**.
 
-Maven está instalado para este usuario en `~/.local/share/maven/apache-maven-3.9.11`,
-con el comando `~/.local/bin/mvn`. No se necesita `sudo` para usarlo.
-La primera compilación necesita Internet para descargar las dependencias.
-Java 25 puede mostrar un aviso de `sun.misc.Unsafe` al arrancar Maven; no impide
-compilar. La opción `--enable-native-access` permite al controlador cargar SQLite
+Si tienes Maven instalado, también puedes compilar y generar el JAR con
+`mvn package`. Su primera ejecución necesita Internet para descargar dependencias.
+La opción `--enable-native-access` permite al controlador cargar SQLite
 sin el aviso de acceso nativo de las versiones recientes de Java.
 
 ## Qué se ha cambiado del SQL
@@ -171,13 +171,14 @@ Para las pruebas que pide el profesor, modificar el código y recompilar:
 - Sentencia: cambiar `UPDATE emp` por `UPDATE tabla_inexistente` en `cambio`.
   Debe mostrar el error SQL y ejecutar `ROLLBACK`.
 
-Después de cada prueba, restaurar la línea modificada y ejecutar `mvn package`.
+Después de cada prueba, restaurar la línea modificada y volver a pulsar Run
+o recompilar con el comando anterior.
 
 ## Entrega
 
 El ZIP debe contener el proyecto, incluido `src/`, `pom.xml`, `sql/`, `lib/` y este
 README. Se puede incluir `empdept.db` con los datos originales. `target/` no es
-necesario: se regenera con `mvn package`.
+necesario: se regenera al pulsar Run o compilar desde la terminal.
 
 Renombrar el ZIP con los datos personales siguiendo el patrón del enunciado:
 `apellido1_apellido2_nombre_3J_Tarea.zip`, sin tildes ni caracteres especiales.

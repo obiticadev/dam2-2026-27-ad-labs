@@ -13,6 +13,16 @@ import java.util.Scanner;
 public class JDBCMySQL {
     public static void main(String[] args) {
         try (Scanner teclado = new Scanner(System.in)) {
+            try (Connection conexion = Conexion.conectar()) {
+                boolean existeEmp;
+                try (ResultSet tablas = conexion.getMetaData().getTables(null, null, "emp", null)) {
+                    existeEmp = tablas.next();
+                }
+                if (!existeEmp) {
+                    reiniciar(conexion);
+                }
+            }
+
             boolean continuar = true;
 
             while (continuar) {
