@@ -1,4 +1,19 @@
-# Autoestudio · Primer examen de Acceso a Datos
+# Autoestudio · Acceso a Datos
+
+## Ahora · Temas 3 y 4
+
+- **[Ruta de seis horas · lunes, martes y miércoles](RUTA_6_HORAS.md)**: configuración,
+  JDBC/SQLite y simulacro con apuntes, sin Internet. Prioriza el examen del tema 3.
+- [Tema 3 · JDBC y SQLite](Tema-3-JDBC-SQLite/README.md): arranque offline, diez bloques
+  de práctica después de configuración, pistas, tests y soluciones separadas.
+- [Tema 4 · Hibernate y HQL](Tema-4-Hibernate-HQL/README.md): configuración, mapeo,
+  relaciones, estados y consultas; recorrido independiente, fuera de esas seis horas.
+- [Pruebas y límites de los temas 3/4](VERIFICACION_TEMAS_3_4.md).
+
+Abre cada carpeta nueva como proyecto Maven independiente. El POM raíz conserva
+los módulos anteriores y no ejecuta estos ejercicios incompletos por sorpresa.
+
+## Material conservado · Primer examen
 
 Ejercicios para **resolver tú**, con teoría, pistas progresivas y tests. Se conserva
 el código que ya has escrito en DOM y SAX. No se sustituyen tus intentos por soluciones.

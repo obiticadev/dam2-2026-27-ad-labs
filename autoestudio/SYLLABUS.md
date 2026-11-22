@@ -1,5 +1,14 @@
 # Sílabo · Autoestudio de Acceso a Datos
 
+## Nuevos temas relacionales
+
+- [Tema 3 · JDBC y SQLite](Tema-3-JDBC-SQLite/README.md): configuración offline y B01–B10.
+- [Tema 4 · Hibernate y HQL](Tema-4-Hibernate-HQL/README.md): configuración y B01–B12.
+- [Ruta prioritaria de seis horas](RUTA_6_HORAS.md): el miércoles se prepara el tema 3;
+  el tema 4 queda aparte conforme al alcance comunicado en Obsidian.
+
+El resto de este sílabo corresponde al primer examen y se conserva sin cambiar su alcance.
+
 ## Criterio
 
 Java 17, Maven y JUnit 5. Fuente principal: los Markdown docentes UT02-A/B;

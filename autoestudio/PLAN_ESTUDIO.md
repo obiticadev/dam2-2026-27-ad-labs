@@ -1,5 +1,8 @@
 # Ruta práctica · Primer examen de AD
 
+> Esta ruta es la del primer examen de ficheros/XML y se conserva como historial.
+> Para el examen del miércoles del tema 3, usa [la ruta nueva de seis horas](RUTA_6_HORAS.md).
+
 ## Fuentes y alcance
 
 - [Fuente docente UT02-A](<../../DAM2/Fuentes/AD/temario/UT02-A-manejo-de-ficheros.md>).
