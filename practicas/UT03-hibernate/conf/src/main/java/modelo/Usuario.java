@@ -1,9 +1,10 @@
 package modelo;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+// Vincula la clase Usuario con la tabla usuarios
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -11,6 +12,7 @@ public class Usuario {
     private int id;
     private String nombre;
 
+    // Hibernate usa este constructor al recuperar un usuario
     public Usuario() {
     }
 
