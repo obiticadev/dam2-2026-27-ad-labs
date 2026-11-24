@@ -37,7 +37,7 @@ actualizar/guardar; deja agregar/eliminar y navegación para la variante.
 
 Correspondencia: UT02-B, apartados de DOM, estructura `Document` y escritura con
 `Transformer`. La creación y transformación se complementan con
-`practicas/UT02-B-xml-java/xml-dom`.
+`practicas/Tema-1-2-Ficheros-XML/UT02-B-xml-java/xml-dom`.
 
 ## Ejecutar
 

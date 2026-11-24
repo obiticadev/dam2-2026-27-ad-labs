@@ -32,7 +32,7 @@ No se exige una lista inmutable ni un manejador especial para silenciar errores.
 | `informaXmlMalFormadoComoFallo` | Propagación de errores de parseo |
 
 Correspondencia: UT02-B, procesamiento secuencial XML con SAX. Los ejemplos de
-laboratorio relacionados están en `practicas/UT02-B-xml-java/xml-sax-stax`.
+laboratorio relacionados están en `practicas/Tema-1-2-Ficheros-XML/UT02-B-xml-java/xml-sax-stax`.
 
 ## Ejecutar
 

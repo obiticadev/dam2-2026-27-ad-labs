@@ -5,8 +5,8 @@
 1. Markdown docente UT02-A/B conservado en [Fuentes de Obsidian](<../../DAM2/Fuentes/AD/temario/>).
 2. Alcance confirmado por el usuario: **NIO excluido**, 21/10/2026. Prevalece sobre
    la nota de examen antigua y la mención a NIO del calendario.
-3. Ejemplos de clase del repositorio `practicas/UT02-A-manejo-de-ficheros` y
-   `practicas/UT02-B-xml-java`; las explicaciones y ejercicios de Obsidian se
+3. Ejemplos de clase de `UT02-A-manejo-de-ficheros` y `UT02-B-xml-java`,
+   ahora agrupados en `practicas/Tema-1-2-Ficheros-XML/`; las explicaciones y ejercicios de Obsidian se
    reconocen como material añadido cuando así están marcados.
 4. Masterclass: origen histórico de algunos esqueletos, no autoridad del examen.
 
