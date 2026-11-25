@@ -1,4 +1,6 @@
-package examen;
+package examen.conect;
+
+import examen.herramientas.Sqlite;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

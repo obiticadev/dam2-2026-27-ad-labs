@@ -1,8 +1,10 @@
-package examen;
+package examen.conect;
 
-import examen.ApoyoAsistentes.Esquema;
-import examen.ApoyoAsistentes.Fragmento;
-import examen.ConstructorEjercicio.Ejercicio;
+import examen.herramientas.Sqlite;
+
+import examen.conect.ApoyoAsistentes.Esquema;
+import examen.conect.ApoyoAsistentes.Fragmento;
+import examen.conect.ConstructorEjercicio.Ejercicio;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
@@ -41,6 +43,7 @@ public class PruebasAsistentes {
         generacionJava();
         masOperaciones();
         soloLectura();
+        revisarEntrega();
         System.out.println("OK: " + comprobaciones + " comprobaciones de asistentes");
         System.out.println("Archivos aislados: " + carpeta);
     }
@@ -358,6 +361,21 @@ public class PruebasAsistentes {
     private static double salario(Connection c, int id) throws SQLException {
         return ((Number) Sqlite.consultar(c, "SELECT salario FROM empleados WHERE id = ?", id)
                 .get(0).get("salario")).doubleValue();
+    }
+
+    private static void revisarEntrega() throws Exception {
+        var metodos = RevisarEntrega.metodos(Files.readString(Path.of("src/main/java/examen/herramientas/Sqlite.java")));
+        // Un comentario o un texto no cuentan como uso; insertar arrastra a preparar y ejecutarCambio.
+        var usados = RevisarEntrega.usados(metodos, List.of("""
+                // Sqlite.commit(c);
+                String s = "Sqlite.rollback(c)";
+                Sqlite.insertar(c, "INSERT INTO t VALUES (?)", 1);
+                """));
+        comprobar(usados.equals(Set.of("preparar", "insertar", "ejecutarCambio")), "Entrega: " + usados);
+        var abrir = RevisarEntrega.usados(metodos, List.of("Sqlite.abrir(db);"));
+        comprobar(abrir.equals(Set.of("abrir", "configurar")), "Entrega: abrir necesita configurar: " + abrir);
+        comprobar(RevisarEntrega.usados(metodos, List.of("import static examen.herramientas.Sqlite.*; commit(c);"))
+                .containsAll(Set.of("commit", "exigirTransaccion")), "Entrega: import static");
     }
 
     private static void comprobar(boolean valido, String mensaje) {

@@ -1,6 +1,52 @@
 # 00 · Plantilla de examen: Java + SQLite
 
-**Para empezar sin argumentos:** ejecuta `MainDesdeSql` si partes de `sql/crear.sql`, o `MainDesdeSqlite` si ya tienes la base. Usa `00-examen` como directorio de trabajo. Comprueba siempre la ruta del fichero que muestra la consola. `Main.java` es la versión personalizable con selector por argumentos y diagnóstico; puede contener ya tus consultas.
+## Estructura: dos arranques, elige uno
+
+```text
+src/main/java/examen/
+├── MainDesdeSql.java     ← te dan un .sql: crea datos/examen.sqlite desde sql/crear.sql y la abre
+├── MainDesdeSqlite.java  ← te dan un .sqlite: abre datos/examen.sqlite
+├── herramientas/         ← Sqlite.java. Se ENTREGA (quitando los métodos que no uses).
+├── recetas/              ← EjemplosSqlite: ejemplos para copiar. Se borra.
+└── conect/               ← generadores y RevisarEntrega. Se borra.
+src/test/                 ← comprobaciones de las herramientas. Se borra.
+```
+
+Al empezar el examen **borra el arranque que no uses** y trabaja en el otro. Los dos tienen la misma forma:
+
+```java
+try (Connection c = Sqlite.abrir(db)) {
+    // ===== DIAGNÓSTICO: borra desde aquí... =====
+    ...                          // ruta, versión de SQLite y tablas encontradas
+    // ===== ...hasta aquí (ambas líneas incluidas). =====
+
+    // >>> LLAMA AQUÍ A TUS MÉTODOS, pasándoles c. Ejemplo: listar(c);
+}
+// >>> ESCRIBE AQUÍ TUS MÉTODOS.
+```
+
+1. Ejecútalo **sin argumentos** y con `00-examen` como directorio de trabajo (`bash ejecutar.sh desde-sql` o `desde-sqlite` desde el Tema 3).
+2. Si el diagnóstico muestra la ruta y las tablas que esperabas, **borra el bloque entre las dos líneas `=====`**. Queda solo la conexión.
+3. Escribe tus llamadas en `>>> LLAMA AQUÍ` y tus métodos en `>>> ESCRIBE AQUÍ`.
+
+`MainDesdeSql` solo importa el SQL si la base **no existe**. Si cambias `crear.sql`, o si el diagnóstico muestra 0 tablas porque el SQL falló, borra `datos/examen.sqlite` y vuelve a ejecutar. Los dos ya traen `import examen.herramientas.Sqlite;`; añádelo también en cualquier otra clase que escribas.
+
+## Antes de entregar: qué borrar
+
+Con tu solución terminada, desde `00-examen`:
+
+```bash
+bash asistente.sh entrega          # Git Bash/Linux
+.\asistente.cmd entrega            # PowerShell/CMD
+```
+
+(o **Entrega: qué puedo borrar** en Ejecutar y depurar). Revisa los arranques que haya en `src/main/java/examen` (o los ficheros que le pases como argumento) y muestra:
+
+1. **CONSERVA**: los métodos de `Sqlite.java` que llamas o que necesitan los que llamas (`abrir` necesita `configurar`, `insertar` necesita `preparar`…).
+2. **PUEDES BORRAR**: los métodos de `Sqlite.java` que nadie usa. Lo que aparece en comentarios o entre comillas no cuenta como uso. Si aún tienes los dos arranques, te avisa: borra primero el que no usas.
+3. **BORRA**: las carpetas y scripts de generación y comprobación que existan (`conect/`, `recetas/`, `src/test`, `asistente.sh`, `asistente.cmd`, `target/`, `consultas/`, `propuestas/`, `sesiones/`).
+
+Solo lee; no borra nada. Borra lo indicado, quita si quieres los `import` que queden sin usar y **compila otra vez**: si falta algo, el compilador te dirá qué. Lo que queda para entregar es tu `MainDesde…`, `herramientas/Sqlite.java`, `pom.xml`, `sql/`, `datos/` y `lib/` (este último si el profesor no usa Maven).
 
 ## Asistentes locales: consultas y propuestas de ejercicios
 
@@ -124,7 +170,7 @@ Genera en `propuestas/`:
 - `Solucion...java`: clase con `main` y `ejecutar(Connection c)`, usando tus métodos de `Sqlite.java`.
 - `Solucion...-revision.txt`: avisos, esquema y casos que deberías probar.
 
-**No ejecuta esa clase ni modifica tu Main.** Puedes abrirla y copiar/adaptar `ejecutar(c)` a tu solución. Si quieres ejecutar la clase entera, copia el `.java` a `src/main/java/examen/`, conserva su nombre y pásale como argumento la ruta de una **copia de la base**. El Main generado exige ese argumento para evitar una ejecución accidental con la base original.
+**No ejecuta esa clase ni modifica tu Main.** Puedes abrirla y copiar/adaptar `ejecutar(c)` a tu solución. Si quieres ejecutar la clase entera, copia el `.java` a `src/main/java/examen/` (ya incluye `import examen.herramientas.Sqlite;`), conserva su nombre y pásale como argumento la ruta de una **copia de la base**. El Main generado exige ese argumento para evitar una ejecución accidental con la base original.
 
 Los valores se generan como constantes; conviértelos en parámetros o lecturas de teclado si el enunciado lo exige. Un UPDATE cambia una columna por operación: añade más operaciones dentro de la misma transacción si necesitas cambiar otras.
 
@@ -162,9 +208,9 @@ bash ejecutar.sh pruebas-asistentes  # SQL, interfaz y Java generado.
 
 Las pruebas de asistentes compilan y ejecutan propuestas sobre bases aisladas en memoria o en una carpeta nueva de `target/`. No usan tu base de trabajo.
 
-## Herramientas preparadas para usar desde cualquier Main
+## Herramientas preparadas para usar desde tu MainDesde…
 
-Todo está en [`Sqlite.java`](src/main/java/examen/Sqlite.java), sin `var` ni dependencias nuevas. Puedes copiar las recetas de [`EjemplosSqlite.java`](src/main/java/examen/EjemplosSqlite.java). Ejecutar esa clase **solo consulta**, no ejecuta las recetas que modifican datos.
+Todo está en [`Sqlite.java`](src/main/java/examen/herramientas/Sqlite.java), sin `var` ni dependencias nuevas. Puedes copiar las recetas de [`EjemplosSqlite.java`](src/main/java/examen/recetas/EjemplosSqlite.java). Ejecutar esa clase **solo consulta**, no ejecuta las recetas que modifican datos.
 
 ### Cómo leer este catálogo
 
@@ -198,7 +244,7 @@ try (Connection c = Sqlite.abrir(new File("datos/examen.sqlite"))) {
 }
 ```
 
-`Sqlite` y tu Main están en el mismo paquete `examen`: no necesitas importar `Sqlite`. Si estás en otro paquete, añade `import examen.Sqlite;`.
+`Sqlite` está en el paquete `examen.herramientas`: los dos `MainDesde…` ya lo importan. En cualquier otra clase añade `import examen.herramientas.Sqlite;`.
 
 ### A. Abrir, crear y cargar la base
 
@@ -383,7 +429,6 @@ Las cuatro recetas que gestionan su propia transacción (`altaConRevision`, `pro
 
 Los métodos `main(String[] args)` son puntos de entrada: ejecútalos desde el IDE, no los llames como herramientas:
 
-- `Main`: selector `crear`/`abrir` y tu solución personal.
 - `MainDesdeSql`: crea desde `sql/crear.sql` si no existe la base de salida y luego la abre.
 - `MainDesdeSqlite`: abre la base existente indicada en su código.
 - `EjemplosSqlite`: ejecuta solo los listados de demostración.
@@ -402,31 +447,26 @@ Los valores corresponden a los `?` en el mismo orden. No concatenes entradas del
 
 **Al llegar el examen:** adapta SQL, valores y reglas. Estas herramientas no resuelven automáticamente el enunciado ni sustituyen saber JDBC. Confirma que el profesor permita usarlas. SQLite no admite procedimientos almacenados ni cursores actualizables mediante `updateRow()`.
 
-Las pruebas están en `src/test/java/examen/PruebasSqlite.java`; se ejecutan como un `main`, sin JUnit, desde `00-examen`. Usan bases en memoria y un fichero nuevo en `target/`, no tus bases de trabajo.
+Las pruebas están en `src/test/java/examen/herramientas/PruebasSqlite.java`; se ejecutan como un `main`, sin JUnit, desde `00-examen`. Usan bases en memoria y un fichero nuevo en `target/`, no tus bases de trabajo.
 
 ## 1. Si te dan un `.sql`: crea la base desde `main`
 
-Pega el enunciado en [`sql/crear.sql`](sql/crear.sql) o guarda el fichero del profesor en `sql/`. Desde la carpeta del Tema 3:
+Pega el SQL del profesor en [`sql/crear.sql`](sql/crear.sql) y ejecuta `MainDesdeSql`. Desde la carpeta del Tema 3:
 
 ```bash
-bash ejecutar.sh plantilla crear datos/examen.sqlite sql/crear.sql
-bash ejecutar.sh plantilla abrir datos/examen.sqlite
+bash ejecutar.sh desde-sql
 ```
 
-`crear` hace `mkdirs()` si hace falta, lee el script como UTF-8 con `java.io`, crea el fichero **solo si no existía** y lo carga dentro de una transacción. El lanzador resuelve `sql/` y `datos/` dentro de `00-examen/`. También se admiten rutas absolutas entre comillas. Para ensayar hoy sin editar la plantilla:
+`Sqlite.crear` hace `mkdirs()` si hace falta, lee el script como UTF-8 con `java.io`, crea el fichero **solo si no existía** y lo carga dentro de una transacción. El lanzador resuelve `sql/` y `datos/` dentro de `00-examen/`.
 
-```bash
-bash ejecutar.sh plantilla crear datos/ensayo.sqlite sql/crear.sql
-```
-
-El ejemplo debe mostrar **2 tablas**. El script puede tener varias sentencias y punto y coma dentro de literales; la versión fijada de Xerial lo ejecuta completo con `Statement.executeUpdate(String)`. Es **SQL SQLite de confianza para inicializar una base**, no un lanzador de dumps de cualquier motor: prepara solo DDL/DML, sin `BEGIN`/`COMMIT`/`ROLLBACK` (la transacción es de Java), `PRAGMA` de conexión ni comandos de consola como `.read`. Si un dump SQLite trae `BEGIN TRANSACTION;` y `COMMIT;`, quítalos en una copia para importarlo desde `main`. Si falla un script de DDL/DML, se revierten sus cambios; el fichero nuevo puede quedar vacío. Corrige el SQL y prueba con un nombre nuevo. No uses este importador para un `SELECT` del que esperas leer filas.
+El ejemplo debe mostrar **2 tablas**. El script puede tener varias sentencias y punto y coma dentro de literales; la versión fijada de Xerial lo ejecuta completo con `Statement.executeUpdate(String)`. Es **SQL SQLite de confianza para inicializar una base**, no un lanzador de dumps de cualquier motor: prepara solo DDL/DML, sin `BEGIN`/`COMMIT`/`ROLLBACK` (la transacción es de Java), `PRAGMA` de conexión ni comandos de consola como `.read`. Si un dump SQLite trae `BEGIN TRANSACTION;` y `COMMIT;`, quítalos en una copia para importarlo desde `main`. Si falla un script de DDL/DML, se revierten sus cambios; el fichero nuevo puede quedar vacío. Corrige el SQL, borra `datos/examen.sqlite` y vuelve a ejecutar. No uses este importador para un `SELECT` del que esperas leer filas.
 
 ## 2. Si te dan un `.sqlite`: ábrelo sin importar nada
 
-Copia el fichero a `00-examen/datos/` o pasa su ruta absoluta. Trabaja sobre una copia si vas a cambiar datos:
+Copia el fichero como `00-examen/datos/examen.sqlite` (trabaja sobre una copia si vas a cambiar datos) y ejecuta `MainDesdeSqlite`. Si se llama de otra forma, cambia la ruta de `new File(...)` en su primera línea:
 
 ```bash
-bash ejecutar.sh plantilla abrir "datos/base del profesor.sqlite"
+bash ejecutar.sh desde-sqlite
 ```
 
 La URL es `jdbc:sqlite:file:/…?mode=rw`: **abre en escritura solo un fichero existente**. Si el nombre no coincide, no crea otra base vacía. `File.getCanonicalFile()` y `File.toURI()` resuelven la ruta y codifican espacios, `#` y acentos. `PRAGMA foreign_keys = ON` se comprueba para **cada conexión**, antes de iniciar cualquier transacción. SQLite va embebido en el proceso Java: no se indica servidor, puerto ni contraseña.
@@ -434,8 +474,8 @@ La URL es `jdbc:sqlite:file:/…?mode=rw`: **abre en escritura solo un fichero e
 Para mirar el fichero desde la carpeta de la plantilla (opcional, requiere el programa `sqlite3`):
 
 ```bash
-sqlite3 -readonly datos/ensayo.sqlite ".tables"
-sqlite3 -readonly datos/ensayo.sqlite ".schema empleados"
+sqlite3 -readonly datos/examen.sqlite ".tables"
+sqlite3 -readonly datos/examen.sqlite ".schema empleados"
 ```
 
 Puedes crear la misma base por consola (alternativa a `main`, con un nombre **nuevo**):
@@ -450,30 +490,32 @@ sqlite3 -bail datos/consola.sqlite \
 
 ## 3. Usa la plantilla fuera del repositorio o desde el IDE
 
-- **IDE con Maven:** abre `00-examen/pom.xml`, selecciona JDK 17+, ejecuta `examen.Main` y pon como directorio de trabajo la carpeta que contiene ese `pom.xml`. Para crear la base, añade los argumentos `crear datos/examen.sqlite sql/crear.sql` a la configuración de ejecución. No dependas de una primera descarga de Maven el día del examen.
-- **Sin Maven y sin red:** antes de copiar `00-examen/`, guarda `sqlite-jdbc-3.51.0.0.jar` en su carpeta `lib/`. El repositorio ya tiene el [JAR exacto que necesitas](../../../entregable/practica-evaluable-ut02/lib/sqlite-jdbc-3.51.0.0.jar). Desde la carpeta copiada, ejecuta en Bash:
+- **IDE con Maven:** abre `00-examen/pom.xml`, selecciona JDK 17+, ejecuta `examen.MainDesdeSql` o `examen.MainDesdeSqlite` sin argumentos y pon como directorio de trabajo la carpeta que contiene ese `pom.xml`. No dependas de una primera descarga de Maven el día del examen.
+- **Sin Maven y sin red:** `lib/sqlite-jdbc-3.51.0.0.jar` ya va dentro de `00-examen/`; cópiala entera con `lib/`. Desde la carpeta copiada, ejecuta en Bash:
 
   ```bash
   mkdir -p target/clases
-  javac --release 17 -encoding UTF-8 -d target/clases src/main/java/examen/*.java
-  java --enable-native-access=ALL-UNNAMED -cp "target/clases:lib/sqlite-jdbc-3.51.0.0.jar" examen.Main
+  javac --release 17 -encoding UTF-8 -d target/clases src/main/java/examen/*.java src/main/java/examen/herramientas/*.java
+  java --enable-native-access=ALL-UNNAMED -cp "target/clases:lib/sqlite-jdbc-3.51.0.0.jar" examen.MainDesdeSql
   ```
 
-  Añade `crear datos/examen.sqlite sql/crear.sql` o `abrir datos/examen.sqlite` al final de la última línea. En Windows/PowerShell, el separador del classpath es `;` **dentro de las comillas** en lugar de `:`. En un entorno con JDK moderno, la opción `--enable-native-access=ALL-UNNAMED` permite al driver cargar la biblioteca SQLite nativa; en el IDE se añade a opciones de la VM, no a argumentos del programa.
+  Cambia `MainDesdeSql` por `MainDesdeSqlite` si partes de un `.sqlite`. En Windows/PowerShell, el separador del classpath es `;` **dentro de las comillas** en lugar de `:`. En un entorno con JDK moderno, la opción `--enable-native-access=ALL-UNNAMED` permite al driver cargar la biblioteca SQLite nativa; en el IDE se añade a opciones de la VM, no a argumentos del programa.
 
 ## 4. Del arranque de prueba al código del examen
 
-Si el examen permite partir de una plantilla, trabaja en una **copia** y sigue este orden:
+Si el examen permite partir de una plantilla, trabaja en una **copia**:
 
-1. **Verifica antes de borrar.** Ejecuta primero `MainDesdeSql` para crear o reutilizar la base de ejemplo. Tu `Main` actual abre `datos/examen.sqlite` sin argumentos y lista empleados; con ese ejemplo debe mostrar `FK activas` y `Tablas de usuario: 2`. Si usas otra base, adapta o quita el `SELECT` de `empleados`: no todas las bases tienen esa tabla. Para elegir otro fichero desde `Main`, usa `crear` si te dan un `.sql` o `abrir` si te dan un `.sqlite` y comprueba la ruta impresa.
-2. **Quita solo el diagnóstico.** En [`Main.java`](src/main/java/examen/Main.java), borra desde `INICIO BORRAR 1` hasta `FIN BORRAR 1`, **ambas líneas incluidas**. Haz lo mismo desde `INICIO BORRAR 2` hasta `FIN BORRAR 2`. Quita los **dos bloques juntos**: el segundo usa la variable `pruebaArranque` del primero. No necesitas cambiar los imports. A partir de ahí, ejecuta siempre con `crear <base.sqlite> <script.sql>` o `abrir <base.sqlite>`; sin argumentos ya no hay modo de prueba ni se imprime el diagnóstico.
-3. **Escribe tu solución.** En `ESCRIBE AQUÍ`, dentro de `try (Connection c = Sqlite.abrir(db))`, llama a tus métodos de alta, listado o modificación pasando `c`. Pon sus definiciones fuera de `main` pero dentro de la clase, o en otra clase. Vuelve a ejecutar con `abrir` para probar la solución sin intentar crear otra vez la base. Si el enunciado exige arrancar sin argumentos, sustituye el selector `crear`/`abrir` por la ruta que pida el profesor.
+1. **Borra el arranque que no uses** (`MainDesdeSql.java` o `MainDesdeSqlite.java`).
+2. **Ejecuta y mira el diagnóstico:** la ruta debe ser la de tu base y deben salir las tablas del enunciado.
+3. **Borra el diagnóstico:** desde `===== DIAGNÓSTICO: borra desde aquí... =====` hasta `===== ...hasta aquí =====`, ambas líneas incluidas. No toques el `try` ni los imports.
+4. **Escribe tu solución:** llamadas en `>>> LLAMA AQUÍ` (dentro del `try`, pasando `c`) y métodos en `>>> ESCRIBE AQUÍ` (fuera de `main`, dentro de la clase).
 
-**No borres** `Sqlite.java`, el `try` de la conexión ni la dependencia del driver. El mensaje `FK activas` es diagnóstico; el `PRAGMA foreign_keys = ON` y su comprobación en `Sqlite.java` son parte de la configuración real.
+**No borres** `Sqlite.java`, el `try` de la conexión ni la dependencia del driver. El `PRAGMA foreign_keys = ON` y su comprobación en `Sqlite.abrir` son parte de la configuración real, no del diagnóstico.
 
 ## 5. Qué comprobar antes de entregar
 
-- [`Sqlite.java`](src/main/java/examen/Sqlite.java): conserva la detección de ruta, FK y el cierre de recursos. Para una operación de examen, desactiva autocommit, comprueba filas afectadas y llama a `commit()` solo cuando se cumpla todo; ante fallo, `rollback()`. No actives autocommit en un `finally` sin saber si el rollback funcionó: el cambio de modo puede confirmar pendientes.
+- Ejecuta `bash asistente.sh entrega` (ver **Antes de entregar** al principio) y compila tras borrar.
+- [`Sqlite.java`](src/main/java/examen/herramientas/Sqlite.java): conserva la detección de ruta, FK y el cierre de recursos. Para una operación de examen, desactiva autocommit, comprueba filas afectadas y llama a `commit()` solo cuando se cumpla todo; ante fallo, `rollback()`. No actives autocommit en un `finally` sin saber si el rollback funcionó: el cambio de modo puede confirmar pendientes.
 - Si ves **`No suitable driver`**, revisa que el JAR esté en el *classpath al ejecutar*, no solo descargado. Con este driver JDBC no hace falta `Class.forName`.
 - Si ves **`no such table`** o salen **0 tablas** tras abrir, lee la ruta impresa y abre el fichero correcto; si acabas de ejecutar `crear`, revisa el contenido del script.
 - Si ves **`database is locked`**, cierra otras conexiones con escrituras pendientes, incluida una edición sin guardar en DB Browser. Trabaja en un directorio local con permiso de escritura.

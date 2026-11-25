@@ -1,7 +1,7 @@
-package examen;
+package examen.conect;
 
-import examen.ApoyoAsistentes.Contexto;
-import examen.ConstructorEjercicio.Ejercicio;
+import examen.conect.ApoyoAsistentes.Contexto;
+import examen.conect.ConstructorEjercicio.Ejercicio;
 import java.nio.file.Path;
 
 // Genera una PROPUESTA de Java. No ejecuta las operaciones de escritura.

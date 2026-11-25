@@ -1,6 +1,6 @@
 package repaso;
 
-import examen.Sqlite;
+import examen.herramientas.Sqlite;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;

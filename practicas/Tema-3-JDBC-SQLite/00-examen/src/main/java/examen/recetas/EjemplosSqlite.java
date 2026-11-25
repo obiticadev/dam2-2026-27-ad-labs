@@ -1,4 +1,6 @@
-package examen;
+package examen.recetas;
+
+import examen.herramientas.Sqlite;
 
 import java.io.File;
 import java.sql.Connection;
@@ -17,7 +19,7 @@ import java.util.Map;
  * Ejecutar ESTA clase solo lista datos; NO ejecuta las recetas de escritura.
  * Directorio de trabajo: 00-examen. Sin argumentos.
  *
- * Puedes usar Sqlite.xxx desde Main, MainDesdeSql o MainDesdeSqlite.
+ * Puedes usar Sqlite.xxx desde MainDesdeSql o MainDesdeSqlite.
  * EjemplosSqlite NO es necesaria para que funcionen las herramientas.
  */
 public class EjemplosSqlite {

@@ -1,4 +1,6 @@
-package examen;
+package examen.herramientas;
+
+import examen.recetas.EjemplosSqlite;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

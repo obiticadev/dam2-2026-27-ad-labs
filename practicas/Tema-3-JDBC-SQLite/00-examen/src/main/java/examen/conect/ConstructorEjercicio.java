@@ -1,17 +1,19 @@
-package examen;
+package examen.conect;
 
-import examen.ApoyoAsistentes.Campo;
-import examen.ApoyoAsistentes.Columna;
-import examen.ApoyoAsistentes.Esquema;
-import examen.ApoyoAsistentes.Fragmento;
-import examen.ApoyoAsistentes.Tabla;
+import examen.herramientas.Sqlite;
+
+import examen.conect.ApoyoAsistentes.Campo;
+import examen.conect.ApoyoAsistentes.Columna;
+import examen.conect.ApoyoAsistentes.Esquema;
+import examen.conect.ApoyoAsistentes.Fragmento;
+import examen.conect.ApoyoAsistentes.Tabla;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import static examen.ApoyoAsistentes.ident;
+import static examen.conect.ApoyoAsistentes.ident;
 
 final class ConstructorEjercicio {
     private ConstructorEjercicio() {}
@@ -24,6 +26,7 @@ final class ConstructorEjercicio {
             StringBuilder java = new StringBuilder("""
                     package examen;
 
+                    import examen.herramientas.Sqlite;
                     import java.io.File;
                     import java.sql.Connection;
                     import java.sql.SQLException;

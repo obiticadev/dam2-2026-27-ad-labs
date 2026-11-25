@@ -1,41 +1,35 @@
 package examen;
 
+import examen.herramientas.Sqlite;
 import java.io.File;
 import java.sql.Connection;
+import java.sql.SQLException;
 
-// USA ESTE MAIN SI EL PROFESOR TE DA UN .sql.
-// 1. El ejemplo ya está en sql/crear.sql. Sustitúyelo por el SQL del profesor.
-// 2. Ejecuta esta clase SIN argumentos.
-// Directorio de trabajo del IDE: 00-examen.
-// Para el examen, cambia examen.sqlite por examen-real.sqlite:
-// así no reutilizarás por error la base de ejemplo ya creada.
+// USA ESTE MAIN SI EL PROFESOR TE DA UN .sql (y borra MainDesdeSqlite.java).
+// 1. Pega su SQL en sql/crear.sql.
+// 2. Ejecuta SIN argumentos, con 00-examen como directorio de trabajo.
 public class MainDesdeSql {
     public static void main(String[] args) throws Exception {
         File db = new File("datos/examen.sqlite");
-        File script = new File("sql/crear.sql");
 
-        // Solo crea la base la primera vez. Después reutiliza la que ya existe.
-        // Si cambias el SQL, NO se vuelve a importar sobre esa base:
-        // cambia el nombre examen.sqlite por otro nuevo para empezar de cero.
+        // Primera ejecución: crea la base y carga el SQL. Las siguientes la reutilizan.
+        // Si cambias crear.sql, borra datos/examen.sqlite para que se vuelva a importar.
         if (!db.exists()) {
-            Sqlite.crear(db, script);
+            Sqlite.crear(db, new File("sql/crear.sql"));
         }
 
+        // abrir() activa las claves foráneas; el try cierra la conexión al terminar.
         try (Connection c = Sqlite.abrir(db)) {
-            System.out.println("Base abierta: " + db.getCanonicalPath());
-            Sqlite.exigirUnaFila(1);
-            // ESCRIBE AQUÍ las llamadas a tus métodos:
-            // listar(c);
-            // insertar(c);
-            //
-            // Ya puedes usar las herramientas de Sqlite directamente:
-            // Sqlite.mostrarConsulta(c, "SELECT * FROM empleados");
-            // int filas = Sqlite.actualizar(c,
-            // "UPDATE empleados SET salario = ? WHERE id = ?", 1900, 1);
-            // Más recetas (INSERT, transacción, rollback...): EjemplosSqlite.java.
+            // ===== DIAGNÓSTICO: borra desde aquí... =====
+            System.out.println("Base: " + db.getCanonicalPath());
+            Sqlite.mostrarInfoConexion(c);
+            Sqlite.mostrarTablas(c); // Sin tablas: el SQL falló; borra la base y corrige crear.sql.
+            // ===== ...hasta aquí (ambas líneas incluidas). =====
+
+            // >>> LLAMA AQUÍ A TUS MÉTODOS, pasándoles c. Ejemplo: listar(c);
         }
     }
 
-    // ESCRIBE AQUÍ tus métodos, fuera de main y dentro de esta clase.
-    // Usa la Connection c que reciban; no abras otra ni cierres c aquí.
+    // >>> ESCRIBE AQUÍ TUS MÉTODOS. Usan la c que reciben: no abras otra ni la cierres.
+    // static void listar(Connection c) throws SQLException { ... }
 }

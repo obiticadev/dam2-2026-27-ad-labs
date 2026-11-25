@@ -1,4 +1,4 @@
-package examen;
+package examen.herramientas;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /*
- * HERRAMIENTAS PARA CUALQUIER MAIN (consulta EjemplosSqlite.java).
+ * HERRAMIENTAS PARA CUALQUIER MAIN (consulta recetas/EjemplosSqlite.java).
  *
  * Mantén la misma Connection c durante todo el ejercicio.
  * Estos métodos cierran sus sentencias y resultados, pero NO cierran c.

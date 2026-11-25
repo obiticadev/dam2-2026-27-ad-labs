@@ -12,7 +12,8 @@ En el temario actual, el Tema 3 es **UT02 · 3A JDBC y 3B SQLite**. Este materia
 Desde **esta carpeta**, con JDK 17 o posterior y sin Maven ni conexión a Internet:
 
 ```bash
-bash ejecutar.sh plantilla
+bash ejecutar.sh desde-sql
+bash ejecutar.sh desde-sqlite
 bash ejecutar.sh atomicos 1 Ventas
 bash ejecutar.sh atomicos todos
 bash ejecutar.sh personal
@@ -21,9 +22,9 @@ bash ejecutar.sh consultas
 bash ejecutar.sh ejercicios
 ```
 
-El lanzador usa el JAR que ya existe en `entregable/practica-evaluable-ut02/lib/` (o una copia en `00-examen/lib/`). Fija la carpeta de trabajo para encontrar el SQL sin depender del directorio de la terminal. También puedes abrir este `pom.xml` como proyecto Maven en el IDE (para ejecutar un `main`, usa como directorio de trabajo el módulo correspondiente). La plantilla tiene su propio `pom.xml` y se puede copiar por separado.
+El driver va incluido en `00-examen/lib/sqlite-jdbc-3.51.0.0.jar`: esta carpeta funciona sola en cualquier PC con JDK 17+, sin internet y sin depender de otras carpetas. Fija la carpeta de trabajo para encontrar el SQL sin depender del directorio de la terminal. También puedes abrir este `pom.xml` como proyecto Maven en el IDE (para ejecutar un `main`, usa como directorio de trabajo el módulo correspondiente). La plantilla tiene su propio `pom.xml` y se puede copiar por separado.
 
-Los atómicos usan `:memory:` y no dejan fichero. Cada simulacro imprime la ruta de una `.sqlite` nueva dentro de su `target/`; la puedes abrir desde la consola o DB Browser. No se reutiliza ni se borra la base de una ejecución anterior.
+Los atómicos usan `:memory:` y no dejan fichero. Cada simulacro trabaja siempre sobre la misma base, `target/personal.sqlite` o `target/almacen.sqlite`, que se rehace desde su `sql/datos.sql` en cada ejecución. Puedes abrirla después con la consola o con DB Browser; ciérrala antes de volver a ejecutar.
 
 ## Qué hay fuera de 00-examen y cómo usarlo
 
@@ -62,12 +63,12 @@ Son **soluciones ejecutables**, no menús que hagan preguntas: salvo variantes i
 
 ### VS Code: si aparecen rojos después de renombrar la carpeta
 
-Los ejercicios importan `examen.Sqlite`, que está en `00-examen`. Maven mantiene esa dependencia mediante el identificador **`plantilla-sqlite`**; ese nombre interno no tiene que coincidir con el nombre de la carpeta.
+Los ejercicios importan `examen.herramientas.Sqlite`, que está en `00-examen`. Maven mantiene esa dependencia mediante el identificador **`plantilla-sqlite`**; ese nombre interno no tiene que coincidir con el nombre de la carpeta.
 
 1. Abre la carpeta **`Tema-3-JDBC-SQLite`**, no solo `01-atomicos` ni un archivo Java suelto.
 2. Espera a que Java termine de importar los proyectos Maven.
 3. Si sigue rojo, pulsa `Ctrl+Shift+P` y ejecuta **Java: Clean Java Language Server Workspace**; acepta reiniciar y espera a la nueva importación.
-4. En **Ejecutar y depurar** tienes configuraciones para los dos MainDesde, tu Main, los atómicos, ambos simulacros y las pruebas de herramientas.
+4. En **Ejecutar y depurar** tienes configuraciones para los dos MainDesde, los atómicos, ambos simulacros y las pruebas de herramientas.
 5. Si persiste un error, consulta su texto en **Problemas** (`Ctrl+Shift+M`): el color de la carpeta por sí solo no identifica la causa.
 
 No añadas a mano rutas Java ni copies `Sqlite.java` dentro de cada ejercicio: los proyectos ya están relacionados por Maven. Las configuraciones `.vscode` se aplican al abrir esta carpeta como raíz.
@@ -96,4 +97,4 @@ No hace falta instalar Maven para usar `ejecutar.sh`: el script solo necesita Ba
 | 7 · Procedimiento de clientes | Solo teoría en SQLite: no hay procedimientos almacenados ni `CallableStatement` utilizable aquí. |
 | 8 · Chinook | 02 y Almacén: resumen y agregación con dos tablas; se mantienen entidades sin filas relacionadas. |
 
-Para el test, esta práctica no sustituye [3A · teoría JDBC](<../../../dam2-2026-27/01-acceso-datos/recursos/Tema 3 y 4/UT02/contenidos/3A-manejo-de-conectores.md>) ni [3B · teoría SQLite](<../../../dam2-2026-27/01-acceso-datos/recursos/Tema 3 y 4/UT02/contenidos/3B-sqlite.md>). Ahí están drivers, arquitectura, ACID, aislamiento, afinidades, `ROWID` y consola. Consulta los [ocho enunciados del aula](<../../../dam2-2026-27/01-acceso-datos/recursos/Tema 3 y 4/UT02/ejercicios/INDICE.md>), el [alcance y repaso en Obsidian](<../../../obsidian/Exámenes/AD/AD - Tema 3 - Examen.md>) y tus [recetas JDBC](<../../../obsidian/Biblioteca/AD/AD - Tema 3 - Recetario JDBC.md>). Si quieres ejecutar la parte de cursores actualizables o llamadas a rutinas, tienes [los ejemplos de H2 en autoestudio](../../autoestudio/Tema-3-JDBC-SQLite/README.md); no son ejemplos SQLite.
+Para el test, esta práctica no sustituye la teoría de 3A (JDBC) y 3B (SQLite): drivers, arquitectura, ACID, aislamiento, afinidades, `ROWID` y consola. SQLite no tiene cursores actualizables ni procedimientos almacenados, así que esa parte del temario aquí solo se estudia en teoría.

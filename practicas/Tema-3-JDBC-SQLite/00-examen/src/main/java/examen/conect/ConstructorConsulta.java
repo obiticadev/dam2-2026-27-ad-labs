@@ -1,11 +1,11 @@
-package examen;
+package examen.conect;
 
-import examen.ApoyoAsistentes.Campo;
-import examen.ApoyoAsistentes.Columna;
-import examen.ApoyoAsistentes.Enlace;
-import examen.ApoyoAsistentes.Esquema;
-import examen.ApoyoAsistentes.Fragmento;
-import examen.ApoyoAsistentes.Tabla;
+import examen.conect.ApoyoAsistentes.Campo;
+import examen.conect.ApoyoAsistentes.Columna;
+import examen.conect.ApoyoAsistentes.Enlace;
+import examen.conect.ApoyoAsistentes.Esquema;
+import examen.conect.ApoyoAsistentes.Fragmento;
+import examen.conect.ApoyoAsistentes.Tabla;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import static examen.ApoyoAsistentes.ident;
+import static examen.conect.ApoyoAsistentes.ident;
 
 // Generador estructurado: no interpreta texto libre ni ejecuta SQL introducido.
 final class ConstructorConsulta {

@@ -1,39 +1,44 @@
 #!/usr/bin/env bash
 set -euo pipefail
 tema="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-opcion="${1:-plantilla}"
+opcion="${1:-desde-sql}"
 if (( $# )); then shift; fi
 case "$opcion" in
-    plantilla) proyecto="$tema/00-examen"; clase=examen.Main ;;
-    consultas|ejercicios) exec bash "$tema/00-examen/asistente.sh" "$opcion" "$@" ;;
-    pruebas) proyecto="$tema/00-examen"; clase=examen.PruebasSqlite ;;
-    pruebas-asistentes) proyecto="$tema/00-examen"; clase=examen.PruebasAsistentes ;;
+    desde-sql) proyecto="$tema/00-examen"; clase=examen.MainDesdeSql ;;
+    desde-sqlite) proyecto="$tema/00-examen"; clase=examen.MainDesdeSqlite ;;
+    consultas|ejercicios|entrega) exec bash "$tema/00-examen/asistente.sh" "$opcion" "$@" ;;
+    pruebas) proyecto="$tema/00-examen"; clase=examen.herramientas.PruebasSqlite ;;
+    pruebas-asistentes) proyecto="$tema/00-examen"; clase=examen.conect.PruebasAsistentes ;;
     atomicos) proyecto="$tema/01-atomicos"; clase=repaso.Atomicos ;;
     personal) proyecto="$tema/02-simulacros/01-personal"; clase=repaso.Personal ;;
     almacen) proyecto="$tema/02-simulacros/02-almacen"; clase=repaso.Almacen ;;
-    *) echo "Uso: bash ejecutar.sh {plantilla|consultas|ejercicios|atomicos|personal|almacen|pruebas|pruebas-asistentes} [argumentos]" >&2; exit 2 ;;
+    *) echo "Uso: bash ejecutar.sh {desde-sql|desde-sqlite|consultas|ejercicios|entrega|atomicos|personal|almacen|pruebas|pruebas-asistentes} [argumentos]" >&2; exit 2 ;;
 esac
 
-# Usar el mismo JAR del pom; admite una copia local para trabajar sin internet.
+# El driver viaja con la carpeta: es el mismo JAR que declara el pom.
 nombre=sqlite-jdbc-3.51.0.0.jar
 jar="$tema/00-examen/lib/$nombre"
 if [[ ! -f "$jar" ]]; then
-    jar="$tema/../../entregable/practica-evaluable-ut02/lib/$nombre"
-fi
-if [[ ! -f "$jar" ]]; then
-    echo "Copia $nombre en $tema/00-examen/lib/" >&2
+    echo "Falta $tema/00-examen/lib/$nombre" >&2
     exit 2
 fi
 
 # Fijar la carpeta de ejecución: datos/, sql/ y target/ ya no dependen de dónde abrió la terminal.
 cd -- "$proyecto"
 mkdir -p target/clases
-fuentes=("$tema/00-examen/src/main/java/examen/"*.java)
+fuentes=()
+# Bucle en vez de mapfile: el bash 3 de macOS no lo tiene.
+while IFS= read -r f; do fuentes+=("$f"); done < <(find "$tema/00-examen/src/main/java" -name '*.java')
 if [[ "$clase" == repaso.* ]]; then
     fuentes+=("$proyecto/src/main/java/repaso/"*.java)
 fi
 if [[ "$opcion" == pruebas* ]]; then
-    fuentes+=("$tema/00-examen/src/test/java/examen/"*.java)
+    while IFS= read -r f; do fuentes+=("$f"); done < <(find "$tema/00-examen/src/test/java" -name '*.java')
 fi
 javac --release 17 -encoding UTF-8 -cp "$jar" -d target/clases "${fuentes[@]}"
-exec java --enable-native-access=ALL-UNNAMED -ea -cp "target/clases:$jar" "$clase" "$@"
+classpath="target/clases:$jar"
+case "$(uname -s)" in
+    # Git Bash en Windows: java.exe espera rutas C:/... separadas por ;
+    MINGW*|MSYS*|CYGWIN*) classpath="target/clases;$(cygpath -m "$jar")" ;;
+esac
+exec java --enable-native-access=ALL-UNNAMED -ea -cp "$classpath" "$clase" "$@"

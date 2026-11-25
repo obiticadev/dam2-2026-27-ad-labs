@@ -1,14 +1,16 @@
 package repaso;
 
-import examen.Sqlite;
+import examen.herramientas.Sqlite;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.UUID;
+import java.nio.file.Files;
 
 public class Almacen {
     public static void main(String[] args) throws Exception {
-        File db = new File("target", "almacen-" + UUID.randomUUID() + ".sqlite").getCanonicalFile();
+        // Siempre la misma base: se rehace en cada ejecución para partir de los datos iniciales.
+        File db = new File("target", "almacen.sqlite").getCanonicalFile();
+        Files.deleteIfExists(db.toPath());
         Sqlite.crear(db, new File("sql", "datos.sql"));
         System.out.println("Base: " + db);
         ejecutarSalida(db, "S-01", 3, null);

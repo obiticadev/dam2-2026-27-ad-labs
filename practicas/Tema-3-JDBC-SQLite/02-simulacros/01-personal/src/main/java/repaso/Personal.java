@@ -1,15 +1,16 @@
 package repaso;
 
-import examen.Sqlite;
+import examen.herramientas.Sqlite;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.UUID;
+import java.nio.file.Files;
 
 public class Personal {
     public static void main(String[] args) throws Exception {
-        // Una base visible, con nombre nuevo en cada ensayo. Nunca borrar una base anterior.
-        File db = new File("target", "personal-" + UUID.randomUUID() + ".sqlite").getCanonicalFile();
+        // Siempre la misma base: se rehace en cada ejecución para partir de los datos iniciales.
+        File db = new File("target", "personal.sqlite").getCanonicalFile();
+        Files.deleteIfExists(db.toPath());
         Sqlite.crear(db, new File("sql", "datos.sql"));
         System.out.println("Base: " + db);
         try (Connection c = Sqlite.abrir(db)) {

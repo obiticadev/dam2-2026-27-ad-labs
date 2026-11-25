@@ -1,7 +1,7 @@
-package examen;
+package examen.conect;
 
-import examen.ApoyoAsistentes.Contexto;
-import examen.ApoyoAsistentes.Fragmento;
+import examen.conect.ApoyoAsistentes.Contexto;
+import examen.conect.ApoyoAsistentes.Fragmento;
 import java.nio.file.Path;
 import java.util.Set;
 
