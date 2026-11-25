@@ -1,4 +1,4 @@
 /datos/*.sqlite
-/consultas/
-/propuestas/
-/sesiones/
+/b_consultas/
+/b_propuestas/
+/b_sesiones/

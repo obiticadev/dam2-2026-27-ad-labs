@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /*
- * HERRAMIENTAS PARA CUALQUIER MAIN (consulta recetas/EjemplosSqlite.java).
+ * HERRAMIENTAS PARA CUALQUIER MAIN.
  *
  * Mantén la misma Connection c durante todo el ejercicio.
  * Estos métodos cierran sus sentencias y resultados, pero NO cierran c.
@@ -329,6 +329,13 @@ public final class Sqlite {
     }
 
     // ==================== 4. METADATOS ====================
+
+    // b_ = solo para comprobar mientras trabajas: borra la llamada y este método antes de entregar.
+    public static void b_diagnostico(Connection c, File db) throws IOException, SQLException {
+        System.out.println("Base: " + db.getCanonicalPath());
+        mostrarInfoConexion(c);
+        mostrarTablas(c); // Sin tablas: ruta equivocada o el SQL falló (borra la base y corrige crear.sql).
+    }
 
     public static void mostrarInfoConexion(Connection c) throws SQLException {
         DatabaseMetaData meta = c.getMetaData();

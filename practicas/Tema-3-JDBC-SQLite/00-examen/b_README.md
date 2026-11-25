@@ -1,52 +1,59 @@
 # 00 · Plantilla de examen: Java + SQLite
 
-## Estructura: dos arranques, elige uno
+## Regla: todo lo que empieza por `b_` se borra antes de entregar
+
+Además de `b_*`, se borran `src/test/`, `target/` y `.gitignore` (se quedan con su nombre estándar de Maven para no dar problemas). Lo demás de `00-examen` es la entrega.
 
 ```text
-src/main/java/examen/
-├── MainDesdeSql.java     ← te dan un .sql: crea datos/examen.sqlite desde sql/crear.sql y la abre
-├── MainDesdeSqlite.java  ← te dan un .sqlite: abre datos/examen.sqlite
-├── herramientas/         ← Sqlite.java. Se ENTREGA (quitando los métodos que no uses).
-├── recetas/              ← EjemplosSqlite: ejemplos para copiar. Se borra.
-└── conect/               ← generadores y RevisarEntrega. Se borra.
-src/test/                 ← comprobaciones de las herramientas. Se borra.
+00-examen/
+├── src/main/java/examen/
+│   ├── MainDesdeSql.java     ← te dan un .sql: crea datos/examen.sqlite desde sql/crear.sql y la abre
+│   ├── MainDesdeSqlite.java  ← te dan un .sqlite: abre datos/examen.sqlite
+│   ├── herramientas/Sqlite.java  ← se ENTREGA (sin b_diagnostico ni los métodos que no uses)
+│   ├── b_recetas/            ← EjemplosSqlite: ejemplos para copiar
+│   └── b_conect/             ← asistentes y revisor de entrega
+├── src/test/                 ← pruebas de las herramientas (se borra)
+├── target/                   ← compilados (se borra)
+├── b_conect.sh / b_conect.cmd  ← lanzan los asistentes
+├── b_consultas/ b_propuestas/ b_sesiones/  ← lo que generan los asistentes
+├── b_README.md               ← esta guía
+├── sql/ datos/ lib/ pom.xml  ← se entregan
 ```
+
+Claves de `b_conect/`: `Alfa` soporte común · `Bravo` asistente de consultas · `Charlie` asistente de ejercicios · `Delta` constructor de consultas · `Echo` constructor de ejercicios · `Foxtrot` revisor de entrega · `Golf` terminal compacta · `Hotel` (en `src/test`) sus pruebas.
 
 Al empezar el examen **borra el arranque que no uses** y trabaja en el otro. Los dos tienen la misma forma:
 
 ```java
-try (Connection c = Sqlite.abrir(db)) {
-    // ===== DIAGNÓSTICO: borra desde aquí... =====
-    ...                          // ruta, versión de SQLite y tablas encontradas
-    // ===== ...hasta aquí (ambas líneas incluidas). =====
-
-    // >>> LLAMA AQUÍ A TUS MÉTODOS, pasándoles c. Ejemplo: listar(c);
+try (Connection c = Sqlite.abrir(db)) { // Conexión con FK activadas; se cierra sola.
+    Sqlite.b_diagnostico(c, db); // BORRAR antes de entregar.
+    // >>> Tus llamadas aquí, pasando c: ejemplo(c);
 }
-// >>> ESCRIBE AQUÍ TUS MÉTODOS.
+// >>> Tus métodos aquí: static void ejemplo(Connection c) throws SQLException { ... }
 ```
 
 1. Ejecútalo **sin argumentos** y con `00-examen` como directorio de trabajo (`bash ejecutar.sh desde-sql` o `desde-sqlite` desde el Tema 3).
-2. Si el diagnóstico muestra la ruta y las tablas que esperabas, **borra el bloque entre las dos líneas `=====`**. Queda solo la conexión.
-3. Escribe tus llamadas en `>>> LLAMA AQUÍ` y tus métodos en `>>> ESCRIBE AQUÍ`.
+2. `b_diagnostico` muestra la ruta, la versión de SQLite y las tablas. Si son las que esperabas, borra esa línea.
+3. Escribe tus llamadas y tus métodos donde indican los comentarios `>>>`.
 
-`MainDesdeSql` solo importa el SQL si la base **no existe**. Si cambias `crear.sql`, o si el diagnóstico muestra 0 tablas porque el SQL falló, borra `datos/examen.sqlite` y vuelve a ejecutar. Los dos ya traen `import examen.herramientas.Sqlite;`; añádelo también en cualquier otra clase que escribas.
+`MainDesdeSql` solo importa el SQL si la base **no existe**. Si cambias `crear.sql`, o si el diagnóstico muestra 0 tablas porque el SQL falló, borra `datos/examen.sqlite` y vuelve a ejecutar.
 
 ## Antes de entregar: qué borrar
 
 Con tu solución terminada, desde `00-examen`:
 
 ```bash
-bash asistente.sh entrega          # Git Bash/Linux
-.\asistente.cmd entrega            # PowerShell/CMD
+bash b_conect.sh entrega          # Git Bash/Linux
+.\b_conect.cmd entrega            # PowerShell/CMD
 ```
 
-(o **Entrega: qué puedo borrar** en Ejecutar y depurar). Revisa los arranques que haya en `src/main/java/examen` (o los ficheros que le pases como argumento) y muestra:
+(o **Entrega: qué puedo borrar** en Ejecutar y depurar). Revisa tu `MainDesde…` y muestra:
 
-1. **CONSERVA**: los métodos de `Sqlite.java` que llamas o que necesitan los que llamas (`abrir` necesita `configurar`, `insertar` necesita `preparar`…).
-2. **PUEDES BORRAR**: los métodos de `Sqlite.java` que nadie usa. Lo que aparece en comentarios o entre comillas no cuenta como uso. Si aún tienes los dos arranques, te avisa: borra primero el que no usas.
-3. **BORRA**: las carpetas y scripts de generación y comprobación que existan (`conect/`, `recetas/`, `src/test`, `asistente.sh`, `asistente.cmd`, `target/`, `consultas/`, `propuestas/`, `sesiones/`).
+1. **CONSERVA**: los métodos de `Sqlite.java` que llamas o que necesitan los que llamas.
+2. **PUEDES BORRAR**: los métodos de `Sqlite.java` que nadie usa (comentarios y textos entre comillas no cuentan). Te avisa si aún tienes los dos arranques o si sigues llamando a un `b_`.
+3. **BORRA**: cada fichero o carpeta `b_*` que exista, `src/test/`, `target/`, `.gitignore` y el método `b_diagnostico`.
 
-Solo lee; no borra nada. Borra lo indicado, quita si quieres los `import` que queden sin usar y **compila otra vez**: si falta algo, el compilador te dirá qué. Lo que queda para entregar es tu `MainDesde…`, `herramientas/Sqlite.java`, `pom.xml`, `sql/`, `datos/` y `lib/` (este último si el profesor no usa Maven).
+Solo lee; no borra nada. Borra lo indicado y **compila otra vez**: si falta algo, el compilador te dirá qué. Lo que queda es la entrega: tu `MainDesde…`, `herramientas/Sqlite.java`, `pom.xml`, `sql/`, `datos/` y `lib/`.
 
 ## Asistentes locales: consultas y propuestas de ejercicios
 
@@ -55,22 +62,22 @@ Solo lee; no borra nada. Borra lo indicado, quita si quieres los `import` que qu
 Desde **PowerShell o CMD**, situado en `00-examen` (no necesita Bash):
 
 ```powershell
-.\asistente.cmd consultas
-.\asistente.cmd ejercicios
+.\b_conect.cmd consultas
+.\b_conect.cmd ejercicios
 ```
 
 O desde una terminal **Git Bash situada en `00-examen`**:
 
 ```bash
-bash asistente.sh consultas
-bash asistente.sh ejercicios
+bash b_conect.sh consultas
+bash b_conect.sh ejercicios
 ```
 
 Te preguntarán la ruta de la base (Enter usa `datos/examen.sqlite`). También puedes indicarla directamente:
 
 ```bash
-bash asistente.sh consultas "datos/examen.sqlite"
-bash asistente.sh ejercicios "datos/examen.sqlite"
+bash b_conect.sh consultas "datos/examen.sqlite"
+bash b_conect.sh ejercicios "datos/examen.sqlite"
 ```
 
 Desde la carpeta superior `Tema-3-JDBC-SQLite`, usa `bash ejecutar.sh consultas` o `bash ejecutar.sh ejercicios`. También hay configuraciones **Asistente: ...** en Ejecutar y depurar de VS Code.
@@ -105,16 +112,16 @@ Las preguntas de sí/no usan **`s` o `n`**, no la navegación de los menús. Los
 Por defecto, el programa limita sus líneas a **64 caracteres**. Si tu ventana es más estrecha:
 
 ```bash
-ASISTENTE_ANCHO=48 bash asistente.sh consultas
+ASISTENTE_ANCHO=48 bash b_conect.sh consultas
 ```
 
 En VS Code puedes cambiar `-Dasistente.ancho=64` en `launch.json`. El rango es 32–120 caracteres. No requiere comandos ANSI ni limpia el historial de la terminal. Una entrada que tú escribas más larga que el ancho de la ventana puede ocupar varias líneas por el eco de la propia terminal.
 
-En PowerShell, para ajustar el ancho usa `$env:ASISTENTE_ANCHO = "48"` antes de ejecutar `.\asistente.cmd consultas`. El lanzador `.cmd` admite los mismos argumentos de base y sesión que `.sh`.
+En PowerShell, para ajustar el ancho usa `$env:ASISTENTE_ANCHO = "48"` antes de ejecutar `.\b_conect.cmd consultas`. El lanzador `.cmd` admite los mismos argumentos de base y sesión que `.sh`.
 
 ### Asistente de consultas: qué genera
 
-`AsistenteConsultas` te pide tabla principal (`t1`), segunda tabla opcional (`t2`), tipo de JOIN, relación, salidas, filtros, agregación, orden y límite.
+`Bravo` te pide tabla principal (`t1`), segunda tabla opcional (`t2`), tipo de JOIN, relación, salidas, filtros, agregación, orden y límite.
 
 - Propone las FK detectadas **para que confirmes cuál usar**. Incluye FK compuestas y autorrelaciones; también permite elegir pares de columnas manualmente.
 - Admite `INNER JOIN` y `LEFT JOIN`. En un filtro de `t2` con LEFT te pregunta si va en `ON` (conservar todas las filas de `t1`) o `WHERE` (descartar filas sin coincidencia).
@@ -130,7 +137,7 @@ Comparar `= null` o `<> null` genera `IS NULL` / `IS NOT NULL`. Para `BETWEEN` e
 
 Al terminar, crea archivos **nuevos**, sin sobrescribir:
 
-| Archivo en `consultas/` | Contenido |
+| Archivo en `b_consultas/` | Contenido |
 |---|---|
 | `consulta-...sql` | Consulta SQLite con los valores escapados, lista para DB Browser o sqlite3. |
 | `consulta-...-java.txt` | La misma consulta con `?` y la llamada `Sqlite.mostrarConsulta(c, ..., valores...)`. |
@@ -142,7 +149,7 @@ Menú final: `ver` muestra las rutas; `sql` muestra el SQL paginado; `probar` pe
 
 ### Asistente de ejercicios: qué genera
 
-`AsistenteEjercicios` te pide el modo de transacción y una secuencia de operaciones:
+`Charlie` te pide el modo de transacción y una secuencia de operaciones:
 
 | Operación | Decisiones que puedes configurar |
 |---|---|
@@ -165,7 +172,7 @@ Para un UPDATE/DELETE sin filtros exige confirmar expresamente que quieres afect
 
 Cuando un alta recupera una clave, la pantalla indica su variable: por ejemplo **`$id1`**. Puedes escribir `$id1` como valor de una operación posterior. El número corresponde a la **operación**, no al número de altas. No uses una referencia esperando que siga existiendo su fila si tú mismo has deshecho su alta mediante un savepoint.
 
-Genera en `propuestas/`:
+Genera en `b_propuestas/`:
 
 - `Solucion...java`: clase con `main` y `ejecutar(Connection c)`, usando tus métodos de `Sqlite.java`.
 - `Solucion...-revision.txt`: avisos, esquema y casos que deberías probar.
@@ -176,11 +183,11 @@ Los valores se generan como constantes; conviértelos en parámetros o lecturas 
 
 ### Guardar y continuar después
 
-Las respuestas se guardan en `sesiones/*.properties`. Durante las preguntas usa `guardar`, o al terminar usa `sesion`, para consultar la ruta. Para continuar:
+Las respuestas se guardan en `b_sesiones/*.properties`. Durante las preguntas usa `guardar`, o al terminar usa `sesion`, para consultar la ruta. Para continuar:
 
 ```bash
-bash asistente.sh consultas "datos/examen.sqlite" "sesiones/consultas-....properties"
-bash asistente.sh ejercicios "datos/examen.sqlite" "sesiones/ejercicios-....properties"
+bash b_conect.sh consultas "datos/examen.sqlite" "b_sesiones/consultas-....properties"
+bash b_conect.sh ejercicios "datos/examen.sqlite" "b_sesiones/ejercicios-....properties"
 ```
 
 Debes indicar el archivo real, no escribir los puntos suspensivos. La sesión comprueba que sean la misma base, el mismo asistente y el mismo esquema. Cambiar filas no impide continuar; cambiar tablas, índices o restricciones sí requiere una sesión nueva. Las respuestas ya dadas se reproducen silenciosamente. Para corregirlas usa `atras`.
@@ -210,7 +217,7 @@ Las pruebas de asistentes compilan y ejecutan propuestas sobre bases aisladas en
 
 ## Herramientas preparadas para usar desde tu MainDesde…
 
-Todo está en [`Sqlite.java`](src/main/java/examen/herramientas/Sqlite.java), sin `var` ni dependencias nuevas. Puedes copiar las recetas de [`EjemplosSqlite.java`](src/main/java/examen/recetas/EjemplosSqlite.java). Ejecutar esa clase **solo consulta**, no ejecuta las recetas que modifican datos.
+Todo está en [`Sqlite.java`](src/main/java/examen/herramientas/Sqlite.java), sin `var` ni dependencias nuevas. Puedes copiar las recetas de [`EjemplosSqlite.java`](src/main/java/examen/b_recetas/EjemplosSqlite.java). Ejecutar esa clase **solo consulta**, no ejecuta las recetas que modifican datos.
 
 ### Cómo leer este catálogo
 
@@ -404,6 +411,7 @@ Todos estos métodos devuelven `void`: muestran información en consola.
 |---|---|---|
 | `mostrarInfoConexion(Connection c)` | Nombre/versión del motor y del driver. | `Sqlite.mostrarInfoConexion(c);` |
 | `mostrarTablas(Connection c)` | Tablas, excluyendo las internas `sqlite_`. | `Sqlite.mostrarTablas(c);` |
+| `b_diagnostico(Connection c, File db)` | Ruta, motor y tablas; solo para comprobar. **Se borra antes de entregar.** | `Sqlite.b_diagnostico(c, db);` |
 | `mostrarColumnas(Connection c, String tabla)` | Columnas, tipos y si admiten nulos de la tabla indicada. | `Sqlite.mostrarColumnas(c, "empleados");` |
 | `mostrarClavesForaneas(Connection c, String tabla)` | FK de esa tabla y sus tablas/columnas de destino. | `Sqlite.mostrarClavesForaneas(c, "empleados");` |
 | `mostrarColumnasConsulta(Connection c, String sql, Object... valores)` | Etiquetas/alias y tipos de las columnas de un SELECT. | `Sqlite.mostrarColumnasConsulta(c, "SELECT nombre AS empleado, salario FROM empleados WHERE id = ?", 1);` |
@@ -433,9 +441,9 @@ Los métodos `main(String[] args)` son puntos de entrada: ejecútalos desde el I
 - `MainDesdeSqlite`: abre la base existente indicada en su código.
 - `EjemplosSqlite`: ejecuta solo los listados de demostración.
 - `PruebasSqlite` (en `src/test/java`): ejecuta las comprobaciones aisladas.
-- `AsistenteConsultas`: construye consultas y llamadas Java mediante preguntas.
-- `AsistenteEjercicios`: construye una propuesta de solución Java, sin ejecutarla.
-- `PruebasAsistentes` (en `src/test/java`): comprueba SQL, navegación y compilación/ejecución del Java generado en bases aisladas.
+- `Bravo`: construye consultas y llamadas Java mediante preguntas.
+- `Charlie`: construye una propuesta de solución Java, sin ejecutarla.
+- `Hotel` (en `src/test/java`): comprueba SQL, navegación y compilación/ejecución del Java generado en bases aisladas.
 
 ### Reglas para usar las herramientas con seguridad
 
@@ -507,14 +515,14 @@ Si el examen permite partir de una plantilla, trabaja en una **copia**:
 
 1. **Borra el arranque que no uses** (`MainDesdeSql.java` o `MainDesdeSqlite.java`).
 2. **Ejecuta y mira el diagnóstico:** la ruta debe ser la de tu base y deben salir las tablas del enunciado.
-3. **Borra el diagnóstico:** desde `===== DIAGNÓSTICO: borra desde aquí... =====` hasta `===== ...hasta aquí =====`, ambas líneas incluidas. No toques el `try` ni los imports.
-4. **Escribe tu solución:** llamadas en `>>> LLAMA AQUÍ` (dentro del `try`, pasando `c`) y métodos en `>>> ESCRIBE AQUÍ` (fuera de `main`, dentro de la clase).
+3. **Borra el diagnóstico:** la línea `Sqlite.b_diagnostico(c, db);`. No toques el `try` ni los imports.
+4. **Escribe tu solución:** llamadas en el `>>>` de dentro del `try` (pasando `c`) y métodos en el `>>>` de fuera de `main`.
 
 **No borres** `Sqlite.java`, el `try` de la conexión ni la dependencia del driver. El `PRAGMA foreign_keys = ON` y su comprobación en `Sqlite.abrir` son parte de la configuración real, no del diagnóstico.
 
 ## 5. Qué comprobar antes de entregar
 
-- Ejecuta `bash asistente.sh entrega` (ver **Antes de entregar** al principio) y compila tras borrar.
+- Ejecuta `bash b_conect.sh entrega` (ver **Antes de entregar** al principio) y compila tras borrar.
 - [`Sqlite.java`](src/main/java/examen/herramientas/Sqlite.java): conserva la detección de ruta, FK y el cierre de recursos. Para una operación de examen, desactiva autocommit, comprueba filas afectadas y llama a `commit()` solo cuando se cumpla todo; ante fallo, `rollback()`. No actives autocommit en un `finally` sin saber si el rollback funcionó: el cambio de modo puede confirmar pendientes.
 - Si ves **`No suitable driver`**, revisa que el JAR esté en el *classpath al ejecutar*, no solo descargado. Con este driver JDBC no hace falta `Class.forName`.
 - Si ves **`no such table`** o salen **0 tablas** tras abrir, lee la ruta impresa y abre el fichero correcto; si acabas de ejecutar `crear`, revisa el contenido del script.

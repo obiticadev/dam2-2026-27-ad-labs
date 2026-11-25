@@ -1,10 +1,10 @@
-package examen.conect;
+package examen.b_conect;
 
 import examen.herramientas.Sqlite;
 
-import examen.conect.ApoyoAsistentes.Esquema;
-import examen.conect.ApoyoAsistentes.Fragmento;
-import examen.conect.ConstructorEjercicio.Ejercicio;
+import examen.b_conect.Alfa.Esquema;
+import examen.b_conect.Alfa.Fragmento;
+import examen.b_conect.Echo.Ejercicio;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
@@ -28,13 +28,13 @@ import java.util.Set;
 import javax.tools.ToolProvider;
 
 // Ejecutar desde 00-examen. No toca datos/examen.sqlite ni las propuestas del usuario.
-public class PruebasAsistentes {
+public class Hotel {
     private static int comprobaciones;
     private static Path carpeta;
     private static String datos;
 
     public static void main(String[] args) throws Exception {
-        carpeta = Files.createDirectories(Path.of("target", "pruebas-asistentes-" + ApoyoAsistentes.unico()));
+        carpeta = Files.createDirectories(Path.of("target", "pruebas-asistentes-" + Alfa.unico()));
         datos = Sqlite.leerSql(new File("sql/crear.sql"));
         consultas();
         condicionesYEscapes();
@@ -55,19 +55,19 @@ public class PruebasAsistentes {
         return c;
     }
 
-    private static TerminalCompacta terminal(String... respuestas) {
-        return new TerminalCompacta(new StringReader(String.join("\n", respuestas) + "\n"),
+    private static Golf terminal(String... respuestas) {
+        return new Golf(new StringReader(String.join("\n", respuestas) + "\n"),
                 new PrintStream(new ByteArrayOutputStream(), true, StandardCharsets.UTF_8), 64);
     }
 
     private static void consultas() throws Exception {
         try (Connection c = base()) {
-            Esquema esquema = ApoyoAsistentes.analizar(c);
-            Fragmento simple = ConstructorConsulta.construir(esquema,
+            Esquema esquema = Alfa.analizar(c);
+            Fragmento simple = Delta.construir(esquema,
                     terminal("2", "n", "n", "8", "9", "n", "n", "0"), "q", Set.of());
             comprobar(Sqlite.consultar(c, simple.sql(), simple.valores().toArray()).size() == 4, "SELECT simple");
 
-            Fragmento resumen = ConstructorConsulta.construir(esquema, terminal(
+            Fragmento resumen = Delta.construir(esquema, terminal(
                     "1", "s", "2", "2", "", "n",
                     "1", "2", "departamento",
                     "3", "3", "empleados",
@@ -83,10 +83,10 @@ public class PruebasAsistentes {
             comprobar(((Number) vacio.get("total")).doubleValue() == 0, "COALESCE SUM = 0");
             comprobar(resumen.sql().contains("GROUP BY") && resumen.sql().contains("HAVING"), "GROUP BY/HAVING");
             comprobar(resumen.valores().equals(List.of(1700.0, 0L)), "Parametros ON antes de HAVING");
-            comprobar(Sqlite.consultar(c, ApoyoAsistentes.literalizar(resumen)).equals(filas),
+            comprobar(Sqlite.consultar(c, Alfa.literalizar(resumen)).equals(filas),
                     "SQL literal equivalente al parametrizado");
 
-            Fragmento filtros = ConstructorConsulta.construir(esquema, terminal(
+            Fragmento filtros = Delta.construir(esquema, terminal(
                     "1", "s", "2", "2", "", "n", "8", "9",
                     "s", "2", "1", "Ventas",
                     "s", "5", "1", "4", "1600",
@@ -100,33 +100,33 @@ public class PruebasAsistentes {
     }
 
     private static void condicionesYEscapes() throws Exception {
-        Fragmento nulo = ConstructorConsulta.condicion(terminal("1", "null"), "f",
-                "\"columna\"", ApoyoAsistentes.texto("columna"), Set.of());
+        Fragmento nulo = Delta.condicion(terminal("1", "null"), "f",
+                "\"columna\"", Alfa.texto("columna"), Set.of());
         comprobar(nulo.sql().equals("\"columna\" IS NULL") && nulo.valores().isEmpty(), "NULL usa IS NULL");
-        Fragmento rango = ConstructorConsulta.condicion(terminal("10", "10", "20"), "f",
-                "\"x\"", ApoyoAsistentes.numero("x"), Set.of());
+        Fragmento rango = Delta.condicion(terminal("10", "10", "20"), "f",
+                "\"x\"", Alfa.numero("x"), Set.of());
         comprobar(rango.sql().equals("\"x\" BETWEEN ? AND ?")
                 && rango.valores().equals(List.of(10.0, 20.0)), "BETWEEN");
-        Fragmento lista = ConstructorConsulta.condicion(terminal("12", "2", "1", "2"), "f",
-                "\"x\"", ApoyoAsistentes.numero("x"), Set.of());
+        Fragmento lista = Delta.condicion(terminal("12", "2", "1", "2"), "f",
+                "\"x\"", Alfa.numero("x"), Set.of());
         comprobar(lista.sql().equals("\"x\" NOT IN (?, ?)"), "NOT IN");
         Fragmento literal = new Fragmento("SELECT ? AS \"pregunta?\", '?' AS literal",
                 List.of("O'Brien?\n\\u000a"));
         try (Connection c = base()) {
             comprobar(Sqlite.consultar(c, literal.sql(), literal.valores().toArray())
-                    .equals(Sqlite.consultar(c, ApoyoAsistentes.literalizar(literal))),
+                    .equals(Sqlite.consultar(c, Alfa.literalizar(literal))),
                     "Apostrofo, salto, barra y ? entrecomillado");
             List<Object> nuloValor = new ArrayList<>();
             nuloValor.add(null);
-            comprobar(ApoyoAsistentes.literalizar(new Fragmento("SELECT ?", nuloValor)).equals("SELECT NULL"),
+            comprobar(Alfa.literalizar(new Fragmento("SELECT ?", nuloValor)).equals("SELECT NULL"),
                     "Valor NULL al exportar");
             Fragmento cero = new Fragmento("SELECT ? AS valor", List.of("a\0b"));
             comprobar(Sqlite.consultar(c, cero.sql(), cero.valores().toArray())
-                    .equals(Sqlite.consultar(c, ApoyoAsistentes.literalizar(cero))), "Texto con NUL");
+                    .equals(Sqlite.consultar(c, Alfa.literalizar(cero))), "Texto con NUL");
         }
-        comprobar(ApoyoAsistentes.javaValor(new ApoyoAsistentes.Referencia("id1")).equals("id1"), "Referencia Java");
+        comprobar(Alfa.javaValor(new Alfa.Referencia("id1")).equals("id1"), "Referencia Java");
         try {
-            ApoyoAsistentes.valor("NaN", ApoyoAsistentes.numero("n"), Set.of());
+            Alfa.valor("NaN", Alfa.numero("n"), Set.of());
             throw new AssertionError("No aceptar NaN");
         } catch (IllegalArgumentException esperado) { comprobaciones++; }
     }
@@ -142,17 +142,17 @@ public class PruebasAsistentes {
                     );
                     CREATE TABLE arbol (id INTEGER PRIMARY KEY, padre INTEGER REFERENCES arbol);
                     """);
-            Esquema esquema = ApoyoAsistentes.analizar(c);
-            ApoyoAsistentes.Tabla padre = esquema.tablas().stream()
+            Esquema esquema = Alfa.analizar(c);
+            Alfa.Tabla padre = esquema.tablas().stream()
                     .filter(t -> t.nombre().startsWith("padre")).findFirst().orElseThrow();
-            ApoyoAsistentes.Tabla hijo = esquema.tablas().stream()
+            Alfa.Tabla hijo = esquema.tablas().stream()
                     .filter(t -> t.nombre().startsWith("hijo")).findFirst().orElseThrow();
             comprobar(esquema.enlaces(padre, hijo).get(0).sql().contains(" AND "), "FK compuesta implicita");
             comprobar(hijo.escribibles().size() == 3, "No escribir columna generada");
-            ApoyoAsistentes.Tabla arbol = esquema.tablas().get(0);
+            Alfa.Tabla arbol = esquema.tablas().get(0);
             comprobar(esquema.enlaces(arbol, arbol).size() == 2, "Self JOIN ofrece ambas direcciones");
-            String sql = "SELECT * FROM " + ApoyoAsistentes.ident(padre.nombre()) + " AS t1 JOIN "
-                    + ApoyoAsistentes.ident(hijo.nombre()) + " AS t2 ON "
+            String sql = "SELECT * FROM " + Alfa.ident(padre.nombre()) + " AS t1 JOIN "
+                    + Alfa.ident(hijo.nombre()) + " AS t2 ON "
                     + esquema.enlaces(padre, hijo).get(0).sql();
             try (Statement st = c.createStatement(); ResultSet rs = st.executeQuery(sql)) {
                 comprobar(!rs.next(), "Identificadores raros correctamente citados");
@@ -162,7 +162,7 @@ public class PruebasAsistentes {
 
     private static void interfazYSesiones() throws Exception {
         ByteArrayOutputStream salida = new ByteArrayOutputStream();
-        TerminalCompacta ui = new TerminalCompacta(new StringReader("n\n\n10\natras\n20\n"),
+        Golf ui = new Golf(new StringReader("n\n\n10\natras\n20\n"),
                 new PrintStream(salida, true, StandardCharsets.UTF_8), 40);
         Path sesion = carpeta.resolve("sesion.properties");
         Properties datosSesion = new Properties();
@@ -172,7 +172,7 @@ public class PruebasAsistentes {
         try {
             ui.entero("segundo", "Segundo", 0, 0, 100);
             throw new AssertionError("Debe volver");
-        } catch (TerminalCompacta.Volver esperado) { comprobaciones++; }
+        } catch (Golf.Volver esperado) { comprobaciones++; }
         ui.reiniciar();
         comprobar(ui.opcion("menu", "Elegir", "Uno", "Dos").equals("Dos"), "Reproducir opcion navegada");
         comprobar(ui.entero("primero", "Primero", 0, 0, 100) == 20, "Atras corrige respuesta anterior");
@@ -180,7 +180,7 @@ public class PruebasAsistentes {
         try (java.io.Reader entrada = Files.newBufferedReader(sesion, StandardCharsets.UTF_8)) {
             guardado.load(entrada);
         }
-        TerminalCompacta reanudado = terminal();
+        Golf reanudado = terminal();
         reanudado.conectarSesion(sesion, guardado, true, () -> "");
         comprobar(reanudado.opcion("menu", "Elegir", "Uno", "Dos").equals("Dos"), "Reanudar menu guardado");
         comprobar(reanudado.entero("primero", "Primero", 0, 0, 100) == 20, "Reanudar entero");
@@ -192,7 +192,7 @@ public class PruebasAsistentes {
         return new String[] {"3", "2", "3", "n", "2", importe, "s", "1", "1", id, "n", "1"};
     }
 
-    private static TerminalCompacta guion(String[]... partes) {
+    private static Golf guion(String[]... partes) {
         List<String> respuestas = new ArrayList<>();
         for (String[] parte : partes) respuestas.addAll(List.of(parte));
         return terminal(respuestas.toArray(String[]::new));
@@ -200,18 +200,18 @@ public class PruebasAsistentes {
 
     private static void generacionJava() throws Exception {
         try (Connection c = base()) {
-            Esquema esquema = ApoyoAsistentes.analizar(c);
-            Ejercicio commit = ConstructorEjercicio.construir(esquema,
+            Esquema esquema = Alfa.analizar(c);
+            Ejercicio commit = Echo.construir(esquema,
                     guion(new String[] {"1"}, cambio("100", "1"), new String[] {"10"}));
             ejecutar(commit, "SolucionCommit", c);
             comprobar(salario(c, 1) == 1900 && c.getAutoCommit(), "Java generado: commit");
-            Ejercicio rollback = ConstructorEjercicio.construir(esquema,
+            Ejercicio rollback = Echo.construir(esquema,
                     guion(new String[] {"2"}, cambio("500", "1"), new String[] {"10"}));
             ejecutar(rollback, "SolucionRollback", c);
             comprobar(salario(c, 1) == 1900 && c.getAutoCommit(), "Java generado: ensayo con rollback");
         }
         try (Connection c = base()) {
-            Ejercicio fallo = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c),
+            Ejercicio fallo = Echo.construir(Alfa.analizar(c),
                     guion(new String[] {"1"}, cambio("100", "1"), cambio("100", "999"), new String[] {"10"}));
             try {
                 ejecutar(fallo, "SolucionCeroFilas", c);
@@ -220,7 +220,7 @@ public class PruebasAsistentes {
             comprobar(salario(c, 1) == 1800, "Java generado: cero filas deshace primer cambio");
         }
         try (Connection c = base()) {
-            Ejercicio ids = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c), terminal(
+            Ejercicio ids = Echo.construir(Alfa.analizar(c), terminal(
                     "1", "2", "1", "n", "Temporal", "s",
                     "2", "2", "n", "Eva", "1200", "$id1", "s", "10"));
             ejecutar(ids, "SolucionIds", c);
@@ -228,14 +228,14 @@ public class PruebasAsistentes {
                     "Java generado: ID del alta usado por siguiente operacion");
         }
         try (Connection c = base()) {
-            Ejercicio puntos = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c),
+            Ejercicio puntos = Echo.construir(Alfa.analizar(c),
                     guion(new String[] {"1"}, cambio("100", "1"), new String[] {"6"},
                             cambio("999", "2"), new String[] {"7", "", "8", "", "10"}));
             ejecutar(puntos, "SolucionPuntos", c);
             comprobar(salario(c, 1) == 1900 && salario(c, 2) == 1650, "Java generado: rollback parcial");
         }
         try (Connection c = base()) {
-            Ejercicio recorrido = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c), terminal(
+            Ejercicio recorrido = Echo.construir(Alfa.analizar(c), terminal(
                     "1", "9", "1", "1",
                     "s", "4", "1", "1", "n",
                     "s", "1", "1700", "1", "100", "n", "1", "10"));
@@ -243,7 +243,7 @@ public class PruebasAsistentes {
             comprobar(salario(c, 1) == 1800 && salario(c, 2) == 1750, "Java generado: reglas y calculo Java");
         }
         try (Connection c = base()) {
-            Ejercicio reglas = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c), terminal(
+            Ejercicio reglas = Echo.construir(Alfa.analizar(c), terminal(
                     "1", "3", "2", "3", "s",
                     "3", "6", "1700", "n", "2", "100", "s",
                     "4", "1", "1", "n", "2", "50", "n", "s",
@@ -253,7 +253,7 @@ public class PruebasAsistentes {
                     "Java generado: CASE solo aplica primera regla");
         }
         try (Connection c = base()) {
-            Ejercicio texto = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c), terminal(
+            Ejercicio texto = Echo.construir(Alfa.analizar(c), terminal(
                     "3", "2", "1", "n", "O'Brien? \\u000a \" prueba", "s", "10"));
             ejecutar(texto, "SolucionTexto", c);
             comprobar(Sqlite.consultarLong(c, "SELECT COUNT(*) FROM departamentos") == 4,
@@ -264,7 +264,7 @@ public class PruebasAsistentes {
     }
 
     private static void ejecutar(Ejercicio ejercicio, String nombre, Connection c) throws Exception {
-        Path fuente = ApoyoAsistentes.guardarNuevo(carpeta, nombre + ".java", ejercicio.fuente(nombre));
+        Path fuente = Alfa.guardarNuevo(carpeta, nombre + ".java", ejercicio.fuente(nombre));
         Path clases = Files.createDirectories(carpeta.resolve("clases"));
         ByteArrayOutputStream errores = new ByteArrayOutputStream();
         int resultado = ToolProvider.getSystemJavaCompiler().run(null, errores, errores,
@@ -272,7 +272,7 @@ public class PruebasAsistentes {
                 "-d", clases.toString(), fuente.toString());
         comprobar(resultado == 0, "Compila " + nombre + ": " + errores.toString(StandardCharsets.UTF_8));
         try (URLClassLoader cargador = new URLClassLoader(new URL[] {clases.toUri().toURL()},
-                PruebasAsistentes.class.getClassLoader())) {
+                Hotel.class.getClassLoader())) {
             try {
                 cargador.loadClass("examen." + nombre).getMethod("ejecutar", Connection.class).invoke(null, c);
             } catch (InvocationTargetException error) {
@@ -284,20 +284,20 @@ public class PruebasAsistentes {
 
     private static void masOperaciones() throws Exception {
         try (Connection c = base()) {
-            Ejercicio baja = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c), terminal(
+            Ejercicio baja = Echo.construir(Alfa.analizar(c), terminal(
                     "1", "4", "2", "s", "1", "1", "4", "n", "1", "10"));
             ejecutar(baja, "SolucionBaja", c);
             comprobar(Sqlite.consultarLong(c, "SELECT COUNT(*) FROM empleados") == 3, "DELETE parametrizado");
         }
         try (Connection c = base()) {
-            Ejercicio porcentaje = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c), terminal(
+            Ejercicio porcentaje = Echo.construir(Alfa.analizar(c), terminal(
                     "1", "3", "2", "3", "n", "4", "10",
                     "s", "1", "1", "1", "n", "1", "10"));
             ejecutar(porcentaje, "SolucionPorcentaje", c);
             comprobar(Math.abs(salario(c, 1) - 1980) < 0.00001, "UPDATE porcentaje");
         }
         try (Connection c = base()) {
-            Ejercicio completa = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c), terminal(
+            Ejercicio completa = Echo.construir(Alfa.analizar(c), terminal(
                     "1", "3", "2", "3", "n", "3", "100",
                     "n", "s", "3", "10"));
             ejecutar(completa, "SolucionTablaCompleta", c);
@@ -305,7 +305,7 @@ public class PruebasAsistentes {
                     "Sin WHERE solo con confirmacion explicita; cantidad libre");
         }
         try (Connection c = base()) {
-            Ejercicio reglas = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c), terminal(
+            Ejercicio reglas = Echo.construir(Alfa.analizar(c), terminal(
                     "1", "3", "2", "3", "s",
                     "3", "6", "1700", "s", "4", "1", "1", "1", "n",
                     "2", "100", "n", "s",
@@ -315,7 +315,7 @@ public class PruebasAsistentes {
                     "CASE con dos condiciones AND y ELSE previo");
         }
         try (Connection c = base()) {
-            Ejercicio fk = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c),
+            Ejercicio fk = Echo.construir(Alfa.analizar(c),
                     guion(new String[] {"1"}, cambio("100", "1"), new String[] {
                             "3", "2", "4", "n", "1", "999",
                             "s", "1", "1", "2", "n", "1", "10"}));
@@ -326,7 +326,7 @@ public class PruebasAsistentes {
             comprobar(salario(c, 1) == 1800, "FK invalida revierte cambios anteriores del Java generado");
         }
         try (Connection c = base()) {
-            Ejercicio consulta = ConstructorEjercicio.construir(ApoyoAsistentes.analizar(c), terminal(
+            Ejercicio consulta = Echo.construir(Alfa.analizar(c), terminal(
                     "1", "1", "2", "n", "n", "8", "9", "n", "n", "0", "10"));
             // Solo comprobamos compilación; el listado de la propuesta se captura.
             PrintStream anterior = System.out;
@@ -344,8 +344,8 @@ public class PruebasAsistentes {
         Path archivo = carpeta.resolve("lectura.sqlite");
         Sqlite.crear(archivo.toFile(), new File("sql/crear.sql"));
         byte[] antes = Files.readAllBytes(archivo);
-        try (Connection c = ApoyoAsistentes.abrirLectura(archivo.toRealPath())) {
-            comprobar(ApoyoAsistentes.analizar(c).tablas().size() == 2, "Analizador en modo ro");
+        try (Connection c = Alfa.abrirLectura(archivo.toRealPath())) {
+            comprobar(Alfa.analizar(c).tablas().size() == 2, "Analizador en modo ro");
             try (Statement st = c.createStatement()) {
                 st.executeUpdate("UPDATE empleados SET salario = 0");
                 throw new AssertionError("El asistente no puede escribir");
@@ -353,7 +353,7 @@ public class PruebasAsistentes {
         }
         comprobar(java.util.Arrays.equals(antes, Files.readAllBytes(archivo)), "Base original intacta");
         try {
-            ApoyoAsistentes.guardarNuevo(carpeta, "lectura.sqlite", "no");
+            Alfa.guardarNuevo(carpeta, "lectura.sqlite", "no");
             throw new AssertionError("No debe sobrescribir");
         } catch (java.nio.file.FileAlreadyExistsException esperado) { comprobaciones++; }
     }
@@ -364,17 +364,17 @@ public class PruebasAsistentes {
     }
 
     private static void revisarEntrega() throws Exception {
-        var metodos = RevisarEntrega.metodos(Files.readString(Path.of("src/main/java/examen/herramientas/Sqlite.java")));
+        var metodos = Foxtrot.metodos(Files.readString(Path.of("src/main/java/examen/herramientas/Sqlite.java")));
         // Un comentario o un texto no cuentan como uso; insertar arrastra a preparar y ejecutarCambio.
-        var usados = RevisarEntrega.usados(metodos, List.of("""
+        var usados = Foxtrot.usados(metodos, List.of("""
                 // Sqlite.commit(c);
                 String s = "Sqlite.rollback(c)";
                 Sqlite.insertar(c, "INSERT INTO t VALUES (?)", 1);
                 """));
         comprobar(usados.equals(Set.of("preparar", "insertar", "ejecutarCambio")), "Entrega: " + usados);
-        var abrir = RevisarEntrega.usados(metodos, List.of("Sqlite.abrir(db);"));
+        var abrir = Foxtrot.usados(metodos, List.of("Sqlite.abrir(db);"));
         comprobar(abrir.equals(Set.of("abrir", "configurar")), "Entrega: abrir necesita configurar: " + abrir);
-        comprobar(RevisarEntrega.usados(metodos, List.of("import static examen.herramientas.Sqlite.*; commit(c);"))
+        comprobar(Foxtrot.usados(metodos, List.of("import static examen.herramientas.Sqlite.*; commit(c);"))
                 .containsAll(Set.of("commit", "exigirTransaccion")), "Entrega: import static");
     }
 

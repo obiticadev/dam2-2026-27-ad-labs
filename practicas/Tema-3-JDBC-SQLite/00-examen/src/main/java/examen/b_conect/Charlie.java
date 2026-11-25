@@ -1,23 +1,23 @@
-package examen.conect;
+package examen.b_conect;
 
-import examen.conect.ApoyoAsistentes.Contexto;
-import examen.conect.ConstructorEjercicio.Ejercicio;
+import examen.b_conect.Alfa.Contexto;
+import examen.b_conect.Echo.Ejercicio;
 import java.nio.file.Path;
 
 // Genera una PROPUESTA de Java. No ejecuta las operaciones de escritura.
 // Directorio de trabajo: 00-examen. Argumentos: [base.sqlite] [sesion.properties].
-public class AsistenteEjercicios {
+public class Charlie {
     public static void main(String[] args) {
-        TerminalCompacta ui = new TerminalCompacta();
+        Golf ui = new Golf();
         try (Contexto contexto = Contexto.abrir("ejercicios", args, ui)) {
             while (true) {
                 try {
                     ui.reiniciar();
-                    Ejercicio ejercicio = ConstructorEjercicio.construir(contexto.esquema, ui);
-                    String clase = "Solucion" + ApoyoAsistentes.unico();
-                    Path archivo = ApoyoAsistentes.guardarNuevo(Path.of("propuestas"), clase + ".java",
+                    Ejercicio ejercicio = Echo.construir(contexto.esquema, ui);
+                    String clase = "Solucion" + Alfa.unico();
+                    Path archivo = Alfa.guardarNuevo(Path.of("b_propuestas"), clase + ".java",
                             ejercicio.fuente(clase));
-                    ApoyoAsistentes.guardarNuevo(Path.of("propuestas"), clase + "-revision.txt",
+                    Alfa.guardarNuevo(Path.of("b_propuestas"), clase + "-revision.txt",
                             "PROPUESTA, NO SOLUCION VERIFICADA\n"
                                     + String.join("\n", ejercicio.avisos()) + "\n\n"
                                     + "Prueba exito, ID inexistente, duplicados, FK/CHECK y fallo tras el primer cambio.\n"
@@ -36,18 +36,18 @@ public class AsistenteEjercicios {
                             case "sesion" -> ui.ver(contexto.sesion.toString());
                             case "nueva" -> {
                                 ui.nueva();
-                                throw new TerminalCompacta.Volver();
+                                throw new Golf.Volver();
                             }
                             case "atras" -> ui.retroceder();
                             default -> ui.linea("Opciones: ver, codigo, avisos, nueva, atras, sesion, salir.");
                         }
                     }
-                } catch (TerminalCompacta.Volver volver) {
+                } catch (Golf.Volver volver) {
                     // Reproduce silenciosamente las respuestas previas a la corrección.
                 }
             }
-        } catch (TerminalCompacta.Salir salir) {
-            ui.linea("Fin. Las respuestas se conservan en sesiones/.");
+        } catch (Golf.Salir salir) {
+            ui.linea("Fin. Las respuestas se conservan en b_sesiones/.");
         } catch (Exception error) {
             ui.linea("Error: " + error.getMessage());
             System.exit(1);

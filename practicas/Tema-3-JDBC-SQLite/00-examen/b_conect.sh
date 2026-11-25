@@ -4,10 +4,10 @@ carpeta="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 tipo="${1:-consultas}"
 if (( $# )); then shift; fi
 case "$tipo" in
-    consultas) clase=examen.conect.AsistenteConsultas ;;
-    ejercicios) clase=examen.conect.AsistenteEjercicios ;;
-    entrega) clase=examen.conect.RevisarEntrega ;;
-    *) echo "Uso: bash asistente.sh {consultas|ejercicios} [base.sqlite] [sesion.properties] | entrega [Fichero.java ...]" >&2; exit 2 ;;
+    consultas) clase=examen.b_conect.Bravo ;;
+    ejercicios) clase=examen.b_conect.Charlie ;;
+    entrega) clase=examen.b_conect.Foxtrot ;;
+    *) echo "Uso: bash b_conect.sh {consultas|ejercicios} [base.sqlite] [sesion.properties] | entrega [Fichero.java ...]" >&2; exit 2 ;;
 esac
 nombre=sqlite-jdbc-3.51.0.0.jar
 jar="$carpeta/lib/$nombre"
@@ -17,7 +17,7 @@ if [[ ! -f "$jar" ]]; then
 fi
 cd -- "$carpeta"
 mkdir -p target/asistentes
-javac --release 17 -encoding UTF-8 -cp "$jar" -d target/asistentes src/main/java/examen/herramientas/*.java src/main/java/examen/conect/*.java
+javac --release 17 -encoding UTF-8 -cp "$jar" -d target/asistentes src/main/java/examen/herramientas/*.java src/main/java/examen/b_conect/*.java
 classpath="$carpeta/target/asistentes:$jar"
 case "$(uname -s)" in
     MINGW*|MSYS*|CYGWIN*)

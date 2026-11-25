@@ -4,7 +4,7 @@ En el temario actual, el Tema 3 es **UT02 · 3A JDBC y 3B SQLite**. Este materia
 
 | Bloque | Para qué sirve |
 |---|---|
-| [00 · Plantilla de examen](00-examen/README.md) | Crear desde `.sql` o abrir `.sqlite`, con herramientas reutilizables de consultas, DML, transacciones, savepoints y metadatos. Incluye datos y recetas de ejemplo que hay que adaptar al enunciado. |
+| [00 · Plantilla de examen](00-examen/b_README.md) | Crear desde `.sql` o abrir `.sqlite`, con herramientas reutilizables de consultas, DML, transacciones, savepoints y metadatos. Incluye datos y recetas de ejemplo que hay que adaptar al enunciado. |
 | [01 · Ejercicios atómicos](01-atomicos/README.md) | 12 objetivos pequeños y resueltos. Cada uno empieza con sus propios datos. |
 | [02 · Personal](02-simulacros/01-personal/README.md) | Alta + revisión salarial con prioridad de reglas, `INNER JOIN` y rollback si el `UPDATE` afecta a cero filas. |
 | [02 · Almacén](02-simulacros/02-almacen/README.md) | Descontar stock + registrar salida, id duplicado, stock insuficiente y resumen con `LEFT JOIN`. |
@@ -36,9 +36,9 @@ Los atómicos usan `:memory:` y no dejan fichero. Cada simulacro trabaja siempre
 | `02-simulacros/01-personal/` | Ejercicio completo: alta y revisión salarial con commit o rollback. | Lee su README como enunciado, intenta resolverlo en una copia y compara con `Personal.java`. |
 | `02-simulacros/02-almacen/` | Ejercicio completo: stock, salidas, duplicados y rollback. | Lee su README, intenta resolverlo y compara con `Almacen.java`. |
 | `ejecutar.sh` | Compila y ejecuta los programas sin Maven; localiza el driver y fija la carpeta de trabajo. | En una terminal Bash situada aquí, usa los comandos de abajo. |
-| `00-examen/asistente.sh` | Arranca los asistentes locales de consultas y generación de Java, también si copias `00-examen` por separado. | Dentro de `00-examen`, usa `bash asistente.sh consultas` o `bash asistente.sh ejercicios`; incluye el JAR local. |
+| `00-examen/b_conect.sh` | Arranca los asistentes locales de consultas y generación de Java, también si copias `00-examen` por separado. | Dentro de `00-examen`, usa `bash b_conect.sh consultas` o `bash b_conect.sh ejercicios`; incluye el JAR local. |
 | `pom.xml` de esta carpeta | Agrupa los cuatro módulos Java y conecta los ejercicios con las herramientas de `00-examen`. | Abre **esta carpeta completa** en el IDE para trabajar con todos. No es un programa ni se ejecuta como un Main. |
-| `README.md` de esta carpeta | Mapa general del material. | Empieza aquí; para las llamadas de examen consulta `00-examen/README.md`. |
+| `README.md` de esta carpeta | Mapa general del material. | Empieza aquí; para las llamadas de examen consulta `00-examen/b_README.md`. |
 | `.vscode/` | Configuraciones de ejecución de VS Code, con argumentos y directorios de trabajo. | Abre `Tema-3-JDBC-SQLite` como carpeta y selecciona una configuración en **Ejecutar y depurar**. |
 | `sql/` dentro de los ejercicios | Datos iniciales propios de cada ejercicio. | Los carga su programa automáticamente; no los copies sobre la base del examen. |
 | `target/` dentro de cada proyecto | Clases/JAR generados y, en simulacros, bases de prueba. | No contiene la solución fuente. Puedes inspeccionar las bases impresas en consola. No hace falta entregarlo salvo indicación del profesor. |

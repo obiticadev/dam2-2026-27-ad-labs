@@ -1,4 +1,4 @@
-package examen.conect;
+package examen.b_conect;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 // Interfaz de texto compartida. Cada pregunta usa como máximo tres líneas.
 // No depende de ANSI, de un navegador ni de librerías externas.
-final class TerminalCompacta {
+final class Golf {
     static final class Salir extends RuntimeException {}
     static final class Volver extends RuntimeException {}
     private static final class Repetir extends RuntimeException {}
@@ -31,12 +31,12 @@ final class TerminalCompacta {
     private Properties contexto;
     private Supplier<String> esquema = () -> "Esquema no disponible.";
 
-    TerminalCompacta() {
+    Golf() {
         this(new InputStreamReader(System.in, StandardCharsets.UTF_8), System.out,
                 Integer.getInteger("asistente.ancho", 64));
     }
 
-    TerminalCompacta(Reader entrada, PrintStream salida, int ancho) {
+    Golf(Reader entrada, PrintStream salida, int ancho) {
         this.entrada = new BufferedReader(entrada);
         this.salida = salida;
         this.ancho = Math.max(32, Math.min(120, ancho));

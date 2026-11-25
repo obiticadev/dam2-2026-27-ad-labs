@@ -6,9 +6,9 @@ if (( $# )); then shift; fi
 case "$opcion" in
     desde-sql) proyecto="$tema/00-examen"; clase=examen.MainDesdeSql ;;
     desde-sqlite) proyecto="$tema/00-examen"; clase=examen.MainDesdeSqlite ;;
-    consultas|ejercicios|entrega) exec bash "$tema/00-examen/asistente.sh" "$opcion" "$@" ;;
+    consultas|ejercicios|entrega) exec bash "$tema/00-examen/b_conect.sh" "$opcion" "$@" ;;
     pruebas) proyecto="$tema/00-examen"; clase=examen.herramientas.PruebasSqlite ;;
-    pruebas-asistentes) proyecto="$tema/00-examen"; clase=examen.conect.PruebasAsistentes ;;
+    pruebas-asistentes) proyecto="$tema/00-examen"; clase=examen.b_conect.Hotel ;;
     atomicos) proyecto="$tema/01-atomicos"; clase=repaso.Atomicos ;;
     personal) proyecto="$tema/02-simulacros/01-personal"; clase=repaso.Personal ;;
     almacen) proyecto="$tema/02-simulacros/02-almacen"; clase=repaso.Almacen ;;
@@ -23,9 +23,10 @@ if [[ ! -f "$jar" ]]; then
     exit 2
 fi
 
-# Fijar la carpeta de ejecución: datos/, sql/ y target/ ya no dependen de dónde abrió la terminal.
+# Fijar la carpeta de ejecución: datos/, sql/ y la salida no dependen de dónde abrió la terminal.
 cd -- "$proyecto"
-mkdir -p target/clases
+salida=target
+mkdir -p "$salida/clases"
 fuentes=()
 # Bucle en vez de mapfile: el bash 3 de macOS no lo tiene.
 while IFS= read -r f; do fuentes+=("$f"); done < <(find "$tema/00-examen/src/main/java" -name '*.java')
@@ -35,10 +36,10 @@ fi
 if [[ "$opcion" == pruebas* ]]; then
     while IFS= read -r f; do fuentes+=("$f"); done < <(find "$tema/00-examen/src/test/java" -name '*.java')
 fi
-javac --release 17 -encoding UTF-8 -cp "$jar" -d target/clases "${fuentes[@]}"
-classpath="target/clases:$jar"
+javac --release 17 -encoding UTF-8 -cp "$jar" -d "$salida/clases" "${fuentes[@]}"
+classpath="$salida/clases:$jar"
 case "$(uname -s)" in
     # Git Bash en Windows: java.exe espera rutas C:/... separadas por ;
-    MINGW*|MSYS*|CYGWIN*) classpath="target/clases;$(cygpath -m "$jar")" ;;
+    MINGW*|MSYS*|CYGWIN*) classpath="$salida/clases;$(cygpath -m "$jar")" ;;
 esac
 exec java --enable-native-access=ALL-UNNAMED -ea -cp "$classpath" "$clase" "$@"

@@ -1,11 +1,11 @@
-package examen.conect;
+package examen.b_conect;
 
-import examen.conect.ApoyoAsistentes.Campo;
-import examen.conect.ApoyoAsistentes.Columna;
-import examen.conect.ApoyoAsistentes.Enlace;
-import examen.conect.ApoyoAsistentes.Esquema;
-import examen.conect.ApoyoAsistentes.Fragmento;
-import examen.conect.ApoyoAsistentes.Tabla;
+import examen.b_conect.Alfa.Campo;
+import examen.b_conect.Alfa.Columna;
+import examen.b_conect.Alfa.Enlace;
+import examen.b_conect.Alfa.Esquema;
+import examen.b_conect.Alfa.Fragmento;
+import examen.b_conect.Alfa.Tabla;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import static examen.conect.ApoyoAsistentes.ident;
+import static examen.b_conect.Alfa.ident;
 
 // Generador estructurado: no interpreta texto libre ni ejecuta SQL introducido.
-final class ConstructorConsulta {
-    private ConstructorConsulta() {}
+final class Delta {
+    private Delta() {}
     private record Salida(String expresion, String alias, boolean agregada, Columna tipo) {}
 
-    static Fragmento construir(Esquema esquema, TerminalCompacta ui, String prefijo, Set<String> referencias) {
+    static Fragmento construir(Esquema esquema, Golf ui, String prefijo, Set<String> referencias) {
         Tabla primera = ui.elegir(prefijo + ".tabla1", "Tabla principal", esquema.tablas(), Tabla::nombre);
         Tabla segunda = null;
         String relacion = "";
@@ -124,7 +124,7 @@ final class ConstructorConsulta {
         return new Fragmento(sql.toString(), valores);
     }
 
-    private static List<Salida> salidas(TerminalCompacta ui, String prefijo, List<Campo> campos,
+    private static List<Salida> salidas(Golf ui, String prefijo, List<Campo> campos,
             boolean izquierda) {
         List<Salida> resultado = new ArrayList<>();
         Set<String> alias = new HashSet<>();
@@ -175,12 +175,12 @@ final class ConstructorConsulta {
                     : campo.alias() + "_" + campo.columna().nombre();
             String nombre = alias(ui, clave, defecto, alias);
             Columna columna = tipo.startsWith("COUNT") ? new Columna(nombre, "INTEGER", false, 0, null, 0)
-                    : tipo.equals("AVG") || tipo.equals("SUM") ? ApoyoAsistentes.numero(nombre) : campo.columna();
+                    : tipo.equals("AVG") || tipo.equals("SUM") ? Alfa.numero(nombre) : campo.columna();
             resultado.add(new Salida(expresion, nombre, agregado, columna));
         }
     }
 
-    private static String alias(TerminalCompacta ui, String clave, String defecto, Set<String> usados) {
+    private static String alias(Golf ui, String clave, String defecto, Set<String> usados) {
         String nombre = ui.dato(clave + ".alias", "Alias [" + defecto + "]", s -> {
             String valor = s.isEmpty() ? defecto : s;
             if (valor.isBlank() || usados.contains(valor.toLowerCase(Locale.ROOT))) {
@@ -192,7 +192,7 @@ final class ConstructorConsulta {
         return nombre;
     }
 
-    static Fragmento filtros(TerminalCompacta ui, String prefijo, List<Campo> campos,
+    static Fragmento filtros(Golf ui, String prefijo, List<Campo> campos,
             Set<String> referencias) {
         Fragmento resultado = Fragmento.vacio();
         int n = 0;
@@ -205,7 +205,7 @@ final class ConstructorConsulta {
         return resultado;
     }
 
-    static Fragmento anadir(TerminalCompacta ui, String clave, Fragmento anterior, Fragmento nuevo) {
+    static Fragmento anadir(Golf ui, String clave, Fragmento anterior, Fragmento nuevo) {
         if (anterior.sql().isEmpty()) return nuevo;
         String union = ui.opcion(clave, "Combinar con TODO lo anterior", "AND", "OR");
         List<Object> valores = new ArrayList<>(anterior.valores());
@@ -213,7 +213,7 @@ final class ConstructorConsulta {
         return new Fragmento("(" + anterior.sql() + " " + union + " " + nuevo.sql() + ")", valores);
     }
 
-    static Fragmento condicion(TerminalCompacta ui, String clave, String expresion, Columna columna,
+    static Fragmento condicion(Golf ui, String clave, String expresion, Columna columna,
             Set<String> referencias) {
         String operador = ui.opcion(clave + ".operador", "Operador", "=", "<>", ">", ">=", "<", "<=",
                 "LIKE", "IS NULL", "IS NOT NULL", "BETWEEN", "IN", "NOT IN");
@@ -223,8 +223,8 @@ final class ConstructorConsulta {
                 : operador.endsWith("IN") ? ui.entero(clave + ".cantidad", "Cantidad de valores", 1, 1, 50) : 1;
         for (int i = 0; i < cantidad; i++) {
             boolean admiteNulo = operador.equals("=") || operador.equals("<>");
-            Object valor = ApoyoAsistentes.pedirValor(ui, clave + ".valor." + i,
-                    operador.equals("LIKE") ? ApoyoAsistentes.texto(columna.nombre()) : columna,
+            Object valor = Alfa.pedirValor(ui, clave + ".valor." + i,
+                    operador.equals("LIKE") ? Alfa.texto(columna.nombre()) : columna,
                     referencias, admiteNulo);
             if (valor == null) {
                 return new Fragmento(expresion + (operador.equals("=") ? " IS NULL" : " IS NOT NULL"), List.of());

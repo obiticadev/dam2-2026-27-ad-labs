@@ -1,4 +1,4 @@
-package examen.conect;
+package examen.b_conect;
 
 import examen.herramientas.Sqlite;
 
@@ -24,8 +24,8 @@ import java.util.Set;
 import java.util.UUID;
 
 // Soporte interno de los asistentes. No sustituye las herramientas de Sqlite.
-final class ApoyoAsistentes {
-    private ApoyoAsistentes() {}
+final class Alfa {
+    private Alfa() {}
 
     record Columna(String nombre, String tipo, boolean obligatoria, int primaria,
             String defecto, int oculta) {
@@ -104,13 +104,13 @@ final class ApoyoAsistentes {
     }
 
     static final class Contexto implements AutoCloseable {
-        final TerminalCompacta terminal;
+        final Golf terminal;
         final Path base;
         final Connection conexion;
         final Esquema esquema;
         final Path sesion;
 
-        private Contexto(TerminalCompacta terminal, Path base, Connection conexion,
+        private Contexto(Golf terminal, Path base, Connection conexion,
                 Esquema esquema, Path sesion) {
             this.terminal = terminal;
             this.base = base;
@@ -119,12 +119,12 @@ final class ApoyoAsistentes {
             this.sesion = sesion;
         }
 
-        static Contexto abrir(String tipo, String[] args, TerminalCompacta terminal) throws Exception {
+        static Contexto abrir(String tipo, String[] args, Golf terminal) throws Exception {
             if (args.length > 2) throw new IllegalArgumentException("Uso: [base.sqlite] [sesion.properties]");
             Properties datos = new Properties();
             boolean cargar = args.length == 2;
             Path sesion = cargar ? Path.of(args[1]).toAbsolutePath().normalize()
-                    : Path.of("sesiones", tipo + "-" + unico() + ".properties");
+                    : Path.of("b_sesiones", tipo + "-" + unico() + ".properties");
             if (cargar) {
                 try (java.io.Reader entrada = Files.newBufferedReader(sesion, StandardCharsets.UTF_8)) {
                     datos.load(entrada);
@@ -280,7 +280,7 @@ final class ApoyoAsistentes {
         return numero;
     }
 
-    static Object pedirValor(TerminalCompacta ui, String clave, Columna columna,
+    static Object pedirValor(Golf ui, String clave, Columna columna,
             Set<String> referencias, boolean permiteNulo) {
         return ui.dato(clave, columna.nombre() + ": valor (texto: / null)", s -> {
             Object valor = valor(s, columna, referencias);
@@ -376,7 +376,7 @@ final class ApoyoAsistentes {
         return Long.toString(System.currentTimeMillis()) + "_" + UUID.randomUUID().toString().substring(0, 8);
     }
 
-    static void probarConsulta(Connection c, Fragmento consulta, TerminalCompacta ui) throws SQLException {
+    static void probarConsulta(Connection c, Fragmento consulta, Golf ui) throws SQLException {
         // El límite externo evita volcar una consulta entera a la terminal.
         String sql = "SELECT * FROM (" + consulta.sql() + ") AS vista LIMIT 20";
         try (PreparedStatement ps = Sqlite.preparar(c, sql, consulta.valores().toArray());

@@ -1,22 +1,22 @@
-package examen.conect;
+package examen.b_conect;
 
 import examen.herramientas.Sqlite;
 
-import examen.conect.ApoyoAsistentes.Campo;
-import examen.conect.ApoyoAsistentes.Columna;
-import examen.conect.ApoyoAsistentes.Esquema;
-import examen.conect.ApoyoAsistentes.Fragmento;
-import examen.conect.ApoyoAsistentes.Tabla;
+import examen.b_conect.Alfa.Campo;
+import examen.b_conect.Alfa.Columna;
+import examen.b_conect.Alfa.Esquema;
+import examen.b_conect.Alfa.Fragmento;
+import examen.b_conect.Alfa.Tabla;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import static examen.conect.ApoyoAsistentes.ident;
+import static examen.b_conect.Alfa.ident;
 
-final class ConstructorEjercicio {
-    private ConstructorEjercicio() {}
+final class Echo {
+    private Echo() {}
 
     record Ejercicio(String modo, List<String> lineas, List<String> avisos) {
         boolean transaccion() { return !modo.startsWith("Independientes"); }
@@ -60,7 +60,7 @@ final class ConstructorEjercicio {
         }
     }
 
-    static Ejercicio construir(Esquema esquema, TerminalCompacta ui) {
+    static Ejercicio construir(Esquema esquema, Golf ui) {
         String modo = ui.opcion("ej.modo", "Transaccion del ejercicio",
                 "Todo o nada (commit)", "Ensayo (rollback al final)", "Independientes (sin transaccion)");
         boolean transaccion = !modo.startsWith("Independientes");
@@ -92,8 +92,8 @@ final class ConstructorEjercicio {
             }
             List<String> operacion = new ArrayList<>();
             switch (tipo) {
-                case "Consulta" -> operacion.add(ApoyoAsistentes.llamada("mostrarConsulta",
-                        ConstructorConsulta.construir(esquema, ui, clave, referencias)) + ";");
+                case "Consulta" -> operacion.add(Alfa.llamada("mostrarConsulta",
+                        Delta.construir(esquema, ui, clave, referencias)) + ";");
                 case "Insertar" -> insertar(esquema, ui, clave, n, referencias, operacion);
                 case "Modificar" -> modificar(esquema, ui, clave, n, referencias, operacion);
                 case "Borrar" -> borrar(esquema, ui, clave, n, referencias, operacion);
@@ -101,7 +101,7 @@ final class ConstructorEjercicio {
                 case "Guardar punto" -> {
                     String variable = "punto" + n;
                     operacion.add("Savepoint " + variable + " = Sqlite.guardarPunto(c, "
-                            + ApoyoAsistentes.javaTexto(variable) + ");");
+                            + Alfa.javaTexto(variable) + ");");
                     puntos.put(variable, variable);
                 }
                 case "Rollback hasta punto", "Liberar punto" -> {
@@ -129,11 +129,11 @@ final class ConstructorEjercicio {
         return new Ejercicio(modo, List.copyOf(lineas), List.copyOf(avisos));
     }
 
-    private static Tabla tabla(Esquema esquema, TerminalCompacta ui, String clave) {
+    private static Tabla tabla(Esquema esquema, Golf ui, String clave) {
         return ui.elegir(clave + ".tabla", "Tabla de la operacion", esquema.tablas(), Tabla::nombre);
     }
 
-    private static void insertar(Esquema esquema, TerminalCompacta ui, String clave, int n,
+    private static void insertar(Esquema esquema, Golf ui, String clave, int n,
             Set<String> referencias, List<String> codigo) {
         Tabla tabla = tabla(esquema, ui, clave);
         List<String> columnas = new ArrayList<>();
@@ -149,7 +149,7 @@ final class ConstructorEjercicio {
                     "Incluir " + columna.etiqueta(), !auto && columna.defecto() == null);
             if (incluir) {
                 columnas.add(ident(columna.nombre()));
-                valores.add(ApoyoAsistentes.pedirValor(ui, paso + ".valor", columna, referencias,
+                valores.add(Alfa.pedirValor(ui, paso + ".valor", columna, referencias,
                         !columna.obligatoria()));
             }
         }
@@ -159,16 +159,16 @@ final class ConstructorEjercicio {
         boolean claveEntera = tabla.claves().size() == 1 && tabla.claves().get(0).entera();
         if (claveEntera && ui.si(clave + ".id", "Recuperar clave como $id" + n, true)) {
             String variable = "id" + n;
-            codigo.add("long " + variable + " = " + ApoyoAsistentes.llamada("insertarConId",
+            codigo.add("long " + variable + " = " + Alfa.llamada("insertarConId",
                     new Fragmento(sql + " RETURNING " + ident(tabla.claves().get(0).nombre()), valores)) + ";");
             referencias.add(variable);
         } else {
-            codigo.add("int filas" + n + " = " + ApoyoAsistentes.llamada("insertar", new Fragmento(sql, valores)) + ";");
+            codigo.add("int filas" + n + " = " + Alfa.llamada("insertar", new Fragmento(sql, valores)) + ";");
             codigo.add("Sqlite.exigirUnaFila(filas" + n + ");");
         }
     }
 
-    private static void modificar(Esquema esquema, TerminalCompacta ui, String clave, int n,
+    private static void modificar(Esquema esquema, Golf ui, String clave, int n,
             Set<String> referencias, List<String> codigo) {
         Tabla tabla = tabla(esquema, ui, clave);
         Columna columna = ui.elegir(clave + ".columna", "Columna a modificar",
@@ -184,15 +184,15 @@ final class ConstructorEjercicio {
                 String paso = clave + ".regla." + regla++;
                 Campo campo = ui.elegir(paso + ".campo", "Condicion de la regla",
                         esquema.campos(tabla, ""), Campo::etiqueta);
-                Fragmento condicion = ConstructorConsulta.condicion(ui, paso,
+                Fragmento condicion = Delta.condicion(ui, paso,
                         campo.sql(), campo.columna(), referencias);
                 int extra = 0;
                 while (ui.si(paso + ".extra." + extra + ".mas", "Otra condicion en esta regla", false)) {
                     String subpaso = paso + ".extra." + extra++;
                     Campo otro = ui.elegir(subpaso + ".campo", "Columna de condicion",
                             esquema.campos(tabla, ""), Campo::etiqueta);
-                    condicion = ConstructorConsulta.anadir(ui, subpaso + ".union", condicion,
-                            ConstructorConsulta.condicion(ui, subpaso,
+                    condicion = Delta.anadir(ui, subpaso + ".union", condicion,
+                            Delta.condicion(ui, subpaso,
                                     otro.sql(), otro.columna(), referencias));
                 }
                 Fragmento valor = expresion(ui, paso + ".entonces", columna, referencias);
@@ -214,16 +214,16 @@ final class ConstructorEjercicio {
         valores.addAll(filtro.valores());
         String sql = "UPDATE " + ident(tabla.nombre()) + " SET " + ident(columna.nombre()) + " = "
                 + expresion.sql() + (filtro.sql().isEmpty() ? "" : " WHERE " + filtro.sql());
-        codigo.add("int filas" + n + " = " + ApoyoAsistentes.llamada("actualizar", new Fragmento(sql, valores)) + ";");
+        codigo.add("int filas" + n + " = " + Alfa.llamada("actualizar", new Fragmento(sql, valores)) + ";");
         comprobarFilas(ui, clave, n, codigo);
     }
 
-    private static Fragmento expresion(TerminalCompacta ui, String clave, Columna columna,
+    private static Fragmento expresion(Golf ui, String clave, Columna columna,
             Set<String> referencias) {
         String tipo = columna.numerica() ? ui.opcion(clave + ".tipo", "Como cambiar " + columna.nombre(),
                 "Valor fijo", "Sumar", "Restar", "Porcentaje") : "Valor fijo";
         Object valor = tipo.equals("Valor fijo")
-                ? ApoyoAsistentes.pedirValor(ui, clave + ".dato", columna, referencias, !columna.obligatoria())
+                ? Alfa.pedirValor(ui, clave + ".dato", columna, referencias, !columna.obligatoria())
                 : pedirNumero(ui, clave + ".dato", "Cantidad (porcentaje admite negativos)", referencias);
         String sql = switch (tipo) {
             case "Sumar" -> ident(columna.nombre()) + " + ?";
@@ -236,29 +236,29 @@ final class ConstructorEjercicio {
         return new Fragmento(sql, valores);
     }
 
-    private static Object pedirNumero(TerminalCompacta ui, String clave, String pregunta,
+    private static Object pedirNumero(Golf ui, String clave, String pregunta,
             Set<String> referencias) {
         return ui.dato(clave, pregunta, s -> {
-            Object valor = ApoyoAsistentes.valor(s, ApoyoAsistentes.numero("numero"), referencias);
-            if (!(valor instanceof Number) && !(valor instanceof ApoyoAsistentes.Referencia)) {
+            Object valor = Alfa.valor(s, Alfa.numero("numero"), referencias);
+            if (!(valor instanceof Number) && !(valor instanceof Alfa.Referencia)) {
                 throw new IllegalArgumentException("Se necesita un numero o $id disponible");
             }
             return valor;
         });
     }
 
-    private static Fragmento filtroEscritura(Esquema esquema, TerminalCompacta ui, String clave,
+    private static Fragmento filtroEscritura(Esquema esquema, Golf ui, String clave,
             Tabla tabla, Set<String> referencias) {
         int intento = 0;
         while (true) {
             String paso = clave + ".where." + intento++;
-            Fragmento filtro = ConstructorConsulta.filtros(ui, paso, esquema.campos(tabla, ""), referencias);
+            Fragmento filtro = Delta.filtros(ui, paso, esquema.campos(tabla, ""), referencias);
             if (!filtro.sql().isEmpty() || ui.si(paso + ".todas",
                     "SIN WHERE: afectar a TODA la tabla", false)) return filtro;
         }
     }
 
-    private static void comprobarFilas(TerminalCompacta ui, String clave, int n, List<String> codigo) {
+    private static void comprobarFilas(Golf ui, String clave, int n, List<String> codigo) {
         String modo = ui.opcion(clave + ".filas", "Resultado que exige el enunciado",
                 "Exactamente una fila", "Al menos una fila", "Cualquier cantidad (incluido 0)");
         if (modo.startsWith("Exactamente")) codigo.add("Sqlite.exigirUnaFila(filas" + n + ");");
@@ -267,35 +267,35 @@ final class ConstructorEjercicio {
         }
     }
 
-    private static void borrar(Esquema esquema, TerminalCompacta ui, String clave, int n,
+    private static void borrar(Esquema esquema, Golf ui, String clave, int n,
             Set<String> referencias, List<String> codigo) {
         Tabla tabla = tabla(esquema, ui, clave);
         Fragmento filtro = filtroEscritura(esquema, ui, clave, tabla, referencias);
         String sql = "DELETE FROM " + ident(tabla.nombre())
                 + (filtro.sql().isEmpty() ? "" : " WHERE " + filtro.sql());
-        codigo.add("int filas" + n + " = " + ApoyoAsistentes.llamada("borrar",
+        codigo.add("int filas" + n + " = " + Alfa.llamada("borrar",
                 new Fragmento(sql, filtro.valores())) + ";");
         comprobarFilas(ui, clave, n, codigo);
     }
 
-    private static void metadatos(Esquema esquema, TerminalCompacta ui, String clave,
+    private static void metadatos(Esquema esquema, Golf ui, String clave,
             Set<String> referencias, List<String> codigo) {
         String tipo = ui.opcion(clave + ".meta", "Metadatos",
                 "Tablas", "Columnas de tabla", "Claves foraneas", "Motor y driver", "Columnas de SELECT");
         switch (tipo) {
             case "Tablas" -> codigo.add("Sqlite.mostrarTablas(c);");
             case "Motor y driver" -> codigo.add("Sqlite.mostrarInfoConexion(c);");
-            case "Columnas de SELECT" -> codigo.add(ApoyoAsistentes.llamada("mostrarColumnasConsulta",
-                    ConstructorConsulta.construir(esquema, ui, clave + ".select", referencias)) + ";");
+            case "Columnas de SELECT" -> codigo.add(Alfa.llamada("mostrarColumnasConsulta",
+                    Delta.construir(esquema, ui, clave + ".select", referencias)) + ";");
             default -> {
                 Tabla tabla = tabla(esquema, ui, clave);
                 codigo.add("Sqlite." + (tipo.startsWith("Columnas") ? "mostrarColumnas" : "mostrarClavesForaneas")
-                        + "(c, " + ApoyoAsistentes.javaTexto(tabla.nombre()) + ");");
+                        + "(c, " + Alfa.javaTexto(tabla.nombre()) + ");");
             }
         }
     }
 
-    private static void recorrer(Esquema esquema, TerminalCompacta ui, String clave, int n,
+    private static void recorrer(Esquema esquema, Golf ui, String clave, int n,
             Set<String> referencias, List<String> codigo) {
         List<Tabla> tablas = esquema.tablas().stream().filter(t -> t.claves().size() == 1
                 && t.escribibles().stream().anyMatch(c -> c.numerica() && c.primaria() == 0)).toList();
@@ -307,13 +307,13 @@ final class ConstructorEjercicio {
         Columna columna = ui.elegir(clave + ".columna", "Columna numerica",
                 tabla.escribibles().stream().filter(c -> c.numerica() && c.primaria() == 0).toList(),
                 Columna::etiqueta);
-        Fragmento filtro = ConstructorConsulta.filtros(ui, clave + ".filtro",
+        Fragmento filtro = Delta.filtros(ui, clave + ".filtro",
                 esquema.campos(tabla, ""), referencias);
         String select = "SELECT " + ident(tabla.claves().get(0).nombre()) + " AS clave, "
                 + ident(columna.nombre()) + " AS valor FROM " + ident(tabla.nombre())
                 + (filtro.sql().isEmpty() ? "" : " WHERE " + filtro.sql());
         codigo.add("List<Map<String, Object>> filasJava" + n + " = "
-                + ApoyoAsistentes.llamada("consultar", new Fragmento(select, filtro.valores())) + ";");
+                + Alfa.llamada("consultar", new Fragmento(select, filtro.valores())) + ";");
         codigo.add("for (Map<String, Object> fila : filasJava" + n + ") {");
         codigo.add("    if (!(fila.get(\"valor\") instanceof Number)) throw new SQLException(\"Valor no numerico o NULL\");");
         codigo.add("    double anterior = ((Number) fila.get(\"valor\")).doubleValue();");
@@ -326,7 +326,7 @@ final class ConstructorEjercicio {
                 Object umbral = pedirNumero(ui, paso + ".valor", "Umbral numerico", referencias);
                 String valor = calculoJava(ui, paso + ".entonces", referencias);
                 codigo.add("    " + (regla == 0 ? "if" : "else if") + " (anterior " + operador + " "
-                        + ApoyoAsistentes.javaValor(umbral) + ") nuevo = " + valor + ";");
+                        + Alfa.javaValor(umbral) + ") nuevo = " + valor + ";");
                 regla++;
             } while (ui.si(clave + ".umbral." + regla + ".mas", "Otra regla (prioridad por orden)", false));
         } else codigo.add("    nuevo = " + calculoJava(ui, clave + ".calculo", referencias) + ";");
@@ -339,16 +339,16 @@ final class ConstructorEjercicio {
         }
         codigo.add("    if (!Double.isFinite(nuevo)) throw new SQLException(\"Resultado no finito\");");
         codigo.add("    Sqlite.exigirUnaFila(Sqlite.actualizar(c, "
-                + ApoyoAsistentes.javaTexto("UPDATE " + ident(tabla.nombre()) + " SET "
+                + Alfa.javaTexto("UPDATE " + ident(tabla.nombre()) + " SET "
                         + ident(columna.nombre()) + " = ? WHERE " + ident(tabla.claves().get(0).nombre()) + " = ?")
                 + ", nuevo, fila.get(\"clave\")));");
         codigo.add("}");
     }
 
-    private static String calculoJava(TerminalCompacta ui, String clave, Set<String> referencias) {
+    private static String calculoJava(Golf ui, String clave, Set<String> referencias) {
         String tipo = ui.opcion(clave + ".tipo", "Calculo", "Sumar", "Restar", "Porcentaje", "Valor fijo");
         Object cantidad = pedirNumero(ui, clave + ".cantidad", "Cantidad", referencias);
-        String valor = ApoyoAsistentes.javaValor(cantidad);
+        String valor = Alfa.javaValor(cantidad);
         return switch (tipo) {
             case "Sumar" -> "anterior + " + valor;
             case "Restar" -> "anterior - (" + valor + ")";

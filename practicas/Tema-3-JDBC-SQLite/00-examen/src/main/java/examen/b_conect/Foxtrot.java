@@ -1,4 +1,4 @@
-package examen.conect;
+package examen.b_conect;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,17 +16,17 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// Antes de entregar: qué métodos de Sqlite usa tu código y qué carpetas sobran.
+// Antes de entregar: qué métodos de Sqlite usa tu código y qué b_* sobran.
 // Solo lee ficheros; no borra nada. Ejecutar desde 00-examen.
-// Uso: RevisarEntrega [Fichero.java ...]   (por defecto, los .java sueltos de src/main/java/examen)
-public final class RevisarEntrega {
+// Uso: Foxtrot [Fichero.java ...]   (por defecto, los .java sueltos de src/main/java/examen)
+public final class Foxtrot {
     private static final Path SQLITE = Path.of("src/main/java/examen/herramientas/Sqlite.java");
     private static final Pattern METODO = Pattern.compile(
             "\\b(?:public|private)\\s+static\\s+[\\w<>\\[\\], ?]+?\\s+(\\w+)\\s*\\(");
     // Llamada propia: Sqlite.x( o x( sin objeto delante; c.commit() es de JDBC, no de Sqlite.
     private static final Pattern LLAMADA = Pattern.compile("(?:\\bSqlite\\s*\\.\\s*|(?<![\\w.]))(\\w+)\\s*\\(");
 
-    private RevisarEntrega() {}
+    private Foxtrot() {}
 
     public static void main(String[] args) throws IOException {
         List<String> rutas = new ArrayList<>(List.of(args));
@@ -55,20 +55,37 @@ public final class RevisarEntrega {
             System.out.println("  Si borras uno, borra también todas sus variantes con el mismo nombre.");
         }
 
+        for (String b : usados)
+            if (b.startsWith("b_"))
+                System.out.println("\nAVISO: aún llamas a Sqlite." + b + "(...): borra esa línea de tu Main.");
         for (String texto : codigo) {
             String limpio = limpiar(texto);
-            if (limpio.contains("examen.recetas") || limpio.contains("EjemplosSqlite"))
-                System.out.println("\nAVISO: tu código usa EjemplosSqlite; copia lo que necesites antes de borrar recetas/.");
-            if (limpio.contains("examen.conect"))
-                System.out.println("\nAVISO: tu código usa examen.conect; quítalo antes de borrar conect/.");
+            if (limpio.contains("examen.b_recetas") || limpio.contains("EjemplosSqlite"))
+                System.out.println("\nAVISO: tu código usa EjemplosSqlite; copia lo que necesites antes de borrar b_recetas/.");
+            if (limpio.contains("examen.b_conect"))
+                System.out.println("\nAVISO: tu código usa examen.b_conect; quítalo antes de borrar b_conect/.");
         }
 
-        System.out.println("\nBORRA para entregar (generación y comprobación, no forman parte de tu solución):");
-        for (String ruta : List.of("src/main/java/examen/conect", "src/main/java/examen/recetas",
-                "src/test", "asistente.sh", "asistente.cmd", "consultas", "propuestas", "sesiones", "target")) {
-            if (new File(ruta).exists()) System.out.println("  " + ruta);
-        }
+        System.out.println("\nBORRA para entregar (todo lo que empieza por b_, más src/test/, target/ y .gitignore):");
+        for (String ruta : borrables(new File("."))) System.out.println("  " + ruta);
+        for (String m : metodos.keySet())
+            if (m.startsWith("b_")) System.out.println("  método Sqlite." + m + " (en herramientas/Sqlite.java)");
         System.out.println("\nDespués, compila de nuevo para confirmar que no falta nada.");
+    }
+
+    // Ficheros y carpetas b_* (sin entrar en ellas), más src/test, target y .gitignore (nombres fijos), en orden estable.
+    static List<String> borrables(File carpeta) {
+        List<String> rutas = new ArrayList<>();
+        File[] hijos = carpeta.listFiles();
+        if (hijos == null) return rutas;
+        java.util.Arrays.sort(hijos);
+        for (File f : hijos) {
+            String ruta = carpeta.getPath().equals(".") ? f.getName() : carpeta.getPath() + "/" + f.getName();
+            if (f.getName().startsWith("b_") || ruta.equals("target") || ruta.equals("src/test") || ruta.equals(".gitignore"))
+                rutas.add(ruta + (f.isDirectory() ? "/" : ""));
+            else if (f.isDirectory()) rutas.addAll(borrables(new File(ruta)));
+        }
+        return rutas;
     }
 
     // Nombre -> cuerpo de todas sus variantes (las sobrecargas se tratan como una).

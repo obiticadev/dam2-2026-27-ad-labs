@@ -6,19 +6,19 @@ if "%TIPO%"=="" set "TIPO=consultas"
 if /I "%TIPO%"=="consultas" goto consultas
 if /I "%TIPO%"=="ejercicios" goto ejercicios
 if /I "%TIPO%"=="entrega" goto entrega
-echo Uso: asistente.cmd consultas^|ejercicios [base.sqlite] [sesion.properties] ^| entrega [Fichero.java ...]
+echo Uso: b_conect.cmd consultas^|ejercicios [base.sqlite] [sesion.properties] ^| entrega [Fichero.java ...]
 exit /b 2
 
 :consultas
-set "CLASE=examen.conect.AsistenteConsultas"
+set "CLASE=examen.b_conect.Bravo"
 goto preparar
 
 :ejercicios
-set "CLASE=examen.conect.AsistenteEjercicios"
+set "CLASE=examen.b_conect.Charlie"
 goto preparar
 
 :entrega
-set "CLASE=examen.conect.RevisarEntrega"
+set "CLASE=examen.b_conect.Foxtrot"
 
 :preparar
 set "JAR=%CARPETA%lib\sqlite-jdbc-3.51.0.0.jar"
@@ -31,7 +31,7 @@ pushd "%CARPETA%"
 if errorlevel 1 exit /b 2
 if not exist target\asistentes mkdir target\asistentes
 (for %%F in (src\main\java\examen\herramientas\*.java) do @echo "src/main/java/examen/herramientas/%%~nxF"
- for %%F in (src\main\java\examen\conect\*.java) do @echo "src/main/java/examen/conect/%%~nxF") > target\asistentes\fuentes.txt
+ for %%F in (src\main\java\examen\b_conect\*.java) do @echo "src/main/java/examen/b_conect/%%~nxF") > target\asistentes\fuentes.txt
 javac --release 17 -encoding UTF-8 -cp "%JAR%" -d target\asistentes @target\asistentes\fuentes.txt
 if errorlevel 1 goto fallo
 if not defined ASISTENTE_ANCHO set "ASISTENTE_ANCHO=64"

@@ -1,4 +1,4 @@
-package examen.recetas;
+package examen.b_recetas;
 
 import examen.herramientas.Sqlite;
 
@@ -36,7 +36,8 @@ public class EjemplosSqlite {
             // Sqlite.mostrarColumnas(c, "empleados");
             // Sqlite.mostrarClavesForaneas(c, "empleados");
             // Sqlite.mostrarInfoConexion(c);
-            // Sqlite.mostrarColumnasConsulta(c, "SELECT nombre AS empleado FROM empleados");
+            // Sqlite.mostrarColumnasConsulta(c, "SELECT nombre AS empleado FROM
+            // empleados");
         }
     }
 
@@ -81,13 +82,14 @@ public class EjemplosSqlite {
 
     // También puedes insertar SIN recuperar el ID:
     // int filas = Sqlite.insertar(c,
-    //         "INSERT INTO departamentos(nombre) VALUES (?)", "Compras");
+    // "INSERT INTO departamentos(nombre) VALUES (?)", "Compras");
     // Sqlite.exigirUnaFila(filas);
     //
     // Para un valor SQL NULL (si la columna lo permite), pasa (Object) null.
     // Por ejemplo, en la base de los atómicos:
-    // Sqlite.insertar(c, "INSERT INTO emp(nombre, salario, comision, dept_id) VALUES (?, ?, ?, ?)",
-    //         "Eva", 1300, null, 20);
+    // Sqlite.insertar(c, "INSERT INTO emp(nombre, salario, comision, dept_id)
+    // VALUES (?, ?, ?, ?)",
+    // "Eva", 1300, null, 20);
     // No pases la cadena "NULL": sería texto, no un nulo.
 
     // 4. TRANSACCIÓN: alta + revisión. Si la segunda operación afecta a cero
@@ -184,16 +186,16 @@ public class EjemplosSqlite {
     //
     // Sqlite.iniciarTransaccion(c);
     // try {
-    //     Sqlite.exigirUnaFila(Sqlite.actualizar(c,
-    //         "UPDATE producto SET stock = stock - ? WHERE id = ? AND stock >= ?",
-    //         cantidad, productoId, cantidad));
-    //     Sqlite.exigirUnaFila(Sqlite.insertar(c,
-    //         "INSERT INTO salida VALUES (?, ?, ?) ON CONFLICT(referencia) DO NOTHING",
-    //         referencia, productoId, cantidad));
-    //     Sqlite.commit(c);
+    // Sqlite.exigirUnaFila(Sqlite.actualizar(c,
+    // "UPDATE producto SET stock = stock - ? WHERE id = ? AND stock >= ?",
+    // cantidad, productoId, cantidad));
+    // Sqlite.exigirUnaFila(Sqlite.insertar(c,
+    // "INSERT INTO salida VALUES (?, ?, ?) ON CONFLICT(referencia) DO NOTHING",
+    // referencia, productoId, cantidad));
+    // Sqlite.commit(c);
     // } catch (SQLException | RuntimeException error) {
-    //     Sqlite.deshacer(c, error);
-    //     throw error;
+    // Sqlite.deshacer(c, error);
+    // throw error;
     // }
     //
     // Antes de iniciar valida cantidad > 0. El WHERE valida el stock de forma
