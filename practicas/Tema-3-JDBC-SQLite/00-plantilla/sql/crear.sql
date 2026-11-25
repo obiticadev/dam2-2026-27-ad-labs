@@ -1,3 +1,0 @@
--- Plantilla vacía: pega aquí el SQL SQLite del enunciado.
--- Crea primero la tabla padre, luego la hija. Inserta datos en ese mismo orden.
--- No añadas BEGIN, COMMIT, ROLLBACK ni comandos .read/.schema en este fichero.

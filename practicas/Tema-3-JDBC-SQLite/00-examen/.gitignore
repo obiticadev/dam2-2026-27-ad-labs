@@ -1,0 +1,5 @@
+/datos/*.sqlite
+/lib/*.jar
+/consultas/
+/propuestas/
+/sesiones/

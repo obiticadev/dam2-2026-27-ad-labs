@@ -6,7 +6,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>00-plantilla</module>
+        <module>00-examen</module>
         <module>01-atomicos</module>
         <module>02-simulacros/01-personal</module>
         <module>02-simulacros/02-almacen</module>

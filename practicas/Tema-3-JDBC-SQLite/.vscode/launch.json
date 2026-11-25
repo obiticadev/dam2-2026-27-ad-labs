@@ -1,0 +1,116 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Asistente: construir consultas SQLite",
+            "request": "launch",
+            "mainClass": "examen.AsistenteConsultas",
+            "projectName": "plantilla-sqlite",
+            "cwd": "${workspaceFolder}/00-examen",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -Dasistente.ancho=64"
+        },
+        {
+            "type": "java",
+            "name": "Asistente: generar ejercicio Java",
+            "request": "launch",
+            "mainClass": "examen.AsistenteEjercicios",
+            "projectName": "plantilla-sqlite",
+            "cwd": "${workspaceFolder}/00-examen",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -Dasistente.ancho=64"
+        },
+        {
+            "type": "java",
+            "name": "Comprobar los asistentes",
+            "request": "launch",
+            "mainClass": "examen.PruebasAsistentes",
+            "projectName": "plantilla-sqlite",
+            "cwd": "${workspaceFolder}/00-examen",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -ea"
+        },
+        {
+            "type": "java",
+            "name": "Examen: partir de un SQL",
+            "request": "launch",
+            "mainClass": "examen.MainDesdeSql",
+            "projectName": "plantilla-sqlite",
+            "cwd": "${workspaceFolder}/00-examen",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -ea"
+        },
+        {
+            "type": "java",
+            "name": "Examen: abrir un SQLite",
+            "request": "launch",
+            "mainClass": "examen.MainDesdeSqlite",
+            "projectName": "plantilla-sqlite",
+            "cwd": "${workspaceFolder}/00-examen",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -ea"
+        },
+        {
+            "type": "java",
+            "name": "Examen: Main actual",
+            "request": "launch",
+            "mainClass": "examen.Main",
+            "projectName": "plantilla-sqlite",
+            "cwd": "${workspaceFolder}/00-examen",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -ea"
+        },
+        {
+            "type": "java",
+            "name": "Examen: recetas de consulta (solo lectura)",
+            "request": "launch",
+            "mainClass": "examen.EjemplosSqlite",
+            "projectName": "plantilla-sqlite",
+            "cwd": "${workspaceFolder}/00-examen",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -ea"
+        },
+        {
+            "type": "java",
+            "name": "Repaso: los 12 ejercicios atomicos",
+            "request": "launch",
+            "mainClass": "repaso.Atomicos",
+            "projectName": "ejercicios-atomicos",
+            "cwd": "${workspaceFolder}/01-atomicos",
+            "args": "todos",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -ea"
+        },
+        {
+            "type": "java",
+            "name": "Simulacro: personal",
+            "request": "launch",
+            "mainClass": "repaso.Personal",
+            "projectName": "simulacro-personal",
+            "cwd": "${workspaceFolder}/02-simulacros/01-personal",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -ea"
+        },
+        {
+            "type": "java",
+            "name": "Simulacro: almacen",
+            "request": "launch",
+            "mainClass": "repaso.Almacen",
+            "projectName": "simulacro-almacen",
+            "cwd": "${workspaceFolder}/02-simulacros/02-almacen",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -ea"
+        },
+        {
+            "type": "java",
+            "name": "Comprobar herramientas (60 pruebas)",
+            "request": "launch",
+            "mainClass": "examen.PruebasSqlite",
+            "projectName": "plantilla-sqlite",
+            "cwd": "${workspaceFolder}/00-examen",
+            "console": "integratedTerminal",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED -ea"
+        }
+    ]
+}
