@@ -25,11 +25,11 @@ Claves de `b_conect/`: `Alfa` soporte común · `Bravo` asistente de consultas �
 Al empezar el examen **borra el arranque que no uses** y trabaja en el otro. Los dos tienen la misma forma:
 
 ```java
-try (Connection c = Sqlite.abrir(db)) { // Conexión con FK activadas; se cierra sola.
+try (Connection c = Sqlite.abrir(db)) { // FK activadas; se cierra sola.
     Sqlite.b_diagnostico(c, db); // BORRAR antes de entregar.
     // >>> Tus llamadas aquí, pasando c: ejemplo(c);
 }
-// >>> Tus métodos aquí: static void ejemplo(Connection c) throws SQLException { ... }
+// >>> Tus métodos: static void ejemplo(Connection c) throws SQLException
 ```
 
 1. Ejecútalo **sin argumentos** y con `00-examen` como directorio de trabajo (`bash ejecutar.sh desde-sql` o `desde-sqlite` desde el Tema 3).
