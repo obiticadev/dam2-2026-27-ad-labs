@@ -7,26 +7,26 @@
 --    por ejemplo datos/examen-real.sqlite, para no reutilizar la base de prueba.
 -- No incluyas BEGIN, COMMIT, ROLLBACK ni comandos de consola como .read.
 
-CREATE TABLE departamentos (
-    id INTEGER PRIMARY KEY,
-    nombre TEXT NOT NULL UNIQUE
+
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE material (
+codigo TEXT NOT NULL PRIMARY KEY,
+nombre TEXT NOT NULL,
+categoria TEXT NOT NULL,
+unidades_disponibles INTEGER NOT NULL
 );
 
-CREATE TABLE empleados (
-    id INTEGER PRIMARY KEY,
-    nombre TEXT NOT NULL,
-    salario REAL NOT NULL CHECK (salario >= 0),
-    departamento_id INTEGER NOT NULL,
-    FOREIGN KEY (departamento_id) REFERENCES departamentos(id)
+CREATE TABLE prestamo (
+numero INT NOT NULL PRIMARY KEY,
+codigo_material TEXT NOT NULL,
+alumno TEXT NOT NULL,
+FOREIGN KEY (codigo_material) REFERENCES material(codigo)
 );
 
-INSERT INTO departamentos (id, nombre) VALUES
-    (1, 'Informática'),
-    (2, 'Ventas'),
-    (3, 'Administración');
+INSERT INTO material (codigo, nombre, categoria, unidades_disponibles)
+VALUES ('R01', 'Cable de red', 'REDES', 3),
+('R02', 'Switch de 8 puertos', 'REDES', 1),
+('R03', 'Router', 'REDES', 0),
+('I01', 'Proyector', 'IMAGEN', 0);
 
-INSERT INTO empleados (id, nombre, salario, departamento_id) VALUES
-    (1, 'Ana', 1800.00, 1),
-    (2, 'Luis', 1650.00, 1),
-    (3, 'Marta', 1700.00, 2),
-    (4, 'Pedro', 1550.00, 2);
